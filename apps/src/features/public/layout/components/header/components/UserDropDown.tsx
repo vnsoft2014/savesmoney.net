@@ -1,6 +1,5 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
 import { Button } from '@/shared/shadecn/ui/button';
 import {
@@ -57,25 +56,30 @@ const UserDropdown = ({ user, handleSignOut }: Props) => {
                                 <ul className="grid gap-1">
                                     {(user.role === 'admin' || user.role === 'contributor') && (
                                         <li>
-                                            <Link href="/dashboard" prefetch={false} passHref>
-                                                <NavigationMenuLink
-                                                    className={cn(
-                                                        'flex items-center px-2 py-1.5 text-sm rounded-sm hover:bg-slate-100 transition-colors',
-                                                    )}
+                                            <NavigationMenuLink asChild>
+                                                <Link
+                                                    href="/dashboard"
+                                                    prefetch={false}
+                                                    className="flex items-center px-2 py-1.5 text-sm rounded-sm hover:bg-slate-100 transition-colors"
                                                 >
                                                     <LayoutDashboard className="mr-2 h-4 w-4" />
                                                     <span>Dashboard</span>
-                                                </NavigationMenuLink>
-                                            </Link>
+                                                </Link>
+                                            </NavigationMenuLink>
                                         </li>
                                     )}
+
                                     <li>
-                                        <Link href={`/user/profile/${user._id}`} prefetch={false} passHref>
-                                            <NavigationMenuLink className="flex items-center px-2 py-1.5 text-sm rounded-sm hover:bg-slate-100 transition-colors">
+                                        <NavigationMenuLink asChild>
+                                            <Link
+                                                href={`/user/profile/${user._id}`}
+                                                prefetch={false}
+                                                className="flex items-center px-2 py-1.5 text-sm rounded-sm hover:bg-slate-100 transition-colors"
+                                            >
                                                 <UserIcon className="mr-2 h-4 w-4" />
                                                 <span>Profile</span>
-                                            </NavigationMenuLink>
-                                        </Link>
+                                            </Link>
+                                        </NavigationMenuLink>
                                     </li>
                                 </ul>
 

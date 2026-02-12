@@ -17,7 +17,7 @@ export default function CommentList({ dealId, onReady }: Props) {
     const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'popular'>('newest');
     const [showComments, setShowComments] = useState(true);
 
-    const { comments, isLoading, hasMore, loadMore, isValidating, mutate } = useComments(dealId, sortBy);
+    const { comments, total, isLoading, hasMore, loadMore, isValidating, mutate } = useComments(dealId, sortBy);
 
     useEffect(() => {
         onReady?.(mutate);
@@ -26,9 +26,9 @@ export default function CommentList({ dealId, onReady }: Props) {
     if (isLoading) return <CommentSkeleton />;
 
     return (
-        <div className="p-3 md:p-6">
+        <div className="mt-3 p-3 md:p-6">
             <CommentHeader
-                count={comments.length}
+                count={total}
                 sortBy={sortBy}
                 onSortChange={setSortBy}
                 showComments={showComments}

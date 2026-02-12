@@ -2,7 +2,10 @@ import { compare } from 'bcryptjs';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import NextAuth from 'next-auth';
+import AppleProvider from 'next-auth/providers/apple';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import FacebookProvider from 'next-auth/providers/facebook';
+import GoogleProvider from 'next-auth/providers/google';
 
 import connectDB from '@/DB/connectDB';
 import User from '@/models/User';
@@ -15,6 +18,18 @@ const schema = Joi.object({
 
 const handler = NextAuth({
     providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        }),
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID!,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+        }),
+        AppleProvider({
+            clientId: process.env.APPLE_ID!,
+            clientSecret: process.env.APPLE_SECRET!,
+        }),
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
@@ -90,17 +105,60 @@ const handler = NextAuth({
     },
 
     callbacks: {
+        async signIn({ user, account, profile }) {
+            if (!account || account.provider === 'credentials') {
+                return true;
+            }
+
+            await connectDB();
+
+            const email = user.email;
+            if (!email) {
+                return false;
+            }
+
+            let existingUser = await User.findOne({ email });
+
+            if (existingUser?.isBlocked) {
+                throw new Error(
+                    existingUser.blockReason
+                        ? `Account blocked: ${existingUser.blockReason}`
+                        : 'Your account has been blocked.',
+                );
+            }
+
+            if (!existingUser) {
+                existingUser = await User.create({
+                    email,
+                    name: user.name || profile?.name || email,
+                    avatar: user.image || null,
+                    role: 'user',
+                    isBlocked: false,
+                });
+            }
+
+            user.id = existingUser._id.toString();
+            user.role = existingUser.role;
+            user.avatar = existingUser.avatar;
+
+            return true;
+        },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
-                token.role = user.role;
-                token.avatar = user.avatar;
-                token.accessToken = user.accessToken;
-                token.accessTokenExpires = user.accessTokenExpires;
-                return token;
+                token.role = user.role || 'user';
+                token.avatar = user.avatar || '';
+
+                if (!user.accessToken) {
+                    token.accessToken = token.accessToken || null;
+                    token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+                } else {
+                    token.accessToken = user.accessToken;
+                    token.accessTokenExpires = user.accessTokenExpires;
+                }
             }
 
-            if (Date.now() < (token.accessTokenExpires as number)) {
+            if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
                 return token;
             }
 

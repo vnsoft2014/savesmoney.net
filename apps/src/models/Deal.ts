@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import slugify from 'slugify';
 
 import './DealType';
@@ -6,8 +6,33 @@ import './Store';
 import './User';
 
 export interface DealDocument extends Document {
+    image?: string;
+    dealType: Types.ObjectId[];
+    store: Types.ObjectId;
+    author: Types.ObjectId;
+    expireAt?: Date | null;
+    disableExpireAt?: boolean;
+    isFlashDeal?: boolean;
     shortDescription: string;
     slug: string;
+    description: string;
+    flashDeal: boolean;
+    flashDealExpireHours: number;
+    originalPrice?: number;
+    discountPrice?: number;
+    percentageOff?: string;
+    purchaseLink: string;
+    couponCode: string;
+    tags?: string[];
+    hotTrend?: boolean;
+    holidayDeals?: boolean;
+    seasonalDeals?: boolean;
+    coupon?: boolean;
+    clearance?: boolean;
+    invalid?: boolean;
+    userStore?: Types.ObjectId;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const DealSchema = new mongoose.Schema(
@@ -35,8 +60,7 @@ const DealSchema = new mongoose.Schema(
         },
         slug: {
             type: String,
-            unique: true,
-            index: true,
+            required: true,
         },
         originalPrice: Number,
         discountPrice: Number,
@@ -44,12 +68,19 @@ const DealSchema = new mongoose.Schema(
         purchaseLink: {
             type: String,
             required: true,
-            unique: true,
-            index: true,
         },
         description: {
             type: String,
             required: true,
+        },
+        flashDeal: {
+            type: Boolean,
+            default: false,
+        },
+        flashDealExpireHours: Number,
+        couponCode: {
+            type: String,
+            required: false,
         },
         tags: {
             type: [String],
@@ -79,20 +110,29 @@ const DealSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
-        invalid: {
-            type: Boolean,
-            default: false,
-        },
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
             required: true,
+        },
+        userStore: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'UserStore',
+            required: false,
+            default: null,
+        },
+        status: {
+            type: String,
+            enum: ['pending', 'published', 'rejected', 'invalid'],
+            default: 'published',
         },
     },
     {
         timestamps: true,
     },
 );
+
+DealSchema.index({ shortDescription: 1, author: 1 }, { unique: true });
 
 DealSchema.pre('insertMany', async function (docs: DealDocument[]) {
     if (!Array.isArray(docs)) return;
@@ -103,13 +143,11 @@ DealSchema.pre('insertMany', async function (docs: DealDocument[]) {
         const baseSlug = slugify(doc.shortDescription, {
             lower: true,
             strict: true,
-            locale: 'vi',
         });
 
         let slug = baseSlug;
         let count = 1;
 
-        // 'this' là model
         while (await this.exists({ slug })) {
             slug = `${baseSlug}-${count++}`;
         }

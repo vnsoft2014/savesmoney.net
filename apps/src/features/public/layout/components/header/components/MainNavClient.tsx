@@ -1,6 +1,5 @@
 'use client';
 
-import { MenuLink } from '@/shared/types';
 import { SettingsForm } from '@/types/settings';
 import { setLinks, setSettings } from '@/utils/FrontendNavSlice';
 import { setUserData } from '@/utils/UserDataSlice';
@@ -8,6 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { MenuLink } from '../types';
 
 interface MainNavClientProps {
     links: Array<MenuLink>;
@@ -30,7 +30,7 @@ const MainNavClient = ({ links, settings }: MainNavClientProps) => {
         if (!userData) return;
 
         dispatch(setUserData(JSON.parse(userData)));
-    }, [dispatch]);
+    }, [dispatch, links]);
 
     return (
         <div className={`hidden xl:block sticky top-0 z-9 mx-auto w-full bg-white shadow-sm transition-all`}>
@@ -50,7 +50,7 @@ const MainNavClient = ({ links, settings }: MainNavClientProps) => {
                                 <Link
                                     href={href}
                                     prefetch={false}
-                                    className="flex items-center p-4 text-[17px] font-helveticaCondensed font-bold"
+                                    className="flex items-center p-4 text-[17px] font-sans-condensed font-bold hover:text-gray-700 transition-colors"
                                 >
                                     {label}
                                     {IconComponent && <IconComponent className="ml-1 h-3.5 w-3.5 hidden md:block" />}
@@ -63,7 +63,7 @@ const MainNavClient = ({ links, settings }: MainNavClientProps) => {
                                                 <Link
                                                     href={item.href}
                                                     prefetch={false}
-                                                    className="block px-5 py-2 text-base font-helveticaCondensed font-bold"
+                                                    className="block px-5 py-2 text-base font-sans-condensed font-bold hover:text-gray-700"
                                                 >
                                                     {item.label}
                                                 </Link>

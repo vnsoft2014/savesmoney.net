@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const ROLE_ACCESS: Record<string, string[]> = {
     '/dashboard/user': ['admin'],
     '/dashboard': ['admin', 'contributor'],
+    '/my-store': ['admin', 'contributor', 'user'],
 };
 
 const AUTH_PAGES = ['/signin', '/signup', '/forgot-password', '/reset-password'];
@@ -61,6 +62,8 @@ export const config = {
         '/signup',
         '/forgot-password',
         '/reset-password',
+        '/my-store',
+        '/my-store/:path*',
         '/dashboard/:path*',
         '/user/:path*',
         '/api/admin/:path*',

@@ -1,5 +1,6 @@
-import { DealType } from '@/types';
+import { DealType } from '@/shared/types';
 import Link from 'next/link';
+import { ImageWithFallback } from '../../deal-detail/components';
 
 type Props = {
     dealTypes: DealType[];
@@ -7,12 +8,12 @@ type Props = {
 
 const DealTypesGrid = ({ dealTypes }: Props) => {
     return (
-        <section>
+        <section className="font-sans-condensed">
             <h3 className="hidden md:block md:text-lg lg:text-xl font-bold">All Deal Types</h3>
 
-            <div className="bg-white mt-5 py-3 md:py-4 rounded-sm md:rounded-lg overflow-hidden shadow md:shadow-md">
-                <div id="deal-types" className="px-3 md:px-4 md:max-h-125 overflow-y-auto scroll-smooth">
-                    <div className="grid grid-cols-4 xl:grid-cols-8 lg:grid-cols-6 md:grid-cols-4 gap-3 md:gap-6">
+            <div className="bg-white mt-5 py-3 md:py-4">
+                <div id="deal-types" className="md:max-h-80 overflow-y-auto scroll-smooth">
+                    <div className="grid grid-cols-4 xl:grid-cols-10 lg:grid-cols-8 md:grid-cols-6 gap-3 md:gap-6">
                         {dealTypes.map((dealType) => (
                             <Link
                                 key={dealType._id}
@@ -21,8 +22,8 @@ const DealTypesGrid = ({ dealTypes }: Props) => {
                                 className="group flex flex-col items-center cursor-pointer"
                             >
                                 <div className="relative rounded-full overflow-hidden bg-gray-100 mb-4 transition-transform duration-300 group-hover:scale-105">
-                                    <img
-                                        src={dealType.thumbnail || './image.png'}
+                                    <ImageWithFallback
+                                        src={dealType.thumbnail}
                                         alt={dealType.name}
                                         className="w-full h-full object-cover"
                                     />

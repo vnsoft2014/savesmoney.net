@@ -126,63 +126,42 @@ export default function CommentForm({ dealId, parentId = null, onSuccess }: Prop
     };
 
     return (
-        <div className="p-3 md:p-6">
-            <Card>
-                <CardHeader className="p-4 border-b">
-                    <CardTitle className="text-lg font-semibold">Leave a Comment</CardTitle>
-                </CardHeader>
+        <Card className="border">
+            <CardHeader className="p-4 border-b">
+                <CardTitle className="font-sans-condensed text-lg md:text-xl font-bold">Leave a Comment</CardTitle>
+            </CardHeader>
 
-                <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <CardContent>
-                            {!isSignin && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border-b">
-                                    <FormField
-                                        control={control}
-                                        name="guestName"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <Input
-                                                        className="p-3 text-[13px] border focus:ring-2 focus:outline-none focus:ring-blue-500"
-                                                        placeholder="Your name"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={control}
-                                        name="guestEmail"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormControl>
-                                                    <Input
-                                                        className="p-3 text-[13px] border focus:ring-2 focus:outline-none focus:ring-blue-500"
-                                                        placeholder="Your email"
-                                                        type="email"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            )}
-
-                            <div className="p-4">
+            <Form {...form}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <CardContent>
+                        {!isSignin && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border-b">
                                 <FormField
                                     control={control}
-                                    name="comment"
+                                    name="guestName"
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Textarea
-                                                    placeholder="Share your thoughts..."
-                                                    className="w-full min-h-32 p-3 text-[13px] border resize-none focus:ring-2 focus:outline-none focus:ring-blue-500"
+                                                <Input
+                                                    className="p-3 text-[13px] border focus:ring-2 focus:outline-none focus:ring-blue-500"
+                                                    placeholder="Your name"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={control}
+                                    name="guestEmail"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Input
+                                                    className="p-3 text-[13px] border focus:ring-2 focus:outline-none focus:ring-blue-500"
+                                                    placeholder="Your email"
+                                                    type="email"
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -191,51 +170,70 @@ export default function CommentForm({ dealId, parentId = null, onSuccess }: Prop
                                     )}
                                 />
                             </div>
-                        </CardContent>
+                        )}
 
-                        <CardFooter className="relative flex justify-between items-center px-4 py-3 bg-gray-50 border-t">
-                            <div className="relative">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    ref={emojiButtonRef}
-                                    type="button"
-                                    onClick={() => setShowEmoji(!showEmoji)}
-                                >
-                                    <Smile className="mr-2 h-4 w-4" />
-                                    Emoji
-                                </Button>
-
-                                {showEmoji && (
-                                    <div ref={emojiPickerRef} className="absolute bottom-full left-0 mb-2 z-50">
-                                        <EmojiPicker
-                                            onEmojiClick={handleEmojiClick}
-                                            height={350}
-                                            width={300}
-                                            previewConfig={{ showPreview: false }}
-                                        />
-                                    </div>
+                        <div className="p-4">
+                            <FormField
+                                control={control}
+                                name="comment"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Share your thoughts..."
+                                                className="w-full min-h-32 p-3 text-[13px] border resize-none focus:ring-2 focus:outline-none focus:ring-blue-500"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
                                 )}
-                            </div>
+                            />
+                        </div>
+                    </CardContent>
 
+                    <CardFooter className="relative flex justify-between items-center px-4 py-3 bg-gray-50 border-t">
+                        <div className="relative">
                             <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="min-w-25 bg-blue-600 hover:bg-blue-700"
+                                variant="ghost"
+                                size="sm"
+                                ref={emojiButtonRef}
+                                type="button"
+                                onClick={() => setShowEmoji(!showEmoji)}
                             >
-                                {isSubmitting ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <>
-                                        <Send className="mr-2 h-4 w-4" />
-                                        Send
-                                    </>
-                                )}
+                                <Smile className="mr-2 h-4 w-4" />
+                                Emoji
                             </Button>
-                        </CardFooter>
-                    </form>
-                </Form>
-            </Card>
-        </div>
+
+                            {showEmoji && (
+                                <div ref={emojiPickerRef} className="absolute bottom-full left-0 mb-2 z-50">
+                                    <EmojiPicker
+                                        onEmojiClick={handleEmojiClick}
+                                        height={350}
+                                        width={300}
+                                        previewConfig={{ showPreview: false }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="min-w-25 bg-blue-600 hover:bg-blue-700"
+                        >
+                            {isSubmitting ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <>
+                                    <Send className="mr-2 h-4 w-4" />
+                                    Send
+                                </>
+                            )}
+                        </Button>
+                    </CardFooter>
+                </form>
+            </Form>
+        </Card>
     );
 }

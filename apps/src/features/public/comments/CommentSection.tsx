@@ -7,7 +7,7 @@ export default function CommentSection({ dealId }: { dealId: string }) {
     const [mutateComments, setMutateComments] = useState<(() => void) | null>(null);
 
     return (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="mt-6 border-b">
             <CommentForm
                 dealId={dealId}
                 onSuccess={() => {

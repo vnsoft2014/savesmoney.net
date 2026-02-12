@@ -65,7 +65,9 @@ export async function POST(req: Request) {
         const resizedFilename = `${nameWithoutExt}_resized${ext}`;
         const resizedPath = path.join(uploadDir, resizedFilename);
 
-        const resizedBuffer = await sharp(buffer).resize({ width: 350, withoutEnlargement: true }).toBuffer();
+        const resizedBuffer = await sharp(buffer)
+            .resize({ width: 350, height: 350, withoutEnlargement: true })
+            .toBuffer();
 
         await writeFile(resizedPath, new Uint8Array(resizedBuffer));
 

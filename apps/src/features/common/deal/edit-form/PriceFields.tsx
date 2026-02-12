@@ -12,7 +12,7 @@ export default function PriceFields() {
         originalPrice && discountPrice ? `${Math.round(((originalPrice - discountPrice) / originalPrice) * 100)}%` : '';
 
     return (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField
                 control={control}
                 name="originalPrice"
@@ -39,19 +39,20 @@ export default function PriceFields() {
                     </FormItem>
                 )}
             />
+
             <FormField
                 control={control}
                 name="discountPrice"
                 rules={{
-                    required: 'Discount price is required',
-                    validate: (value) =>
-                        value <= getValues('originalPrice') ? true : 'Discount must be less than original price',
+                    validate: (value) => {
+                        if (!value) return true;
+
+                        return value <= getValues('originalPrice') ? true : 'Discount must be less than original price';
+                    },
                 }}
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>
-                            Discount Price <span className="text-red-500">*</span>
-                        </FormLabel>
+                        <FormLabel>Discount Price</FormLabel>
 
                         <Input
                             type="number"
@@ -59,31 +60,30 @@ export default function PriceFields() {
                             min={0}
                             step={0.01}
                             value={field.value ?? ''}
-                            onChange={(e) => field.onChange(Number(e.target.value))}
+                            onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                         />
 
                         <FormMessage />
                     </FormItem>
                 )}
             />
+
             <FormField
                 control={control}
                 name="percentageOff"
-                render={() => {
-                    return (
-                        <FormItem>
-                            <FormLabel>Percentage Off</FormLabel>
+                render={() => (
+                    <FormItem>
+                        <FormLabel>Percentage Off</FormLabel>
 
-                            <Input
-                                readOnly
-                                value={percent}
-                                placeholder="Auto-calculated"
-                                className="bg-gray-50 text-gray-600"
-                            />
-                        </FormItem>
-                    );
-                }}
-            />{' '}
-        </>
+                        <Input
+                            readOnly
+                            value={percent}
+                            placeholder="Auto-calculated"
+                            className="bg-gray-50 text-gray-600"
+                        />
+                    </FormItem>
+                )}
+            />
+        </div>
     );
 }

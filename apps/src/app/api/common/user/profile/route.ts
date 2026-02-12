@@ -34,8 +34,6 @@ export async function PATCH(req: Request) {
 
         const authenticated = await authUser(req);
 
-        console.log(authenticated);
-
         const user = await User.findById(authenticated?.sub);
 
         if (!user) {

@@ -48,6 +48,12 @@ const NAV_ITEMS: NavItem[] = [
         href: '/dashboard/deal/add',
     },
     {
+        key: 'user deals',
+        label: 'User Deals',
+        icon: <Package size={20} className="mx-2 text-blue-500" />,
+        activeKey: 'activeUserDeals',
+    },
+    {
         key: 'deal-verification',
         label: 'Deal Validations',
         icon: <Package size={20} className="mx-2 text-blue-500" />,

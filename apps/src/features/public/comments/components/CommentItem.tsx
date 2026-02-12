@@ -45,8 +45,6 @@ export default function CommentItem({ comment, dealId, level = 0, onMutate }: Pr
         onMutate();
     };
 
-    console.log(comment);
-
     return (
         <div className={cn('group', level > 0 ? 'ml-4 md:ml-12 border-l-2 pl-4 mt-4' : 'pb-3 md:pb-6')}>
             <div className="flex gap-4">

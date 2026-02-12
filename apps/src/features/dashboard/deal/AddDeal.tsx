@@ -4,16 +4,15 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { getDealTypes, getStores } from '@/services';
 import { addNewDeals } from '@/services/admin/deal';
-import { getDealTypes } from '@/services/admin/deal-type';
-import { getStores } from '@/services/admin/store';
-import { DealFormValues, DealType, Store } from '@/types';
+import { DealFormValues, DealType, Store } from '@/shared/types';
 import { stripHtmlTags } from '@/utils/utils';
 import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { TailSpin } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
-import { DealTable, QuillEditorModal } from './components';
-import { DealProvider } from './DealContext';
+import { DealTable, QuillEditorModal } from './components/AddDeal';
+import { DealProvider } from './contexts';
 import { CheckingDuplicateState } from './types';
 
 type DealField = keyof DealFormValues;
@@ -79,7 +78,10 @@ export default function AddDeal() {
             percentageOff: '',
             purchaseLink: '',
             description: '',
-            tags: '',
+            flashDeal: false,
+            flashDealExpireHours: null,
+            couponCode: '',
+            tags: [],
             hotTrend: false,
             holidayDeals: false,
             seasonalDeals: false,
@@ -128,7 +130,8 @@ export default function AddDeal() {
                     } else if (
                         (field === 'coupon' && updatedDeal.coupon) ||
                         (field === 'clearance' && updatedDeal.clearance) ||
-                        (field === 'disableExpireAt' && updatedDeal.disableExpireAt)
+                        (field === 'disableExpireAt' && updatedDeal.disableExpireAt) ||
+                        (field === 'flashDeal' && updatedDeal.flashDeal)
                     ) {
                         updatedDeal.expireAt = null;
                     }
@@ -196,7 +199,7 @@ export default function AddDeal() {
                 hasError = true;
             }
 
-            if (!deal.coupon && !deal.clearance && !deal.disableExpireAt) {
+            if (!deal.coupon && !deal.clearance && !deal.disableExpireAt && !deal.flashDeal) {
                 if (!deal.expireAt) {
                     dealErrors.expireAt = 'Expiry Date is required';
                     hasError = true;
@@ -212,6 +215,16 @@ export default function AddDeal() {
                 }
             } else {
                 dealErrors.expireAt = undefined;
+            }
+
+            if (deal.flashDeal) {
+                if (deal.flashDealExpireHours === null) {
+                    dealErrors.flashDealExpireHours = 'Flash deal duration is required';
+                    hasError = true;
+                } else if (typeof deal.flashDealExpireHours !== 'number' || deal.flashDealExpireHours <= 0) {
+                    dealErrors.flashDealExpireHours = 'Flash deal duration must be greater than 0';
+                    hasError = true;
+                }
             }
 
             if (!deal.shortDescription.trim()) {
@@ -282,6 +295,8 @@ export default function AddDeal() {
         });
 
         setErrors(newErrors);
+
+        console.log(newErrors);
 
         if (hasError) {
             toast.error('Please fix all errors before saving!');

@@ -29,13 +29,13 @@ export default function DealRow({ deal, index }: Props) {
 
             <StoreSelect deal={deal} error={errors[deal.id]?.store} />
 
-            <ExpireAtCell deal={deal} error={errors[deal.id]?.expireAt} />
+            <ExpireAtCell deal={deal} />
 
             <ShortDescriptionInput deal={deal} error={errors[deal.id]?.shortDescription} />
 
             <PriceCell deal={deal} />
 
-            <PurchaseLinkInput deal={deal} error={errors[deal.id]?.purchaseLink} />
+            <PurchaseLinkInput deal={deal} />
 
             <DescriptionCell deal={deal} error={errors[deal.id]?.description} />
 

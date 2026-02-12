@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MenuLink } from '@/shared/types';
+import { MenuLink } from '@/features/public/layout/components/header/types';
 import { SettingsForm } from '@/types/settings';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { settingsDefault } from './settings';
 
 interface NavState {

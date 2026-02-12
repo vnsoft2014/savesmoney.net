@@ -67,7 +67,6 @@ export default function StoreSelect() {
                         styles={{
                             control: (base, state) => ({
                                 ...base,
-                                minHeight: 48,
                                 borderColor: formState.errors.store
                                     ? '#ef4444'
                                     : state.isFocused

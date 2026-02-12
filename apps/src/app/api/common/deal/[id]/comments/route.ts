@@ -59,10 +59,9 @@ export async function GET(req: Request, { params }: Props) {
         const filter: any = {
             deal: resolvedParams.id,
             isApproved: true,
-            parentId: parentId ?? null,
         };
 
-        const comments = await Comment.find(filter)
+        const comments = await Comment.find({ ...filter, parentId: parentId ?? null })
             .populate({
                 path: 'user',
                 select: 'name avatar',
@@ -108,6 +107,7 @@ export async function GET(req: Request, { params }: Props) {
         return NextResponse.json({
             success: true,
             data: result,
+            total,
             pagination: {
                 page,
                 limit,

@@ -1,5 +1,5 @@
-import SearchsContent from '@/features/public/deal/SearchsContent';
-import DealsFilters from '@/features/public/deals/filters/DealsFilters';
+import SearchsContent from '@/features/public/deal-detail/SearchsContent';
+import DealsFilters from '@/features/public/deals/DealsFilters';
 import Sidebar from '@/features/public/layout/Sidebar';
 import { getDealTypes } from '@/services/admin/deal-type';
 import { getStores } from '@/services/admin/store';

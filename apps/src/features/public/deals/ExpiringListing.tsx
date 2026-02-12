@@ -3,13 +3,12 @@
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
+import { Pagination } from '@/features/common';
 import { getExpiringSoon } from '@/services';
 import { Loading } from '@/shared/components/common';
 import { DealFull, DealListResponse } from '@/shared/types';
 import useSWR from 'swr';
-import { DealCard } from './components';
-import Pagination from './components/Pagination';
-import NoDeals from './NoDeals';
+import { DealCard, NoDeals } from './components';
 import DealTypeSchema from './seo/DealTypeSchema';
 
 type Props = {
@@ -56,7 +55,7 @@ const ExpiringListing = ({ initDealListResponse }: Props) => {
         <>
             <DealTypeSchema typeName="Expiring Soon" typeSlug="expiring-soon" deals={response?.data || []} />
 
-            <div className="relative">
+            <div className="relative font-sans-condensed">
                 {isLoading && (
                     <div className="absolute inset-0 z-10 flex justify-center items-start pt-20">
                         <Loading />
@@ -64,7 +63,7 @@ const ExpiringListing = ({ initDealListResponse }: Props) => {
                 )}
 
                 <div
-                    className={`grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-5
+                    className={`grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
                             ${isLoading ? 'opacity-30 pointer-events-none' : 'opacity-100'}
                             transition-opacity`}
                 >

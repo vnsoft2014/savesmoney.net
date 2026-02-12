@@ -3,12 +3,12 @@
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
+import { Pagination } from '@/features/common';
 import { getActiveDeals } from '@/services';
 import { Loading } from '@/shared/components/common';
 import { DealFull, DealListResponse, GetActiveDealsParams } from '@/shared/types';
 import useSWR from 'swr';
-import { DealCard, Pagination } from './components';
-import NoDeals from './NoDeals';
+import { DealCard, NoDeals } from './components';
 import { DealTypeSchema } from './seo';
 
 type Props = {
@@ -32,7 +32,7 @@ const DealsListing = ({ initDealListResponse, params, dealTypeName, dealTypeSlug
 
     const swrKey = useMemo(
         () => ['deals', dealTypeFilter, storeFilter, page, params] as const,
-        [dealTypeFilter, storeFilter, page],
+        [dealTypeFilter, storeFilter, page, params],
     );
 
     const fetchDeals = useCallback(
@@ -68,7 +68,7 @@ const DealsListing = ({ initDealListResponse, params, dealTypeName, dealTypeSlug
         <>
             <DealTypeSchema typeName={dealTypeName} typeSlug={dealTypeSlug} deals={response?.data || []} />
 
-            <div className="relative">
+            <div className="relative font-sans-condensed">
                 {isValidating && (
                     <div className="absolute inset-0 z-10 flex justify-center items-start pt-20">
                         <Loading />
@@ -76,7 +76,7 @@ const DealsListing = ({ initDealListResponse, params, dealTypeName, dealTypeSlug
                 )}
 
                 <div
-                    className={`grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-5
+                    className={`grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
                             ${isValidating ? 'opacity-30 pointer-events-none' : 'opacity-100'}
                             transition-opacity`}
                 >

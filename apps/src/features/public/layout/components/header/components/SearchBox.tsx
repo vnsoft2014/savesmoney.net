@@ -1,9 +1,10 @@
 'use client';
 
+import { DealLabel } from '@/features/common/deal/components';
 import DealPrice from '@/features/public/deals/components/DealPrice';
 import { searchDeals } from '@/services';
 import { DealRaw } from '@/shared/types';
-import { getDaysRemaining, getDealLabel, getDealLabelClasses } from '@/utils/deal';
+import { getDaysRemaining } from '@/utils/deal';
 import { ArrowRight, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -95,7 +96,7 @@ const SearchBox = () => {
                     <input
                         type="text"
                         placeholder="Search deals, stores and more..."
-                        className="w-full pl-4 pr-20 py-2.5 text-sm border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                        className="w-full pl-4 pr-20 py-2 text-sm md:text-base border border-gray-300 bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onFocus={() => query && setIsOpen(true)}
@@ -153,12 +154,6 @@ const SearchBox = () => {
                             <div id="search-result" className="max-h-100 overflow-y-auto">
                                 {results.map((deal: DealRaw, idx) => {
                                     const daysRemaining = getDaysRemaining(deal.expireAt);
-                                    const label = getDealLabel(deal.coupon, deal.clearance, daysRemaining);
-                                    const labelClasses = getDealLabelClasses(
-                                        deal.coupon,
-                                        deal.clearance,
-                                        daysRemaining,
-                                    );
 
                                     return (
                                         <Link
@@ -180,13 +175,12 @@ const SearchBox = () => {
                                                         <div className="text-xs md:text-[15px] font-medium text-gray-900 line-clamp-2 flex-1">
                                                             {deal.shortDescription}
                                                         </div>
-                                                        {label && (
-                                                            <span
-                                                                className={`hidden md:inline-flex items-center mt-1/2 px-2 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap shrink-0 ${labelClasses}`}
-                                                            >
-                                                                {label}
-                                                            </span>
-                                                        )}
+                                                        <DealLabel
+                                                            flashDeal={deal.flashDeal}
+                                                            coupon={deal.coupon}
+                                                            clearance={deal.clearance}
+                                                            daysRemaining={daysRemaining}
+                                                        />
                                                     </div>
                                                     <DealPrice
                                                         originalPrice={deal.originalPrice}

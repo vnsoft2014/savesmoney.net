@@ -39,7 +39,7 @@ const MobilePage = ({ dealListResponse, dealTypes }: Props) => {
         <>
             <HomeSchema />
 
-            <div className="flex items-center justify-around gap-2 border-b bg-white">
+            <div className="flex items-center justify-around gap-2 font-sans-condensed border-b bg-white">
                 <TabButton active={activeTab === 'deal-types'} onClick={() => setActiveTab('deal-types')}>
                     Deal Types
                 </TabButton>
@@ -49,7 +49,7 @@ const MobilePage = ({ dealListResponse, dealTypes }: Props) => {
                 </TabButton>
             </div>
 
-            <div className="container mx-auto px-3">
+            <div className="container mx-auto px-3 font-sans-condensed">
                 {activeTab === 'deal-types' && <DealTypesGrid dealTypes={dealTypes} />}
 
                 {activeTab === 'deals' && <ActiveDealsTab deals={dealListResponse.data} />}

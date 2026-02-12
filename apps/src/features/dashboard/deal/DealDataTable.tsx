@@ -13,6 +13,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import { Loading } from '@/shared/components/common';
 import { Deal } from '@/shared/types/deal';
 import React from 'react';
+import DealsFilters from './components/DealTable/DealsFilters';
 
 interface IconWithTooltipProps {
     tooltip: string;
@@ -34,7 +35,7 @@ const IconWithTooltip = ({ tooltip, children }: IconWithTooltipProps) => {
     );
 };
 
-export default function DealTable() {
+export default function DealDataTable() {
     const { mutate } = useSWRConfig();
     const router = useRouter();
 

@@ -15,6 +15,9 @@ export type DealFormValues = {
     percentageOff: string;
     purchaseLink: string;
     description: string;
+    flashDeal: boolean;
+    flashDealExpireHours: number | null;
+    couponCode: string;
     tags: string[];
     hotTrend: boolean;
     holidayDeals: boolean;
@@ -22,7 +25,6 @@ export type DealFormValues = {
     coupon: boolean;
     clearance: boolean;
     disableExpireAt: boolean;
-    author: string;
 };
 
 export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
@@ -38,6 +40,9 @@ export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
     percentageOff: string;
     purchaseLink: string;
     description: string;
+    flashDeal: boolean;
+    flashDealExpireHours: number;
+    couponCode: string;
     tags: string[];
     hotTrend: boolean;
     holidayDeals: boolean;
@@ -46,6 +51,7 @@ export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
     clearance: boolean;
     disableExpireAt: boolean;
     author: TUser;
+    status: 'pending' | 'published' | 'rejected';
     createdAt: string;
     updatedAt: string;
 };
@@ -66,6 +72,9 @@ export type GetActiveDealsParams = {
     holidayDeals?: boolean;
     seasonalDeals?: boolean;
     expireAt?: 'null';
+    author?: string;
+    status?: 'pending' | 'published' | 'rejected';
+    userStore?: string;
 };
 
 export type DealListResponse = PaginatedResponse<DealFull>;

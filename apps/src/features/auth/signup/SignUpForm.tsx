@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 import { registerMe } from '@/services/auth';
 
+import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
 import { Checkbox } from '@/shared/shadecn/ui/checkbox';
@@ -16,6 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/shared/shadecn/ui/input';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { SocialAuthButtons } from '../components';
 import { SignUpForm as SignUpFormType, signUpSchema } from '../schemas/SignUp.schema';
 
 const SignUpForm = () => {
@@ -73,13 +75,13 @@ const SignUpForm = () => {
 
             router.push(safeRedirect);
         } catch (error) {
-            toast.error(INTERNAL_SERVER);
+            toast.error(MESSAGES.ERROR.INTERNAL_SERVER);
         }
     };
 
     return (
-        <div className="min-h-screen py-12 md:py-16 lg:py-24 bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <Card className="w-full max-w-150 p-4 md:p-8 shadow-xl border-none">
+        <div className="min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-229px)] flex items-center justify-center px-4">
+            <Card className="w-full max-w-150 p-4 md:p-8 inset-shadow-2xs">
                 <CardHeader className="space-y-4 text-center mb-6">
                     <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">
                         <Lock className="w-8 h-8 text-indigo-600" />
@@ -232,6 +234,8 @@ const SignUpForm = () => {
                                 </Link>
                             </div>
                         </form>
+
+                        <SocialAuthButtons />
                     </Form>
                 </CardContent>
             </Card>

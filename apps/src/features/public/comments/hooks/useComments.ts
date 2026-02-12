@@ -18,10 +18,12 @@ export function useComments(dealId: string, sortBy: string) {
     const { data, error, size, setSize, isLoading, isValidating, mutate } = useSWRInfinite(getKey, fetcher);
 
     const comments = data?.flatMap((page) => page.data) ?? [];
+    const total = data?.[data.length - 1].total ?? 0;
     const hasMore = data?.[data.length - 1]?.pagination?.hasMore ?? false;
 
     return {
         comments,
+        total,
         isLoading,
         isValidating,
         error,

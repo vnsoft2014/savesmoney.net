@@ -1,5 +1,5 @@
 import EditStoreForm from '@/features/dashboard/store/EditStoreForm';
-import { getStoreById } from '@/services/admin/store';
+import { getStoreById } from '@/services';
 import { notFound } from 'next/navigation';
 
 interface PageProps {

@@ -70,6 +70,7 @@ export async function GET() {
                         originalPrice: '$deal.originalPrice',
                         discountPrice: '$deal.discountPrice',
                         percentageOff: '$deal.percentageOff',
+                        flashDeal: '$deal.flashDeal',
                         expireAt: '$deal.expireAt',
                         clearance: '$deal.clearance',
                         coupon: '$deal.coupon',

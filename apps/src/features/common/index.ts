@@ -1,2 +1,1 @@
-export { default as DealPrice } from '../public/deals/components/DealPrice';
-export { default as DealPurchaseLink } from '../public/deals/components/DealPurchaseLink';
+export { default as Pagination } from './Pagination';

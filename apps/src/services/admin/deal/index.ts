@@ -87,11 +87,8 @@ export const checkDuplicate = async (shortDescription?: string, purchaseLink?: s
             throw new Error(data?.message || 'Failed to fetch top viewed deals');
         }
 
-        return data.data;
+        return data.isDuplicate;
     } catch (error) {
-        return {
-            success: false,
-            isDuplicate: false,
-        };
+        return false;
     }
 };

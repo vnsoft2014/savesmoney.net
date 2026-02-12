@@ -1,15 +1,22 @@
-import { DealPrice, DealPurchaseLink } from '@/features/common';
+import { DealLabel } from '@/features/common/deal/components';
 import CommentSection from '@/features/public/comments/CommentSection';
-import { DealStats, RelatedDeals, ValidityVote } from '@/features/public/deal';
-import { ImageWithFallback } from '@/features/public/deal/components';
-import { DealDetailSchema } from '@/features/public/deal/seo';
+import {
+    CouponCodeBox,
+    DealStats,
+    FlashDealCountdown,
+    RelatedDeals,
+    ValidityVote,
+} from '@/features/public/deal-detail';
+import { ImageWithFallback } from '@/features/public/deal-detail/components';
+import { DealDetailSchema } from '@/features/public/deal-detail/seo';
+import { DealPrice, DealPurchaseLink } from '@/features/public/deals/components';
 import { Sidebar } from '@/features/public/layout';
 import { getDealById } from '@/services';
 import { Breadcrumb } from '@/shared/components/common';
 import { Ads } from '@/shared/components/widgets';
 import { Button } from '@/shared/shadecn/ui/button';
 import { DealFull } from '@/shared/types';
-import { getDaysRemaining, getDealLabel, getDealLabelClasses, truncateDescription } from '@/utils/deal';
+import { getDaysRemaining, truncateDescription } from '@/utils/deal';
 import { formatDate, getIdFromSlug, stripHtmlTags } from '@/utils/utils';
 import { FileText, Home } from 'lucide-react';
 import Link from 'next/link';
@@ -99,10 +106,6 @@ const Page = async ({ params }: Props) => {
 
     const daysRemaining = getDaysRemaining(deal.expireAt);
 
-    const label = getDealLabel(deal.coupon, deal.clearance, daysRemaining);
-
-    const labelClasses = getDealLabelClasses(deal.coupon, deal.clearance, daysRemaining);
-
     return (
         <>
             <DealDetailSchema deal={deal} />
@@ -111,31 +114,41 @@ const Page = async ({ params }: Props) => {
                     <Breadcrumb items={breadcrumbItems} />
                 </div>
 
-                <div className="py-3 grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-7">
-                    <div className="xl:col-span-4 lg:col-span-5 px-3 md:px-4">
-                        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="grid md:grid-cols-6 md:gap-6 p-3 pb-4 md:p-6">
-                                <div className="relative md:col-span-2">
+                <div className="py-3 grid grid-cols-1 xl:grid-cols-8 lg:grid-cols-7">
+                    <div className="xl:col-span-6 lg:col-span-5 px-3 md:px-4">
+                        <div className="bg-white border">
+                            <div className="flex flex-col md:flex-row items-start">
+                                <div className="relative w-full xl:w-110 lg:w-90 md:w-70">
                                     <DealPurchaseLink dealId={deal._id} href={deal.purchaseLink}>
                                         <ImageWithFallback
                                             src={deal.image?.replace(/_resized(?=\.)/, '')}
                                             fallback={deal.image}
                                             alt={deal.shortDescription}
-                                            className="w-full h-200 object-cover"
+                                            className="w-full object-cover"
                                         />
                                     </DealPurchaseLink>
 
-                                    {label && (
-                                        <div
-                                            className={`absolute top-0 right-0 inline-flex items-center px-3 py-1 rounded-sm text-[11px] font-semibold ${labelClasses}`}
-                                        >
-                                            {label}
-                                        </div>
-                                    )}
+                                    <DealLabel
+                                        flashDeal={deal.flashDeal}
+                                        coupon={deal.coupon}
+                                        clearance={deal.clearance}
+                                        daysRemaining={daysRemaining}
+                                    />
+
+                                    <div className="absolute bottom-0 left-0 right-0">
+                                        {deal.flashDeal && deal.expireAt && (
+                                            <div className="py-1 bg-orange-600">
+                                                <div className="flex justify-center items-center gap-1 text-base md:text-lg text-white font-sans-condensed font-bold">
+                                                    <span className="inline-block mr-2">Ends in</span>
+                                                    <FlashDealCountdown expireAt={deal.expireAt} />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <div className="md:col-span-4">
-                                    <div className="flex items-center gap-2 mb-2 text-[11px]">
+                                <div className="md:col-span-4 p-3 md:p-4">
+                                    <div className="flex items-center gap-2 mb-2 text-sm">
                                         <div className="flex items-center gap-1">
                                             {Array.isArray(deal.dealType) &&
                                                 deal.dealType.map(
@@ -158,7 +171,7 @@ const Page = async ({ params }: Props) => {
                                         </span>
                                     </div>
 
-                                    <h1 className="text-base md:text-xl font-semibold mb-4">
+                                    <h1 className="text-base md:text-xl mb-4 font-sans-condensed font-bold">
                                         <DealPurchaseLink dealId={deal._id} href={deal.purchaseLink}>
                                             {deal.shortDescription}
                                         </DealPurchaseLink>
@@ -173,15 +186,21 @@ const Page = async ({ params }: Props) => {
 
                                     <DealStats dealId={deal._id} />
 
+                                    {deal.couponCode && (
+                                        <div className="mt-4">
+                                            <CouponCodeBox code={deal.couponCode} />
+                                        </div>
+                                    )}
+
                                     <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-5">
                                         <Button
                                             asChild
-                                            className="bg-orange-600 hover:bg-orange-700 text-white rounded-full md:px-8 md:py-6 text-base font-semibold"
+                                            className="bg-orange-600 hover:bg-orange-700 text-white rounded-full md:px-6 md:py-6 xl:px-8 font-semibold"
                                         >
                                             <DealPurchaseLink
                                                 dealId={deal._id}
                                                 href={deal.purchaseLink}
-                                                className="text-sm md:text-base"
+                                                className="text-base md:text-lg"
                                             >
                                                 Get Deal at {deal.store && deal.store.name}
                                             </DealPurchaseLink>
@@ -193,14 +212,16 @@ const Page = async ({ params }: Props) => {
                             </div>
                         </div>
 
-                        <div className="mt-3 md:mt-6 bg-white rounded-xl shadow-sm overflow-hidden">
-                            <div className="px-3 md:px-6">
+                        <div className="mt-3 md:mt-6 bg-white border">
+                            <div className="px-3 md:px-4">
                                 <div className="flex gap-6 font-semibold mt-3 md:mt-4">
-                                    <button className="text-base border-b-2 border-black pb-2">Product Details</button>
+                                    <button className="border-b-2 border-black pb-2 text-lg md:text-xl font-sans-condensed font-bold">
+                                        Product Details
+                                    </button>
                                 </div>
 
                                 <div className="py-6">
-                                    <div className="product-details prose max-w-none text-sm leading-6 text-gray-800">
+                                    <div className="product-details prose max-w-none text-base leading-6 text-gray-800">
                                         <p>
                                             <DealPurchaseLink
                                                 dealId={deal._id}
@@ -223,7 +244,9 @@ const Page = async ({ params }: Props) => {
                                             </DealPurchaseLink>
                                             .
                                         </p>
-                                        <h3 className="text-base md:text-lg">Summary features:</h3>
+                                        <h3 className="text-lg md:text-xl font-sans-condensed font-bold">
+                                            Summary features:
+                                        </h3>
                                         <div
                                             className="deal-description"
                                             dangerouslySetInnerHTML={{ __html: deal.description }}
@@ -233,14 +256,19 @@ const Page = async ({ params }: Props) => {
                             </div>
                         </div>
 
-                        <div className="my-4">
+                        <div className="hidden my-4">
                             <Ads slot="2176866845" />
                         </div>
 
                         <CommentSection dealId={deal._id} />
 
                         <div className="mt-6">
-                            <RelatedDeals dealId={deal._id} storeName={deal.store.name} storeId={deal.store._id} />
+                            <RelatedDeals
+                                dealId={deal._id}
+                                storeName={deal.store.name}
+                                storeSlug={deal.store.slug}
+                                storeId={deal.store._id}
+                            />
                         </div>
                     </div>
 

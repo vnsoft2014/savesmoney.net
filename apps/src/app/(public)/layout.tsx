@@ -6,7 +6,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
     return (
         <>
             <Header />
-            <main className="bg-gray-100">{children}</main>
+            <main>{children}</main>
             <Footer />
             <ChatWidget />
             <DealPopup />

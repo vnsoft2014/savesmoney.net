@@ -1,7 +1,6 @@
 'use client';
 
-import { DealRaw } from '@/types';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import 'react-quill-new/dist/quill.snow.css';
@@ -10,11 +9,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import {
+    CouponCodeInput,
     DealDescription,
     DealFlags,
     DealTypeSelect,
     DuplicateInput,
     ExpiredDateField,
+    FlashDealInput,
     PictureUploadField,
     PriceFields,
     StoreSelect,
@@ -23,8 +24,9 @@ import {
 import { updateDeal } from '@/services/admin/deal';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form } from '@/shared/shadecn/ui/form';
+import { DealRaw } from '@/shared/types';
 import { toast } from 'react-toastify';
-import { DealForm as DealFormType, dealSchema } from './schemas/Deal.schema';
+import { DealForm as DealFormType, dealSchema } from '../../common/schemas/Deal.schema';
 
 interface Props {
     deal: DealRaw;
@@ -49,6 +51,9 @@ export default function EditDealForm({ deal }: Props) {
             percentageOff: deal.percentageOff,
             purchaseLink: deal.purchaseLink,
             description: deal.description,
+            couponCode: deal.couponCode,
+            flashDeal: deal.flashDeal,
+            flashDealExpireHours: deal.flashDealExpireHours,
             tags: deal.tags,
             hotTrend: deal.hotTrend,
             holidayDeals: deal.holidayDeals,
@@ -58,10 +63,13 @@ export default function EditDealForm({ deal }: Props) {
 
     const {
         handleSubmit,
-        formState: { isSubmitting },
+        formState: { isSubmitting, errors },
     } = form;
 
+    console.log(errors);
+
     const onSubmit = async (values: DealFormType) => {
+        console.log(11111111111);
         const res = await updateDeal(deal._id, { _id: deal._id, ...values });
         if (res.success) {
             toast.success(res.message);
@@ -73,34 +81,45 @@ export default function EditDealForm({ deal }: Props) {
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-4xl mx-auto">
-                <div className="flex justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <Button variant="ghost" onClick={() => router.push('/dashboard')}>
-                            <ArrowLeft />
-                        </Button>
-
-                        <h1 className="text-3xl font-bold text-gray-800">Update Deal</h1>
-                    </div>
-
-                    <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
-                        <Save className="mr-2" />
-                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}
+            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+                <div className="flex items-center gap-3 mb-6">
+                    <Button variant="ghost" onClick={() => router.back()}>
+                        <ArrowLeft />
                     </Button>
+                    <h1 className="text-2xl font-bold">Edit Deal</h1>
                 </div>
 
                 <Form {...form}>
-                    <form className="space-y-6">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <PictureUploadField name="picture" />
-                        <DealTypeSelect />
-                        <StoreSelect />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <DealTypeSelect />
+                            <StoreSelect />
+                        </div>
+
                         <ExpiredDateField />
+
                         <DuplicateInput name="shortDescription" label="Short Description" />
                         <PriceFields />
                         <DuplicateInput name="purchaseLink" label="Purchase Link" />
                         <TagsInput />
                         <DealFlags />
+
+                        <FlashDealInput />
+                        <CouponCodeInput />
+
                         <DealDescription />
+
+                        <div className="col-span-full flex justify-end gap-3 mt-20">
+                            <Button type="button" variant="outline" onClick={() => router.back()}>
+                                Cancel
+                            </Button>
+
+                            <Button type="submit" disabled={isSubmitting}>
+                                Save
+                            </Button>
+                        </div>
                     </form>
                 </Form>
             </div>

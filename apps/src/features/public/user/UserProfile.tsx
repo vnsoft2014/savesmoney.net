@@ -1,7 +1,6 @@
 'use client';
 
 import { updateProfile } from '@/services/common/user';
-import { UserData } from '@/types';
 import { setUserData } from '@/utils/UserDataSlice';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
@@ -12,6 +11,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
 import { Input } from '@/shared/shadecn/ui/input';
+import { User } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { ProfileForm as ProfileFormType, profileSchema } from './schemas/Profile.schema';
 
@@ -22,7 +22,7 @@ const roleColorMap: Record<string, string> = {
 };
 
 interface Props {
-    user: UserData;
+    user: User;
 }
 
 const UserProfile = ({ user }: Props) => {

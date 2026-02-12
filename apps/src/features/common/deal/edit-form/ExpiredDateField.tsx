@@ -11,25 +11,23 @@ import { toDateInputValue } from '@/utils/utils';
 export default function ExpiredDateField() {
     const {
         control,
-        watch,
         getValues,
         setValue,
         formState: { errors },
     } = useFormContext();
 
-    const [expireAt, coupon, clearance] = useWatch({
+    const [disableExpireAt, coupon, clearance, flashDeal] = useWatch({
         control,
-        name: ['disableExpireAt', 'coupon', 'clearance'],
+        name: ['disableExpireAt', 'coupon', 'clearance', 'flashDeal'],
     });
 
-    const disableExpireAt = expireAt || coupon || clearance;
-    const disableCheckbox = coupon || clearance;
+    const isDisableExpireAt = disableExpireAt || coupon || clearance;
 
     useEffect(() => {
-        if (disableExpireAt) {
+        if (isDisableExpireAt || flashDeal) {
             setValue('expiredDate', null);
         }
-    }, [disableExpireAt, setValue]);
+    }, [isDisableExpireAt, setValue]);
 
     return (
         <>
@@ -49,7 +47,7 @@ export default function ExpiredDateField() {
                             type="date"
                             value={toDateInputValue(field.value ?? '')}
                             onChange={field.onChange}
-                            disabled={disableExpireAt}
+                            disabled={isDisableExpireAt || flashDeal}
                             className={errors.expiredDate ? 'border-red-500' : ''}
                         />
 
@@ -69,7 +67,7 @@ export default function ExpiredDateField() {
                             className="mb-0"
                             checked={field.value}
                             onCheckedChange={field.onChange}
-                            disabled={disableCheckbox}
+                            disabled={coupon || clearance || flashDeal}
                         />
                     </FormItem>
                 )}

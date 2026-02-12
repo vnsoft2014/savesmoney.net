@@ -8,7 +8,7 @@ export default async function PopularDeals() {
 
     return (
         <div className="space-y-4">
-            <h4 className="font-semibold">Popular Deals</h4>
+            <h4 className="font-sans-condensed font-bold">Popular Deals</h4>
 
             <div className="block mt-4 space-y-4">
                 {deals.map((item: any) => (

@@ -10,8 +10,8 @@ module.exports = {
         },
         extend: {
             fontFamily: {
-                sans: ['var(--font-inter)'],
-                helveticaCondensed: ['HelveticaNeueBoldCondensed', 'HelveticaNeueBoldCondensed_Fallback', 'sans-serif'],
+                sans: ['HelveticaNeue', 'HelveticaNeue_Fallback'],
+                'sans-condensed': ['HelveticaNeueBoldCondensed', 'HelveticaNeueBoldCondensed_Fallback'],
             },
         },
     },

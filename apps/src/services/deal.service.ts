@@ -9,8 +9,7 @@ export const getActiveDeals = async (
     options?: GetActiveDealsParams,
 ): Promise<DealListResponse> => {
     try {
-        const today = new Date().toISOString().split('T')[0];
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+        const today = new Date().toISOString();
 
         const params = new URLSearchParams({
             expireAtFrom: today,
@@ -45,7 +44,11 @@ export const getActiveDeals = async (
 
         params.append('invalid', 'false');
 
-        const data = await fetcher(`${baseUrl}/api/common/deal/list?${params.toString()}`, {
+        if (options?.author) params.append('author', options.author);
+
+        if (options?.userStore) params.append('userStore', options.userStore);
+
+        const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/list?${params.toString()}`, {
             method: 'GET',
             cache: 'no-store',
         });
@@ -78,8 +81,6 @@ export const getExpiringSoon = async (
     try {
         const dateRange = getDateRangeFromToday(3);
 
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
-
         const params = new URLSearchParams({
             expireAtFrom: dateRange.startDate,
             expireAtTo: dateRange.endDate,
@@ -100,7 +101,7 @@ export const getExpiringSoon = async (
         params.append('expireAt', 'null');
         params.append('invalid', 'false');
 
-        const data = await fetcher(`${baseUrl}/api/common/deal/list?${params.toString()}`, {
+        const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/list?${params.toString()}`, {
             method: 'GET',
             cache: 'no-store',
         });

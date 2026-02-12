@@ -13,7 +13,7 @@ type Props = {
 export default function CommentHeader({ count, sortBy, onSortChange, showComments, onToggle }: Props) {
     return (
         <div className="flex flex-row items-center justify-between gap-4 border-b pb-4">
-            <h3 className="mb-0! text-base md:text-xl font-semibold tracking-tight">{count} Comments</h3>
+            <h3 className="mb-0! font-sans-condensed text-lg md:text-xl font-bold tracking-tight">{count} Comments</h3>
 
             <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" onClick={onToggle}>

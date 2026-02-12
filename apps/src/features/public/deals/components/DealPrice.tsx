@@ -32,7 +32,7 @@ const sizeMap: Record<DealPriceSize, SizeStyle> = {
     },
     md: {
         gap: 'gap-2',
-        price: 'text-sm md:text-md',
+        price: 'text-sm md:text-base',
         discount: 'text-md md:text-lg',
         badge: 'text-[11px] md:text-xs px-2 py-0.5',
     },
@@ -58,8 +58,8 @@ const DealPrice = ({ originalPrice, discountPrice, percentageOff, size = 'md' }:
     }
 
     return (
-        <div className="min-h-7 mb-0">
-            <div className={`flex items-center ${styles.gap}`}>
+        <div className="min-h-7 mb-0 font-sans">
+            <div className={cn('flex items-center', styles.gap)}>
                 <span className={cn('font-bold text-red-600', styles.discount)}>{formatPrice(discountPrice)}</span>
 
                 <span className={cn('line-through text-gray-400', styles.price)}>{formatPrice(originalPrice)}</span>

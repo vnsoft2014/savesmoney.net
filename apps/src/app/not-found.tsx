@@ -6,7 +6,7 @@ export default function NotFound() {
         <>
             <Header />
             <main>
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-270px)] md:min-h-[calc(100vh-229px)] bg-gray-50 text-gray-800 p-4">
+                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-229px)] text-gray-800 p-4">
                     <h1 className="text-3xl md:text-6xl font-bold mb-4">404</h1>
                     <p className="text-center text-sm md:text-lg mb-6">
                         Oops! The page you are looking for does not exist.

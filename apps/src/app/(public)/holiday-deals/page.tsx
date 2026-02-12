@@ -1,6 +1,4 @@
-import { DealsListing } from '@/features/public/deals';
-import { DealsFilters } from '@/features/public/deals/filters';
-import { Sidebar } from '@/features/public/layout';
+import { DealsFilters, DealsListing } from '@/features/public/deals';
 import { getActiveDeals, getDealTypes, getStores } from '@/services';
 import { Breadcrumb } from '@/shared/components/common';
 import { SITE } from '@/utils/site';
@@ -43,25 +41,21 @@ const Page = async ({ searchParams }: PageProps) => {
 
     return (
         <div className="container min-h-screen pb-6">
-            <div className="grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-7">
-                <main className="xl:col-span-4 lg:col-span-5 px-3">
-                    <div className="flex flex-col xl:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs md:mb-3 pt-6 pb-3">
-                        <Breadcrumb items={breadcrumbItems} />
+            <div className="px-3 pt-6 pb-10">
+                <div className="flex flex-col md:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs mb-3 md:mb-6">
+                    <Breadcrumb items={breadcrumbItems} />
 
-                        <DealsFilters showTypeFilter={true} dealTypes={dealTypes} stores={stores} />
-                    </div>
+                    <DealsFilters showTypeFilter={true} dealTypes={dealTypes} stores={stores} />
+                </div>
 
-                    <DealsListing
-                        initDealListResponse={dealListResponse}
-                        params={{
-                            holidayDeals: true,
-                        }}
-                        dealTypeName="Holiday Deals"
-                        dealTypeSlug="holiday-deals"
-                    />
-                </main>
-
-                <Sidebar />
+                <DealsListing
+                    initDealListResponse={dealListResponse}
+                    params={{
+                        holidayDeals: true,
+                    }}
+                    dealTypeName="Holiday Deals"
+                    dealTypeSlug="holiday-deals"
+                />
             </div>
         </div>
     );

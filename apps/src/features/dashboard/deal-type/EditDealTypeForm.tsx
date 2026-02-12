@@ -52,11 +52,11 @@ export default function EditDealTypeForm({ dealType }: { dealType: DealType }) {
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
                 <div className="flex items-center gap-3 mb-6">
-                    <button onClick={() => router.back()}>
+                    <Button variant="ghost" onClick={() => router.back()}>
                         <ArrowLeft />
-                    </button>
+                    </Button>
                     <h1 className="text-2xl font-bold">Edit Deal Type</h1>
                 </div>
 

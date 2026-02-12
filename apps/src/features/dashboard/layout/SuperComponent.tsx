@@ -4,10 +4,12 @@ import { RootState } from '@/store/store';
 import { useSelector } from 'react-redux';
 import CommentDataTable from '../comment/CommentDataTable';
 import DealTypeDataTable from '../deal-type/DealTypeDataTable';
+import DealDataTable from '../deal/DealDataTable';
 import OverviewData from '../overview/OverviewData';
 import Settings from '../settings/Settings';
 import StoreDataTable from '../store/StoreDataTable';
 import SubscriberDataTable from '../subscriber/SubscriberDataTable';
+import UserDealDataTable from '../user-deals/UserDealDataTable';
 import UserDataTable from '../user/UserDataTable';
 import ValidationDataTable from '../validation/ValidationDataTable';
 
@@ -31,6 +33,11 @@ export default function SuperComponent() {
             return <UserDataTable />;
         case 'activeSettings':
             return <Settings />;
+        case 'activeUserDeals':
+            return <UserDealDataTable />;
+        case 'activeDeals':
+        default:
+            return <DealDataTable />;
     }
 }
 

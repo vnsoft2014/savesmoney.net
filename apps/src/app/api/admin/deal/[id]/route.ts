@@ -77,6 +77,10 @@ const UpdateDealSchema = Joi.object({
 
     purchaseLink: Joi.string().uri().optional(),
     description: Joi.string().optional(),
+    flashDeal: Joi.boolean().optional(),
+    flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
+
+    couponCode: Joi.string().allow('').optional(),
     tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
 
     hotTrend: Joi.boolean().optional(),
@@ -97,6 +101,15 @@ const UpdateDealSchema = Joi.object({
             return helpers.error('any.invalid', {
                 message: 'Discount Price must be less than Original Price',
             });
+        }
+
+        if (value.flashDeal === true) {
+            if (!value.flashDealExpireHours || value.flashDealExpireHours <= 0) {
+                return helpers.error('any.custom', {
+                    message: 'Expiration hours is required for flash deal',
+                    path: ['flashDealExpireHours'],
+                });
+            }
         }
 
         return value;
@@ -130,6 +143,9 @@ export async function PATCH(req: Request, { params }: Props) {
             percentageOff,
             purchaseLink,
             description,
+            flashDeal,
+            flashDealExpireHours,
+            couponCode,
             tags,
             hotTrend,
             holidayDeals,
@@ -177,16 +193,31 @@ export async function PATCH(req: Request, { params }: Props) {
         if (dealType !== undefined) updateData.dealType = dealType;
         if (store !== undefined) updateData.store = store;
 
-        const finalDisableExpireAt = coupon === true || clearance === true ? true : Boolean(disableExpireAt);
-
-        if (finalDisableExpireAt === true) {
-            updateData.expireAt = null;
+        if (flashDeal !== undefined) {
+            updateData.flashDeal = flashDeal;
         }
 
-        if (finalDisableExpireAt === false && expiredDate) {
-            updateData.expireAt = expiredDate.endsWith('T23:59:59.000Z')
-                ? new Date(expiredDate)
-                : new Date(expiredDate + 'T23:59:59.000Z');
+        if (flashDeal) {
+            updateData.flashDealExpireHours = flashDealExpireHours;
+
+            updateData.disableExpireAt = false;
+
+            updateData.expireAt = new Date(Date.now() + flashDealExpireHours * 60 * 60 * 1000);
+        } else {
+            updateData.flashDealExpireHours = null;
+
+            const finalDisableExpireAt = coupon === true || clearance === true ? true : Boolean(disableExpireAt);
+
+            updateData.disableExpireAt = finalDisableExpireAt;
+
+            if (finalDisableExpireAt === true) {
+                updateData.expireAt = null;
+            } else if (expiredDate) {
+                updateData.expireAt =
+                    expiredDate.endsWith('T23:59:59.000Z') || !/^\d{4}-\d{2}-\d{2}$/.test(expiredDate)
+                        ? new Date(expiredDate)
+                        : new Date(expiredDate + 'T23:59:59.000Z');
+            }
         }
 
         if (shortDescription !== undefined) updateData.shortDescription = shortDescription;
@@ -195,6 +226,11 @@ export async function PATCH(req: Request, { params }: Props) {
         if (percentageOff !== undefined) updateData.percentageOff = percentageOff;
         if (purchaseLink !== undefined) updateData.purchaseLink = purchaseLink;
         if (description !== undefined) updateData.description = description;
+
+        if (couponCode !== undefined) {
+            updateData.couponCode = couponCode;
+        }
+
         if (tags !== undefined) updateData.tags = tags;
 
         if (hotTrend !== undefined) updateData.hotTrend = hotTrend;
@@ -203,7 +239,6 @@ export async function PATCH(req: Request, { params }: Props) {
 
         if (coupon !== undefined) updateData.coupon = coupon;
         if (clearance !== undefined) updateData.clearance = clearance;
-        if (disableExpireAt !== undefined) updateData.disableExpireAt = disableExpireAt;
 
         const updatedDeal = await Deal.findByIdAndUpdate(dealId, updateData, { new: true, runValidators: true });
 

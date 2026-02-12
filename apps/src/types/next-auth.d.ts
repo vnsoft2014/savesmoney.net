@@ -24,7 +24,7 @@ declare module 'next-auth/jwt' {
         id: string;
         role: string;
         avatar: string;
-        accessToken: string;
+        accessToken: string | null;
         accessTokenExpires: number;
         error?: 'AccessTokenExpired';
     }

@@ -49,20 +49,20 @@ export const debounceCheckDuplicate = (
         }));
 
         try {
-            const res = await checkDuplicate(shortDescription, purchaseLink);
+            const isDuplicate = await checkDuplicate(shortDescription, purchaseLink);
 
             setErrors((prev: any) => ({
                 ...prev,
                 [dealId]: {
                     ...prev?.[dealId],
                     purchaseLink: purchaseLink
-                        ? res?.isDuplicate
+                        ? isDuplicate
                             ? 'Purchase link already exists'
                             : undefined
                         : prev?.[dealId]?.purchaseLink,
 
                     shortDescription: shortDescription
-                        ? res?.isDuplicate
+                        ? isDuplicate
                             ? 'Short description already exists'
                             : undefined
                         : prev?.[dealId]?.shortDescription,

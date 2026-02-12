@@ -33,7 +33,7 @@ export default function AddDealTypeForm() {
     useEffect(() => {
         if (!name) return;
 
-        form.setValue('slug', slugify(name, { lower: true, strict: true, locale: 'vi' }));
+        form.setValue('slug', slugify(name, { lower: true, strict: true }));
     }, [name, form]);
 
     const {

@@ -1,53 +1,39 @@
 'use client';
 
-import { DealData } from '@/types';
 import Link from 'next/link';
 
-import { getDaysRemaining, getDealLabel, getDealLabelClasses } from '@/utils/deal';
+import { getDaysRemaining } from '@/utils/deal';
 
-import { cn } from '@/lib/utils';
+import { DealLabel } from '@/features/common/deal/components';
+import { DealFull } from '@/shared/types';
+import Image from 'next/image';
+import { FlashDealCountdown } from '../../deal-detail';
 import DealPrice from './DealPrice';
 
 interface PopularDealsItemProps {
-    deal: DealData;
+    deal: DealFull;
 }
 
 const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
     const daysRemaining = getDaysRemaining(deal.expireAt);
-    const label = getDealLabel(deal.coupon, deal.clearance, daysRemaining);
-    const labelClasses = getDealLabelClasses(deal.coupon, deal.clearance, daysRemaining);
 
     const dealUrl = `/deals/deal-detail/${deal.slug}-${deal._id}`;
 
     return (
-        <article className="flex p-2 bg-white rounded-sm overflow-hidden shadow">
+        <article className="flex font-sans-condensed bg-white border border-gray-200">
             {deal.image && (
-                <div className="relative flex w-20 h-full items-center overflow-hidden">
-                    <div className="relative w-full">
-                        <img
-                            src={deal.image}
-                            alt={deal.shortDescription}
-                            className="w-full h-24 object-cover"
-                            loading="lazy"
-                            width={210}
-                            height={210}
-                        />
-                        {label && (
-                            <span
-                                className={cn(
-                                    'absolute top-0 right-0 inline-flex items-center px-1 py-0 rounded-sm text-[10px] font-semibold',
-                                    labelClasses,
-                                )}
-                                aria-label={label}
-                            >
-                                {label}
-                            </span>
-                        )}
-                    </div>
+                <div className="relative w-29 bg-gray-100">
+                    <Image src={deal.image} alt={deal.shortDescription} fill className="object-cover" loading="lazy" />
+                    <DealLabel
+                        flashDeal={deal.flashDeal}
+                        coupon={deal.coupon}
+                        clearance={deal.clearance}
+                        daysRemaining={daysRemaining}
+                    />
                 </div>
             )}
 
-            <div className="flex-1 pl-2">
+            <div className="flex-1 p-2">
                 <Link
                     href={dealUrl}
                     className="min-h-10 mb-1 text-gray-800 line-clamp-2 text-sm font-semibold hover:text-orange-600 transition-colors"
@@ -55,12 +41,22 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
                     {deal.shortDescription}
                 </Link>
 
-                <DealPrice
-                    originalPrice={deal.originalPrice}
-                    discountPrice={deal.discountPrice}
-                    percentageOff={deal.percentageOff}
-                    size="xs"
-                />
+                <div className="flex">
+                    <DealPrice
+                        originalPrice={deal.originalPrice}
+                        discountPrice={deal.discountPrice}
+                        percentageOff={deal.percentageOff}
+                        size="xs"
+                    />
+                </div>
+
+                {deal.flashDeal && deal.expireAt && (
+                    <div className="py-1">
+                        <div className="inline-flex items-center gap-1 px-2 text-[13px] text-white rounded-full bg-orange-600 font-sans font-bold">
+                            <FlashDealCountdown expireAt={deal.expireAt} />
+                        </div>
+                    </div>
+                )}
 
                 <div className="flex justify-between items-center mt-1">
                     <div className="flex items-center gap-2">

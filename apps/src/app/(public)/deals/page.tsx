@@ -1,8 +1,5 @@
-import { DealsListing } from '@/features/public/deals';
-import { DealsFilters } from '@/features/public/deals/filters';
-import { Sidebar } from '@/features/public/layout';
-import { getActiveDeals, getStores } from '@/services';
-import { getDealTypes } from '@/services/admin/deal-type';
+import { DealsFilters, DealsListing } from '@/features/public/deals';
+import { getActiveDeals, getDealTypes, getStores } from '@/services';
 import { Breadcrumb } from '@/shared/components/common';
 import { SITE } from '@/utils/site';
 import { FileText, Home } from 'lucide-react';
@@ -43,24 +40,20 @@ const Page = async (props: Props) => {
     ];
 
     return (
-        <div className="container min-h-screen pb-6">
-            <div className="grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-7">
-                <main className="xl:col-span-4 lg:col-span-5 px-3">
-                    <div className="flex flex-col xl:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs md:mb-3 pt-6 pb-3">
-                        <Breadcrumb items={breadcrumbItems} />
+        <div className="container min-h-screen">
+            <div className="px-3 pt-6 pb-10">
+                <div className="flex flex-col md:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs mb-3 md:mb-6">
+                    <Breadcrumb items={breadcrumbItems} />
 
-                        <DealsFilters showTypeFilter={true} dealTypes={dealTypes} stores={stores} />
-                    </div>
+                    <DealsFilters dealTypes={dealTypes} stores={stores} />
+                </div>
 
-                    <DealsListing
-                        initDealListResponse={dealListResponse}
-                        dealTypeName="Deals"
-                        dealTypeSlug="deals"
-                        params={{}}
-                    />
-                </main>
-
-                <Sidebar />
+                <DealsListing
+                    initDealListResponse={dealListResponse}
+                    dealTypeName="Deals"
+                    dealTypeSlug="deals"
+                    params={{}}
+                />
             </div>
         </div>
     );

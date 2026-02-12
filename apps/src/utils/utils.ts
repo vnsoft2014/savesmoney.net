@@ -47,6 +47,11 @@ export const toDateInputValue = (iso?: string | null) => {
     return iso.split('T')[0];
 };
 
+export function toDatetimeLocal(value?: string | null) {
+    if (!value) return '';
+    return new Date(value).toISOString().slice(0, 16);
+}
+
 export const fetcher = async (url: string, options: RequestInit = {}) => {
     const res = await fetch(url, {
         ...options,

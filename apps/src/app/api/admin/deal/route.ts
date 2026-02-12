@@ -64,6 +64,9 @@ const ClientDealSchema = Joi.object({
 
     purchaseLink: Joi.string().uri().required(),
     description: Joi.string().required(),
+    flashDeal: Joi.boolean().optional(),
+    flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
+    couponCode: Joi.string().allow('').optional(),
     tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
 
     hotTrend: Joi.boolean().default(false),
@@ -79,6 +82,16 @@ const ClientDealSchema = Joi.object({
             message: 'Discount Price must be less than Original Price',
         });
     }
+
+    if (value.flashDeal === true) {
+        if (!value.flashDealExpireHours || value.flashDealExpireHours <= 0) {
+            return helpers.error('any.custom', {
+                message: 'Expiration hours is required for flash deal',
+                path: ['flashDealExpireHours'],
+            });
+        }
+    }
+
     return value;
 });
 
@@ -157,15 +170,32 @@ export async function POST(req: Request) {
         }
 
         const dealsToSave = data.map((deal) => {
-            const finalDisableExpireAt =
-                deal.coupon === true || deal.clearance === true ? true : Boolean(deal.disableExpireAt);
+            const { disableExpireAt, flashDeal, flashDealExpireHours, coupon, clearance } = deal;
+
+            let expireAt = null;
+
+            if (flashDeal) {
+                deal.disableExpireAt = false;
+                expireAt = new Date(Date.now() + flashDealExpireHours! * 60 * 60 * 1000);
+            } else {
+                const finalDisableExpireAt = coupon === true || clearance === true ? true : Boolean(disableExpireAt);
+
+                deal.flashDealExpireHours = null;
+                deal.disableExpireAt = finalDisableExpireAt;
+
+                if (finalDisableExpireAt === true) {
+                    expireAt = null;
+                } else if (deal.expireAt) {
+                    expireAt = new Date(deal.expireAt + 'T23:59:59.000Z');
+                }
+            }
 
             return {
                 image: deal.picture ?? null,
                 dealType: deal.dealType,
                 store: deal.store,
 
-                expireAt: finalDisableExpireAt ? null : new Date(deal.expireAt + 'T23:59:59.000Z'),
+                expireAt,
 
                 shortDescription: deal.shortDescription,
                 originalPrice: deal.originalPrice,
@@ -173,6 +203,9 @@ export async function POST(req: Request) {
                 percentageOff: deal.percentageOff,
                 purchaseLink: deal.purchaseLink,
                 description: deal.description,
+                flashDeal,
+                flashDealExpireHours: deal.flashDealExpireHours,
+                couponCode: deal.couponCode,
                 tags: deal.tags ?? [],
 
                 hotTrend: deal.hotTrend ?? false,
@@ -200,7 +233,7 @@ export async function POST(req: Request) {
             { status: 200 },
         );
     } catch (err) {
-        console.error('Add deal error:', err);
+        console.log(err);
         return NextResponse.json(
             {
                 success: false,

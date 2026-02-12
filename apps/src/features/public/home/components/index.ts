@@ -1,2 +1,2 @@
-export { default as DealsGrid } from './DealsGrid';
+export { default as DealsListing } from './DealsListing';
 export { default as DealTypesGrid } from './DealTypesGrid';

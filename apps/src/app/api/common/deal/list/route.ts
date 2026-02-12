@@ -24,6 +24,9 @@ const querySchema = Joi.object({
     holidayDeals: Joi.boolean().optional(),
     seasonalDeals: Joi.boolean().optional(),
     invalid: Joi.boolean().optional(),
+    author: Joi.string().allow('').optional(),
+    userStore: Joi.string().allow('').optional(),
+    source: Joi.string().valid('admin', 'user').optional(),
     populate: Joi.string().valid('true', 'false').default('true'),
 });
 
@@ -64,6 +67,9 @@ export async function GET(req: Request) {
             holidayDeals,
             seasonalDeals,
             invalid,
+            author,
+            source,
+            userStore,
             populate,
         } = validatedQuery;
 
@@ -98,11 +104,11 @@ export async function GET(req: Request) {
         if (expireAtFrom || expireAtTo) {
             const rangeFilter: any = {};
             if (expireAtFrom) {
-                const fromDate = new Date(`${expireAtFrom}T00:00:00.000Z`);
+                const fromDate = new Date(expireAtFrom);
                 if (!isNaN(fromDate.getTime())) rangeFilter.$gte = fromDate;
             }
             if (expireAtTo) {
-                const toDate = new Date(`${expireAtTo}T23:59:59.999Z`);
+                const toDate = new Date(expireAtTo);
                 if (!isNaN(toDate.getTime())) rangeFilter.$lte = toDate;
             }
 
@@ -141,9 +147,25 @@ export async function GET(req: Request) {
             }
 
             if (invalid === false) {
-                filter.$or = [{ invalid: false }, { invalid: { $exists: false } }];
+                //filter.$or = [{ invalid: false }, { invalid: { $exists: false } }];
             }
         }
+
+        if (author && mongoose.Types.ObjectId.isValid(author)) {
+            filter.author = new mongoose.Types.ObjectId(author);
+        }
+
+        if (userStore && mongoose.Types.ObjectId.isValid(userStore)) {
+            filter.userStore = new mongoose.Types.ObjectId(userStore);
+        }
+
+        if (source) {
+            filter.source = source;
+        }
+
+        filter.status = 'published';
+
+        console.log(filter);
 
         let query = Deal.find(filter)
             .sort({ [sortField]: sortOrder })
