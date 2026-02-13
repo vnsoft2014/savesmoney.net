@@ -1,4 +1,4 @@
-import { ExportConfig, Exporter } from '@/features/dashboard/export/types/export';
+import { ExportConfig, Exporter } from '@/shared/types';
 import { Model } from 'mongoose';
 import * as XLSX from 'xlsx';
 

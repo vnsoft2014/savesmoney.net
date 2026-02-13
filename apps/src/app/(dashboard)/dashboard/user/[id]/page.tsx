@@ -1,4 +1,4 @@
-import { EditUserForm } from '@/features/dashboard/user/components';
+import EditUserForm from '@/features/dashboard/user/EditUserForm';
 import { getUserById } from '@/services/admin/user';
 import { notFound } from 'next/navigation';
 

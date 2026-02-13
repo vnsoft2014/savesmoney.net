@@ -28,7 +28,7 @@ const DesktopPage = async ({ dealListResponse, dealTypes, stores }: Props) => {
                         <div className="flex flex-col md:flex-row justify-center md:justify-between items-center text-sm breadcrumbs mb-4">
                             <h3 className="text-lg lg:text-xl font-bold">All The Deals</h3>
 
-                            <DealsFilters showTypeFilter={true} dealTypes={dealTypes} stores={stores} />
+                            <DealsFilters dealTypes={dealTypes} stores={stores} />
                         </div>
 
                         <DealsListing initDealListResponse={dealListResponse} />

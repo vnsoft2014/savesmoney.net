@@ -1,13 +1,12 @@
 'use client';
 
+import { Pagination } from '@/features/common';
+import { searchDeals } from '@/services';
+import { Loading } from '@/shared/components/common';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-
-import { searchDeals } from '@/services/common/deal';
-import Loading from '../../../shared/components/common/Loading';
-import { DealCard } from '../../common';
-import Pagination from '../../common/Pagination';
-import NoDeals from '../deals/components/NoDeals';
+import { NoDeals } from '../deals';
+import { DealCard } from '../deals/components';
 
 type SearchsContentProps = {
     initialDealsData?: any;
@@ -95,7 +94,7 @@ const SearchsContent = ({
                 totalPages={dealsData.pagination.totalPages}
                 hasNextPage={dealsData.pagination.hasNextPage}
                 hasPrevPage={dealsData.pagination.hasPrevPage}
-                onPageChange={handlePageChange}
+                basePath="/search"
             />
         </>
     );

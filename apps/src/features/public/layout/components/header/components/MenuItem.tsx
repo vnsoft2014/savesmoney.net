@@ -1,10 +1,10 @@
 'use client';
 
 import { Button } from '@/shared/shadecn/ui/button';
-import { MenuLink } from '@/shared/types';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { memo, useCallback, useState } from 'react';
+import { MenuLink } from '../types';
 
 interface Props {
     item: MenuLink;

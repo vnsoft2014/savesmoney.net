@@ -80,7 +80,7 @@ export default function DealPopup() {
 
             setTimeout(() => setShowPopup(false), 5000);
         } catch (err: any) {
-            toast.error(err.message || INTERNAL_SERVER);
+            toast.error(err.message || 'Subscribe failed!');
         } finally {
             setIsLoading(false);
         }

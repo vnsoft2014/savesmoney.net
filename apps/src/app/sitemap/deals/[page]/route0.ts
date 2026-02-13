@@ -1,16 +1,18 @@
-import { notFound } from 'next/navigation';
 import { getDealsSitemapJson } from '@/services/sitemap';
-import { PagePropsWithSlug, SitemapItem } from '@/shared/types';
+import { SitemapItem } from '@/shared/types';
 import { generateSitemapXml } from '@/utils/seo';
+import { notFound } from 'next/navigation';
+import { NextRequest } from 'next/server';
 
-export async function GET(_: Request, { params }: PagePropsWithSlug) {
-    const { page } = await params;
+export async function GET(_: NextRequest, context: { params: Promise<{ page: string }> }) {
+    const { page } = await context.params;
 
     if (!page) {
         return notFound();
     }
 
-    const pageNum = parseInt(String(page), 10);
+    const pageNum = parseInt(page, 10);
+
     if (isNaN(pageNum) || pageNum < 1) {
         return notFound();
     }

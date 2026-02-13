@@ -1,13 +1,13 @@
 import SearchsContent from '@/features/public/deal-detail/SearchsContent';
 import DealsFilters from '@/features/public/deals/DealsFilters';
 import Sidebar from '@/features/public/layout/Sidebar';
-import { getDealTypes } from '@/services/admin/deal-type';
-import { getStores } from '@/services/admin/store';
-import { searchDeals } from '@/services/common/deal';
+import { getDealTypes, getStores, searchDeals } from '@/services';
 import Breadcrumb from '@/shared/components/common/Breadcrumb';
 import { SITE } from '@/utils/site';
 import { FileText, Home } from 'lucide-react';
 import { Metadata } from 'next';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
     title: `Search | ${SITE.name}`,
@@ -53,7 +53,7 @@ const Page = async ({ searchParams }: PageProps) => {
                     <div className="flex flex-col xl:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs md:mb-3 py-3">
                         <Breadcrumb items={breadcrumbItems} />
 
-                        <DealsFilters showTypeFilter={true} dealTypes={dealTypes.data} stores={stores.data} />
+                        <DealsFilters dealTypes={dealTypes} stores={stores} />
                     </div>
 
                     <SearchsContent

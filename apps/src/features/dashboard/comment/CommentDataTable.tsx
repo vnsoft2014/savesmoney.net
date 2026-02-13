@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 
 import Loading from '@/shared/components/common/Loading';
-import { CommentData } from '@/types';
+import { Comment } from '@/shared/types';
 import { fetcherWithAuth } from '@/utils/utils';
 import Link from 'next/link';
 import { deleteComment, updateApprove } from './services';
@@ -28,7 +28,7 @@ function ApproveSwitch({ checked, onChange }: { checked: boolean; onChange: (val
     );
 }
 
-export default function CommentDataTable() {
+export default function CommentTable() {
     const router = useRouter();
     const { mutate } = useSWRConfig();
 
@@ -67,7 +67,7 @@ export default function CommentDataTable() {
         revalidateOnFocus: false,
     });
 
-    const comments: CommentData[] = data?.data || [];
+    const comments: Comment[] = data?.data || [];
     const pagination = data?.pagination || {
         total: 0,
         page: 1,
@@ -85,7 +85,7 @@ export default function CommentDataTable() {
         }
     };
 
-    const handleToggleApprove = async (row: CommentData) => {
+    const handleToggleApprove = async (row: Comment) => {
         const res = await updateApprove(row._id, !row.isApproved);
 
         if (res?.success) {
@@ -99,13 +99,13 @@ export default function CommentDataTable() {
     const columns = [
         {
             name: 'Name',
-            selector: (row: CommentData) => row.content,
+            selector: (row: Comment) => row.content,
             sortable: true,
             sortField: 'name',
         },
         {
             name: 'Deal',
-            cell: (row: CommentData) =>
+            cell: (row: Comment) =>
                 row.deal && typeof row.deal === 'object' ? (
                     <Link href={`/deals/deal-detail/${row.deal._id}`}>{row.deal.shortDescription}</Link>
                 ) : (
@@ -114,7 +114,7 @@ export default function CommentDataTable() {
         },
         {
             name: 'User',
-            cell: (row: CommentData) =>
+            cell: (row: Comment) =>
                 row.user && typeof row.user === 'object' ? (
                     <Link href={`/dashboard/user/${row.user._id}`}>{row.user.name}</Link>
                 ) : (
@@ -124,13 +124,13 @@ export default function CommentDataTable() {
         {
             name: 'Approved',
             center: true,
-            cell: (row: CommentData) => (
+            cell: (row: Comment) => (
                 <ApproveSwitch checked={row.isApproved} onChange={() => handleToggleApprove(row)} />
             ),
         },
         {
             name: 'Action',
-            cell: (row: CommentData) => (
+            cell: (row: Comment) => (
                 <div className="flex gap-2">
                     <button
                         onClick={() => router.push(`/dashboard/comment/${row._id}`)}

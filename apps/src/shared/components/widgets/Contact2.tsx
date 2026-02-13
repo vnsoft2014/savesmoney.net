@@ -13,7 +13,7 @@ import ContactSchema from '../../seo/ContactSchema';
 const Contact2 = () => {
     const { header, form } = contact2Contact;
 
-    const settings = useSelector((state: RootState) => state.FrontendNav.settings) as SettingsForm;
+    const settings = useSelector((state: RootState) => state.frontendNav.settings) as SettingsForm;
 
     const socials = settings?.socialLinks;
 

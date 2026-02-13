@@ -21,7 +21,7 @@ import { DealAlertForm as DealAlertFormType, dealAlertSchema } from './schemas/D
 const CHANNELS = ['email'] as const;
 
 const DealAlert = () => {
-    const user = useSelector((state: RootState) => state.User.userData) as User | null;
+    const user = useSelector((state: RootState) => state.user.userData) as User | null;
 
     const token = Cookies.get('token');
     const isSignin = !!(token && user);

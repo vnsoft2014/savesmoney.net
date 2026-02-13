@@ -45,7 +45,7 @@ const Page = async (props: Props) => {
                 <div className="flex flex-col md:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs mb-3 md:mb-6">
                     <Breadcrumb items={breadcrumbItems} />
 
-                    <DealsFilters showTypeFilter={true} dealTypes={dealTypes} stores={stores} />
+                    <DealsFilters dealTypes={dealTypes} stores={stores} />
                 </div>
 
                 <ExpiringListing initDealListResponse={dealListResponse} />

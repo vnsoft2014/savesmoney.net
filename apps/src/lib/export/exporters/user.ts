@@ -1,4 +1,4 @@
-import { Exporter } from '@/features/dashboard/export/types/export';
+import { Exporter } from '@/shared/types';
 
 export const userExporter: Exporter<any> = {
     headers: ['No', 'Name', 'Email'],

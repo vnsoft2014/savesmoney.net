@@ -1,11 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
-import { UserData } from '@/types';
+import { User } from '@/types';
 import { getInitials } from '@/utils/utils';
 import { Mail } from 'lucide-react';
 import { memo } from 'react';
 
 interface Props {
-    user: UserData | null;
+    user: User | null;
 }
 
 const UserProfile = ({ user }: Props) => {

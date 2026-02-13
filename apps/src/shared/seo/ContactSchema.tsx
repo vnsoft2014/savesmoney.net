@@ -1,12 +1,12 @@
-import { createContactSchema, mapSocialLinks } from '@/utils/seo';
-import SchemaOrg from './SchemaOrg';
-import { SettingsForm } from '@/types/settings';
 import { RootState } from '@/store/store';
-import { useSelector } from 'react-redux';
+import { SettingsForm } from '@/types/settings';
+import { createContactSchema, mapSocialLinks } from '@/utils/seo';
 import { SITE } from '@/utils/site';
+import { useSelector } from 'react-redux';
+import SchemaOrg from './SchemaOrg';
 
 export default function ContactSchema() {
-    const settings = useSelector((state: RootState) => state.FrontendNav.settings) as SettingsForm;
+    const settings = useSelector((state: RootState) => state.frontendNav.settings) as SettingsForm;
 
     const socialLinks = mapSocialLinks(settings?.socialLinks);
 

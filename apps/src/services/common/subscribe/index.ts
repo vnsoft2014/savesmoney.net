@@ -1,3 +1,5 @@
+import { fetcher } from '@/utils/utils';
+
 type SubscribePayload = {
     [key: string]: any;
 };
@@ -8,7 +10,7 @@ export const subscribeDeal = async (
     isRegisteredUser?: boolean,
     source: string = 'popup',
 ) => {
-    const res = await fetch('/api/deal-subscribers/subscribe', {
+    const data = await fetcher('/api/deal-subscribers/subscribe', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -20,7 +22,6 @@ export const subscribeDeal = async (
             source,
         }),
     });
-    const data = await res.json();
 
     if (!data.subscribed) {
         throw new Error(data.message);

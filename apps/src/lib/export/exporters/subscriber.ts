@@ -1,4 +1,4 @@
-import { Exporter } from '@/features/dashboard/export/types/export';
+import { Exporter } from '@/shared/types';
 import { formatDate } from '@/utils/utils';
 
 export const subscriberExporter: Exporter<any> = {

@@ -85,7 +85,6 @@ const Form = ({
 
             toast.success('Message sent successfully!');
         } catch (error) {
-            toast.error(INTERNAL_SERVER);
         } finally {
             setIsSubmitting(false);
         }

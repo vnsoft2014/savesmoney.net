@@ -50,7 +50,7 @@ const SubscribeBox = () => {
 
             form.reset();
         } catch (err: any) {
-            toast.error(err.message || INTERNAL_SERVER);
+            toast.error(err.message || 'Subscribe failed!');
         } finally {
             setLoading(false);
         }

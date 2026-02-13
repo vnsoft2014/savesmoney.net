@@ -25,6 +25,7 @@ export type DealFormValues = {
     coupon: boolean;
     clearance: boolean;
     disableExpireAt: boolean;
+    author: string;
 };
 
 export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
