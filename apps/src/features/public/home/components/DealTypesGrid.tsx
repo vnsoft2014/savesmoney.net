@@ -12,8 +12,8 @@ const DealTypesGrid = ({ dealTypes }: Props) => {
             <h3 className="hidden md:block md:text-lg lg:text-xl font-bold">All Deal Types</h3>
 
             <div className="bg-white mt-5 py-3 md:py-4">
-                <div id="deal-types" className="md:max-h-80 overflow-y-auto scroll-smooth">
-                    <div className="grid grid-cols-4 xl:grid-cols-10 lg:grid-cols-8 md:grid-cols-6 gap-3 md:gap-6">
+                <div id="deal-types" className="md:max-h-90 overflow-y-auto scroll-smooth">
+                    <div className="grid grid-cols-4 xl:grid-cols-10 lg:grid-cols-8 md:grid-cols-6 gap-3 md:gap-6 px-3">
                         {dealTypes.map((dealType) => (
                             <Link
                                 key={dealType._id}
