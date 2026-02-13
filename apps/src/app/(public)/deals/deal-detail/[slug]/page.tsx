@@ -138,8 +138,8 @@ const Page = async ({ params }: Props) => {
                                     <div className="absolute bottom-0 left-0 right-0">
                                         {deal.flashDeal && deal.expireAt && (
                                             <div className="py-1 bg-orange-600">
-                                                <div className="flex justify-center items-center gap-1 text-base md:text-lg text-white font-sans-condensed font-bold">
-                                                    <span className="inline-block mr-2">Ends in</span>
+                                                <div className="flex justify-center items-center gap-2 text-base md:text-lg text-white font-sans-condensed font-bold">
+                                                    <span className="inline-block">Ends in</span>
                                                     <FlashDealCountdown expireAt={deal.expireAt} />
                                                 </div>
                                             </div>

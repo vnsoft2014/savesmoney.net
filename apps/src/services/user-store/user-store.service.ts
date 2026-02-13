@@ -17,17 +17,17 @@ export const getUserStoreById = async (id: string) => {
 };
 
 export const getUserStore = async () => {
-    const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/`, {
+    const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store`, {
         method: 'GET',
     });
 
     return data;
 };
 
-export const getUserStores = async (page: number) => {
+export const getUserStores = async (sort: string, page: number) => {
     try {
         const data = await fetcher(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/list?page=${page}&limit=30`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/list?sort=${sort}&page=${page}&limit=30`,
             {
                 method: 'GET',
                 cache: 'no-store',

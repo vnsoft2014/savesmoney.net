@@ -1,11 +1,13 @@
+import { Badge } from '@/shared/shadecn/ui/badge';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent } from '@/shared/shadecn/ui/card';
-import { ExternalLink, Settings, Wallet } from 'lucide-react';
+import { UserStore } from '@/shared/types';
+import { AlertCircle, CheckCircle, ExternalLink, Settings, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 type Props = {
-    store: any;
+    store: UserStore;
 };
 
 export default function StoreProfile({ store }: Props) {
@@ -29,19 +31,52 @@ export default function StoreProfile({ store }: Props) {
 
                 <CardContent className="p-4 lg:p-8">
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-                        <div>
+                        <div className="text-center">
                             <Image
                                 src={store.logo || '/image.png'}
                                 alt={store.name}
                                 width={160}
                                 height={160}
-                                className="w-24 h-24 lg:w-40 lg:h-40 rounded object-cover border shadow-sm"
+                                className="w-44 h-44 lg:w-60 lg:h-60 mx-auto rounded object-cover border shadow-sm"
                             />
+                            <div className="flex flex-wrap justify-center gap-3 mx-auto pt-6">
+                                <Button variant="outline" className="rounded-xl" asChild>
+                                    <Link
+                                        href={`/sm-stores/${store.slug}-${store._id}`}
+                                        prefetch={false}
+                                        className="inline-flex items-center"
+                                    >
+                                        <ExternalLink className="w-4 h-4 mr-2" />
+                                        View Live Store
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
 
                         <div className="flex-1 text-center md:text-left space-y-6">
                             <div>
-                                <h1 className="text-2xl lg:text-3xl font-bold tracking-tight">{store.name}</h1>
+                                <div className="flex items-center gap-3 justify-center md:justify-start">
+                                    <h1 className="mb-0! text-2xl lg:text-3xl font-sans-condensed font-bold tracking-tight">
+                                        {store.name}
+                                    </h1>
+
+                                    <Badge
+                                        variant={store.isActive ? 'default' : 'destructive'}
+                                        className="rounded-lg px-3 py-1 text-xs text-white"
+                                    >
+                                        {store.isActive ? (
+                                            <span className="flex items-center gap-1">
+                                                <CheckCircle className="w-3 h-3" />
+                                                Active
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-1">
+                                                <AlertCircle className="w-3 h-3" />
+                                                Inactive
+                                            </span>
+                                        )}
+                                    </Badge>
+                                </div>
 
                                 <p className="text-muted-foreground mt-2 max-w-xl text-sm">
                                     {store.description || 'No description provided for this store.'}
@@ -74,18 +109,14 @@ export default function StoreProfile({ store }: Props) {
                                 </div>
                             </div>
 
-                            <div className="flex flex-wrap justify-center md:justify-start gap-3 pt-2">
-                                <Button variant="outline" className="rounded-xl" asChild>
-                                    <Link
-                                        href={`/sm-stores/${store.slug}-${store._id}`}
-                                        prefetch={false}
-                                        className="inline-flex items-center"
-                                    >
-                                        <ExternalLink className="w-4 h-4 mr-2" />
-                                        View Live Store
-                                    </Link>
-                                </Button>
-                            </div>
+                            {!store.isActive && (
+                                <div className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-3 rounded-xl border border-red-200">
+                                    <AlertCircle className="w-4 h-4" />
+                                    <span className="text-sm">
+                                        This store is inactive. Adding new deals is currently disabled.
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </CardContent>

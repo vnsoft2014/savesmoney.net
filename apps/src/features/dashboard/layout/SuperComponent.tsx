@@ -9,7 +9,8 @@ import OverviewData from '../overview/OverviewData';
 import Settings from '../settings/Settings';
 import StoreDataTable from '../store/StoreDataTable';
 import SubscriberDataTable from '../subscriber/SubscriberDataTable';
-import UserDealDataTable from '../user-deals/UserDealDataTable';
+import UserDealDataTable from '../user-store/UserDealsDataTable';
+import UserStoreDataTable from '../user-store/UserStoreDataTable';
 import UserDataTable from '../user/UserDataTable';
 import ValidationDataTable from '../validation/ValidationDataTable';
 
@@ -35,6 +36,8 @@ export default function SuperComponent() {
             return <Settings />;
         case 'activeUserDeals':
             return <UserDealDataTable />;
+        case 'activeUserStores':
+            return <UserStoreDataTable />;
         case 'activeDeals':
         default:
             return <DealDataTable />;

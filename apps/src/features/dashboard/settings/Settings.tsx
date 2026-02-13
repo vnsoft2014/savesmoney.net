@@ -81,10 +81,10 @@ export default function Settings() {
     if (loading) return <Loading />;
 
     return (
-        <div className="max-w-2xl mx-auto bg-white p-6">
+        <div className="max-w-3xl mx-auto bg-white p-6">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                    <section>
+                    <section className="space-y-4">
                         <h2 className="text-xl font-semibold mb-4">Website Info</h2>
 
                         <FormField
@@ -116,8 +116,7 @@ export default function Settings() {
                         />
                     </section>
 
-                    {/* Menu */}
-                    <section>
+                    <section className="space-y-4">
                         <h2 className="text-xl font-semibold mb-4">Menu</h2>
 
                         <FormField
@@ -147,8 +146,7 @@ export default function Settings() {
                         />
                     </section>
 
-                    {/* Admin */}
-                    <section>
+                    <section className="space-y-4">
                         <h2 className="text-xl font-semibold mb-4">Admin Info</h2>
 
                         <FormField
@@ -166,8 +164,7 @@ export default function Settings() {
                         />
                     </section>
 
-                    {/* Social Links */}
-                    <section>
+                    <section className="space-y-4">
                         <h2 className="text-xl font-semibold mb-4">Social Links</h2>
 
                         {(Object.keys(form.watch('socialLinks')) as Array<keyof SettingsFormType['socialLinks']>).map(

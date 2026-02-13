@@ -1,8 +1,10 @@
 'use client';
 
 import {
+    Atom,
     BarChart3,
     Bell,
+    BrickWall,
     Home,
     LayoutDashboard,
     MessageCircle,
@@ -11,6 +13,7 @@ import {
     Settings,
     Store,
     Tags,
+    User,
 } from 'lucide-react';
 import Link from 'next/link';
 import { memo, useCallback } from 'react';
@@ -26,6 +29,7 @@ type NavItem = {
     activeKey?: string;
     href?: string;
     role?: 'admin';
+    children?: NavItem[];
 };
 
 const NAV_ITEMS: NavItem[] = [
@@ -40,23 +44,38 @@ const NAV_ITEMS: NavItem[] = [
         label: 'Deals',
         icon: <Package size={20} className="mx-2 text-blue-500" />,
         activeKey: 'activeDeals',
+        children: [
+            {
+                key: 'add-deal',
+                label: 'Add Deal',
+                icon: <PlusCircle size={20} className="mx-2 text-blue-500" />,
+                href: '/dashboard/deal/add',
+            },
+        ],
     },
     {
-        key: 'add-deal',
-        label: 'Add Deals',
-        icon: <PlusCircle size={20} className="mx-2 text-blue-500" />,
-        href: '/dashboard/deal/add',
-    },
-    {
-        key: 'user deals',
-        label: 'User Deals',
-        icon: <Package size={20} className="mx-2 text-blue-500" />,
-        activeKey: 'activeUserDeals',
+        key: 'user-store',
+        label: 'User Store',
+        icon: <Store size={20} className="mx-2 text-blue-500" />,
+        children: [
+            {
+                key: 'user-stores',
+                label: 'All Stores',
+                icon: <BrickWall size={18} className="mx-2 text-blue-500" />,
+                activeKey: 'activeUserStores',
+            },
+            {
+                key: 'user-deals',
+                label: 'Deals',
+                icon: <Package size={18} className="mx-2 text-blue-500" />,
+                activeKey: 'activeUserDeals',
+            },
+        ],
     },
     {
         key: 'deal-verification',
         label: 'Deal Validations',
-        icon: <Package size={20} className="mx-2 text-blue-500" />,
+        icon: <Atom size={20} className="mx-2 text-blue-500" />,
         activeKey: 'activeDealVerification',
     },
     {
@@ -89,7 +108,7 @@ const NAV_ITEMS: NavItem[] = [
     {
         key: 'users',
         label: 'Users',
-        icon: <Package size={20} className="mx-2 text-blue-500" />,
+        icon: <User size={20} className="mx-2 text-blue-500" />,
         activeKey: 'activeUsers',
         role: 'admin',
     },
@@ -111,18 +130,36 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
     );
 
     return (
-        <li className="py-3 px-1 mb-3">
+        <li className="mb-2">
             {item.href ? (
-                <Link href={item.href} className="flex items-center justify-center">
+                <Link href={item.href} className="flex items-center py-3 px-2">
                     {content}
                 </Link>
-            ) : (
+            ) : item.activeKey ? (
                 <button
-                    onClick={() => item.activeKey && onClick(item.activeKey)}
-                    className="flex items-center justify-center"
+                    onClick={() => onClick(item.activeKey!)}
+                    className="flex items-center py-3 px-2 w-full text-left"
                 >
                     {content}
                 </button>
+            ) : (
+                <div className="flex items-center py-3 px-2 font-semibold">{content}</div>
+            )}
+
+            {item.children && (
+                <ul className="ml-6 border-l border-gray-200 pl-3">
+                    {item.children.map((child) => (
+                        <li key={child.key} className="py-2">
+                            <button
+                                onClick={() => child.activeKey && onClick(child.activeKey)}
+                                className="flex items-center w-full text-sm"
+                            >
+                                {child.icon}
+                                {child.label}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
             )}
         </li>
     );
@@ -140,7 +177,7 @@ export default function AdminSidebar() {
     );
 
     return (
-        <aside className="w-60 hidden md:block bg-white h-full dark:text-black">
+        <aside className="w-70 h-full hidden md:block bg-white dark:text-black overflow-y-auto">
             <div className="w-full flex items-center py-2 px-2 h-20 gap-3">
                 <Link href="/" className="flex items-center justify-center">
                     <Home size={30} className="mx-2 text-blue-500" />

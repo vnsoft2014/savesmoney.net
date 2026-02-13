@@ -57,7 +57,7 @@ export function useIdleLogout(onLogout: () => void, enabled: boolean = true) {
                 const diff = Date.now() - Number(lastActive);
 
                 if (diff >= IDLE_TIME + LOGOUT_DELAY) {
-                    //onLogout();
+                    onLogout();
                 } else {
                     setShowPopup(false);
 

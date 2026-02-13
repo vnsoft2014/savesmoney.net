@@ -72,7 +72,7 @@ export async function GET(req: Request) {
             Validation.find(validationMatch)
                 .populate({
                     path: 'deal',
-                    select: 'image shortDescription expireAt purchaseLink invalid',
+                    select: 'image shortDescription expireAt purchaseLink status',
                     match: dealMatch,
                 })
                 .sort({ marked: 1 })

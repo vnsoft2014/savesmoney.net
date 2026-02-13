@@ -102,7 +102,7 @@ export default function ValidationDataTable() {
         {
             name: 'Valid',
             cell: (row: ValidationData) => {
-                const invalid = row.deal.invalid;
+                const invalid = row.deal.status !== 'published';
                 const expireAt = row.deal.expireAt ? new Date(row.deal.expireAt) : null;
 
                 const now = new Date();

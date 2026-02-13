@@ -21,17 +21,16 @@ const StoresListings = ({ initStoreListResponse, storeName, storeSlug }: Props) 
 
     const page = Number(searchParams.get('page')) || 1;
 
-    const storeTypeFilter = searchParams.get('storeType') || '';
-    const storeFilter = searchParams.get('store') || '';
+    const sortFilter = searchParams.get('sort') || '';
 
     const isInitialState = useMemo(() => {
-        return page === 1 && !storeTypeFilter && !storeFilter;
-    }, [page, storeTypeFilter, storeFilter]);
+        return page === 1 && !sortFilter;
+    }, [page, sortFilter]);
 
-    const swrKey = useMemo(() => ['stores', page] as const, [page]);
+    const swrKey = useMemo(() => ['stores', sortFilter, page] as const, [sortFilter, page]);
 
-    const fetchUserStores = useCallback(async ([, newPage]: readonly [string, number]) => {
-        return getUserStores(newPage);
+    const fetchUserStores = useCallback(async ([, sort, newPage]: readonly [string, string, number]) => {
+        return getUserStores(sort, newPage);
     }, []);
 
     const { data: response, isValidating } = useSWR(swrKey, fetchUserStores, {

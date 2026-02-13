@@ -1,3 +1,4 @@
+import StoreFilter from '@/features/dashboard/user-store/StoreFilter';
 import { StoresListing } from '@/features/public/sm-stores';
 import { getUserStores } from '@/services/user-store';
 import { Breadcrumb } from '@/shared/components/common';
@@ -16,11 +17,10 @@ interface Props {
 const Page = async (props: Props) => {
     const searchParams = await props.searchParams;
 
-    const initialDealType = typeof searchParams?.dealType === 'string' ? searchParams.dealType : '';
-    const initialStore = typeof searchParams?.store === 'string' ? searchParams.store : '';
+    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'newest';
     const pageNum = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
 
-    const storeListResponse = await getUserStores(pageNum);
+    const storeListResponse = await getUserStores(initialSort, pageNum);
 
     const breadcrumbItems = [
         {
@@ -40,6 +40,8 @@ const Page = async (props: Props) => {
             <div className="px-3 pt-6 pb-10">
                 <div className="flex flex-col md:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs mb-3 md:mb-6">
                     <Breadcrumb items={breadcrumbItems} />
+
+                    <StoreFilter />
                 </div>
 
                 <StoresListing

@@ -1,14 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit';
 
 interface UserState {
-    userData: {} | null,
-    userToken: string | null,
+    userData: {} | null;
+    userToken: string | null;
 }
 
 const initialState: UserState = {
     userData: null,
     userToken: null,
-}
+};
 
 export const userSlice = createSlice({
     name: 'User',
@@ -19,10 +19,10 @@ export const userSlice = createSlice({
         },
         setUserToken: (state, actions) => {
             state.userToken = actions.payload;
-        }
-    }
+        },
+    },
 });
 
 export const { setUserData, setUserToken } = userSlice.actions;
 
-export const UserReducer = userSlice.reducer;
+export const userReducer = userSlice.reducer;

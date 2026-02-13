@@ -3,9 +3,9 @@
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Button } from '@/shared/shadecn/ui/button';
-import { fetcherWithAuth } from '@/utils/utils';
 import { useRouter } from 'next/navigation';
 import { memo, useCallback, useEffect, useState } from 'react';
+import { likeAsGuest, likeAsUser } from '../services';
 
 interface Props {
     dealId: string;
@@ -64,87 +64,51 @@ const ThumbsUpFilledSvg = memo(() => (
     </svg>
 ));
 
-const getGuestLikes = (): string[] => {
-    if (typeof window === 'undefined') return [];
-    try {
-        return JSON.parse(localStorage.getItem('guest_liked_deals') || '[]');
-    } catch {
-        return [];
-    }
-};
-
-const setGuestLikes = (likes: string[]) => {
-    localStorage.setItem('guest_liked_deals', JSON.stringify(likes));
-};
-
 export default function DealLike({ dealId, initialLikes, likedBy = [] }: Props) {
     const router = useRouter();
 
     const [likes, setLikes] = useState(initialLikes);
-    const [liked, setLiked] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [guestLikes, setGuestLikesState] = useState<string[]>([]);
 
     const { user, isSignin } = useAuth();
 
     useEffect(() => {
-        if (!isSignin) {
-            setGuestLikesState(getGuestLikes());
-        }
-    }, [isSignin]);
-
-    useEffect(() => {
         if (isSignin) {
-            setLiked(likedBy.includes(user?._id ?? ''));
+            setIsLiked(likedBy.includes(user?._id ?? ''));
         } else {
-            setLiked(guestLikes.includes(dealId));
-        }
+            const guestLikes = JSON.parse(localStorage.getItem('guest_liked_deals') || '[]');
 
-        setLikes(initialLikes);
-    }, [initialLikes, likedBy, isSignin, user?._id, dealId, guestLikes]);
+            setIsLiked(guestLikes.includes(dealId));
+        }
+    }, [likedBy, isSignin, user?._id, dealId]);
 
     const handleLike = useCallback(async () => {
         if (loading) return;
-        if (!isSignin && liked) return;
+        if (isLiked) return;
 
-        try {
-            setLoading(true);
+        setLoading(true);
 
-            // optimistic
-            setLiked(true);
-            setLikes((prev) => prev + 1);
+        if (!isSignin) {
+            const res = await likeAsGuest(dealId);
+            if (res.success) {
+                setIsLiked(true);
+                setLikes(res.likes);
 
-            const res = await fetcherWithAuth(`/api/common/deal/${dealId}/like`, {
-                method: 'POST',
-                headers: isSignin
-                    ? {
-                          'Content-Type': 'application/json',
-                      }
-                    : undefined,
-                body: isSignin ? JSON.stringify({ userId: user?._id }) : undefined,
-            });
-
-            if (!res.success) {
-                setLiked(false);
-                setLikes((prev) => prev - 1);
-                return;
+                const likes = JSON.parse(localStorage.getItem('guest_liked_deals') || '[]');
+                localStorage.setItem('guest_liked_deals', JSON.stringify([...likes, dealId]));
             }
+        } else {
+            const res = await likeAsUser(dealId);
 
-            if (!isSignin) {
-                const next = [...guestLikes, dealId];
-                setGuestLikes(next);
-                setGuestLikesState(next);
-            } else {
-                setLiked(res.liked);
+            if (res.success) {
+                setIsLiked(res.liked);
                 setLikes(res.likes);
             }
-        } catch {
-            setLiked(false);
-            setLikes((prev) => prev - 1);
-        } finally {
-            setLoading(false);
         }
-    }, [loading, liked, isSignin, dealId, user?._id, guestLikes, router]);
+
+        setLoading(false);
+    }, [isSignin, dealId]);
 
     return (
         <Button
@@ -154,10 +118,10 @@ export default function DealLike({ dealId, initialLikes, likedBy = [] }: Props) 
             disabled={loading}
             className={cn(
                 'flex items-center gap-2 transition-all duration-200 h-9 px-3 hover:bg-transparent text-blue-600',
-                liked && !isSignin ? 'cursor-not-allowed' : 'hover:opacity-80',
+                isLiked && !isSignin ? 'cursor-not-allowed' : 'hover:opacity-80',
             )}
         >
-            {liked ? <ThumbsUpFilledSvg /> : <ThumbsUpSvg />}
+            {isLiked ? <ThumbsUpFilledSvg /> : <ThumbsUpSvg />}
             <span className="font-medium text-[13px] md:text-sm">{likes}</span>
         </Button>
     );

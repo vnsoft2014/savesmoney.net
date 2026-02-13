@@ -49,7 +49,9 @@ export async function POST(req: Request, { params }: Props) {
 
         const { invalid } = value;
 
-        const deal = await Deal.findByIdAndUpdate(id, { invalid }, { new: true });
+        const newStatus = invalid ? 'invalid' : 'published';
+
+        const deal = await Deal.findByIdAndUpdate(id, { status: newStatus }, { new: true });
 
         if (!deal) {
             return NextResponse.json({ success: false, message: 'Deal not found' }, { status: 404 });

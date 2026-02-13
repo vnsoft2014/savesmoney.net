@@ -20,7 +20,10 @@ export async function GET(req: Request, { params }: Props) {
 
         const { id } = await params;
 
-        let query = Deal.findById(id);
+        let query = Deal.findOne({
+            _id: id,
+            status: { $in: ['published', 'invalid'] },
+        });
 
         if (populate) {
             query = query.populate('dealType').populate('store').populate('author');

@@ -34,7 +34,7 @@ const IconWithTooltip = ({ tooltip, children }: IconWithTooltipProps) => {
     );
 };
 
-export default function UserDealDataTable() {
+export default function UserDealsDataTable() {
     const { mutate } = useSWRConfig();
     const router = useRouter();
 

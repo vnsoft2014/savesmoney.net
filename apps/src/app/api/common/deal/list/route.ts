@@ -23,7 +23,6 @@ const querySchema = Joi.object({
     hotTrend: Joi.boolean().optional(),
     holidayDeals: Joi.boolean().optional(),
     seasonalDeals: Joi.boolean().optional(),
-    invalid: Joi.boolean().optional(),
     author: Joi.string().allow('').optional(),
     userStore: Joi.string().allow('').optional(),
     source: Joi.string().valid('admin', 'user').optional(),
@@ -66,7 +65,6 @@ export async function GET(req: Request) {
             hotTrend,
             holidayDeals,
             seasonalDeals,
-            invalid,
             author,
             source,
             userStore,
@@ -141,16 +139,6 @@ export async function GET(req: Request) {
             filter.seasonalDeals = seasonalDeals;
         }
 
-        if (typeof invalid === 'boolean') {
-            if (invalid === true) {
-                filter.invalid = true;
-            }
-
-            if (invalid === false) {
-                //filter.$or = [{ invalid: false }, { invalid: { $exists: false } }];
-            }
-        }
-
         if (author && mongoose.Types.ObjectId.isValid(author)) {
             filter.author = new mongoose.Types.ObjectId(author);
         }
@@ -164,8 +152,6 @@ export async function GET(req: Request) {
         }
 
         filter.status = 'published';
-
-        console.log(filter);
 
         let query = Deal.find(filter)
             .sort({ [sortField]: sortOrder })

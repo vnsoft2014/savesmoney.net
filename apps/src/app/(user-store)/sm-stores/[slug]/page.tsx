@@ -3,7 +3,7 @@ import { getActiveDeals, getDealTypes, getStores } from '@/services';
 import { getUserStoreById } from '@/services/user-store';
 import { Breadcrumb } from '@/shared/components/common';
 import { getIdFromSlug } from '@/utils/utils';
-import { FileText, Home } from 'lucide-react';
+import { Home, Store } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 type Props = {
@@ -56,8 +56,6 @@ const Page = async ({ params, searchParams }: Props) => {
         getStores(),
     ]);
 
-    console.log(dealListResponse);
-
     const breadcrumbItems = [
         {
             label: 'Home',
@@ -66,7 +64,7 @@ const Page = async ({ params, searchParams }: Props) => {
         },
         {
             label: userStore?.name ?? 'Deals',
-            icon: <FileText className="w-4 h-4 mr-2" />,
+            icon: <Store className="w-4 h-4 mr-2" />,
             active: true,
         },
     ];

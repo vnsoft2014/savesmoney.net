@@ -5,19 +5,29 @@ import { getDeals } from '@/services/user-store';
 import { Loading } from '@/shared/components/common';
 import { Badge } from '@/shared/shadecn/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/shadecn/ui/table';
-import { DealFull } from '@/shared/types';
+import { DealFull, UserStore } from '@/shared/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 import useSWR from 'swr';
 import { DealPrice } from '../../deals/components';
 
-const fetcher = async () => {
-    const res = await getDeals('', '', 1);
-    return res.data as DealFull[];
+type Props = {
+    store: UserStore;
 };
 
-export default function Overview() {
-    const { data: dealList, error, isLoading, mutate } = useSWR('user-deals', fetcher);
+export default function Overview({ store }: Props) {
+    const [page, setPage] = useState(1);
+
+    const fetcher = async () => {
+        const res = await getDeals('', '', page);
+        return res;
+    };
+
+    const { data, error, isLoading } = useSWR(['user-deals', page], fetcher);
+
+    const dealList = data?.data as DealFull[];
+    const pagination = data?.pagination;
 
     if (isLoading) {
         return (
@@ -36,18 +46,12 @@ export default function Overview() {
     }
 
     return (
-        <div className="container mx-auto mt-6 lg:mt-10 px-3 space-y-8 bg-slate-50/50 min-h-screen">
+        <div className="container mx-auto mt-6 lg:mt-10 px-3 space-y-8 bg-slate-50/50">
             <StatsCards />
 
             <div className="flex justify-between items-center">
-                <h2 className="mb-0! text-xl lg:text-2xl font-bold">Deal Management</h2>
-                <Link
-                    href="/my-store/deal/add"
-                    className="bg-blue-600 hover:bg-blue-700 text-sm lg:text-base text-white px-4 py-2 rounded-sm shadow"
-                    prefetch={false}
-                >
-                    + Add Deal
-                </Link>
+                <h2 className="mb-0! text-xl lg:text-2xl font-sans-condensed font-bold">Deal Management</h2>
+                {store.isActive}
             </div>
 
             <div className="bg-white shadow-xs">
@@ -125,21 +129,36 @@ export default function Overview() {
                                         >
                                             Edit
                                         </Link>
-
-                                        <button
-                                            className="text-red-600 hover:underline"
-                                            onClick={async () => {
-                                                // await deleteDeal(deal._id);
-                                                // mutate();
-                                            }}
-                                        >
-                                            Delete
-                                        </button>
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
+
+                    {pagination && (
+                        <div className="flex justify-between items-center p-4 border-t">
+                            <button
+                                disabled={!pagination.hasPrevPage}
+                                onClick={() => setPage((prev) => prev - 1)}
+                                className="px-4 py-2 text-sm border rounded disabled:opacity-50"
+                            >
+                                Previous
+                            </button>
+
+                            <span className="text-sm">
+                                Page {pagination.currentPage} /{' '}
+                                <span className="font-bold">{pagination.totalPages}</span>
+                            </span>
+
+                            <button
+                                disabled={!pagination.hasNextPage}
+                                onClick={() => setPage((prev) => prev + 1)}
+                                className="px-4 py-2 text-sm border rounded disabled:opacity-50"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

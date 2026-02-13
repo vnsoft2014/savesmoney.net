@@ -9,6 +9,6 @@ export type ValidationData = {
         shortDescription: string;
         expireAt: string | null;
         purchaseLink: string;
-        invalid?: boolean;
+        status: string;
     };
 };

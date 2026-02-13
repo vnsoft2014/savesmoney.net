@@ -1,4 +1,4 @@
-import EditDealForm from '@/features/dashboard/deal/EditDealForm';
+import { EditDealForm } from '@/features/public/my-store/deal';
 import { getDealById } from '@/services';
 import { notFound } from 'next/navigation';
 

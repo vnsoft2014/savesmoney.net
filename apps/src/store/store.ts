@@ -4,13 +4,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from './storage';
 
-import { AdminNavReducer } from '@/utils/AdminNavSlice';
+import { adminNavReducer } from '@/utils/AdminNavSlice';
 import { FrontendNavReducer } from '@/utils/FrontendNavSlice';
-import { UserReducer } from '@/utils/UserDataSlice';
+import { userReducer } from '@/utils/UserDataSlice';
 
 const rootReducer = combineReducers({
-    user: UserReducer,
-    adminNav: AdminNavReducer,
+    user: userReducer,
+    adminNav: adminNavReducer,
     frontendNav: FrontendNavReducer,
 });
 

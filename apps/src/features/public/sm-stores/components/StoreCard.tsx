@@ -13,7 +13,7 @@ interface Props {
 const StoreCard = memo(({ store }: Props) => {
     return (
         <Link key={store._id} href={`/sm-stores/${store.slug}-${store._id}`} className="group">
-            <Card className="h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-muted">
+            <Card className="h-full p-4 transition-all duration-300 shadow-2xs hover:shadow-sm border-muted">
                 <CardHeader className="flex flex-col items-center text-center">
                     <Image
                         src={store.logo || '/image.png'}
@@ -25,10 +25,12 @@ const StoreCard = memo(({ store }: Props) => {
                 </CardHeader>
 
                 <CardContent className="mt-4 text-center space-y-1">
-                    <CardTitle className="text-lg group-hover:text-primary transition">{store.name}</CardTitle>
-                    <p className="text-xs text-muted-foreground">
+                    <CardTitle className="text-lg font-bold group-hover:text-primary transition">
+                        {store.name}
+                    </CardTitle>
+                    <div className="text-xs text-muted-foreground line-clamp-2">
                         {store.slug}-{store._id}
-                    </p>
+                    </div>
                 </CardContent>
             </Card>
         </Link>

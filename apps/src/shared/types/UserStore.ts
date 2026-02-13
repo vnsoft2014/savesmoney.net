@@ -9,6 +9,7 @@ export interface UserStore {
     description?: string;
     author: User;
     isActive: boolean;
+    totalRevenue: number;
     createdAt: Date;
     updatedAt: Date;
 }

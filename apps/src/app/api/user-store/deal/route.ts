@@ -125,16 +125,26 @@ export async function POST(req: Request) {
                 author: author,
                 $or: [{ purchaseLink: deal.purchaseLink }, { shortDescription: deal.shortDescription }],
             }).select('purchaseLink shortDescription'),
-            UserStore.findOne({ author }).select('_id').lean(),
+            UserStore.findOne({ author }).select('_id isActive').lean(),
         ]);
 
         if (!userStore) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: 'You must create a store before posting a deal',
+                    message: MESSAGES.ERROR.NOT_FOUND,
                 },
                 { status: 400 },
+            );
+        }
+
+        if (!userStore.isActive) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: 'Your store is currently inactive. Please contact admin.',
+                },
+                { status: 403 },
             );
         }
 

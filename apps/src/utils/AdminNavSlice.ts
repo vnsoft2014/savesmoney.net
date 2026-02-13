@@ -1,12 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit';
 
 interface NavState {
-    ActiveNav: string
+    ActiveNav: string;
 }
 
 const initialState: NavState = {
-    ActiveNav: 'activeDeals'
-}
+    ActiveNav: 'activeDeals',
+};
 
 export const AdminNav = createSlice({
     name: 'AdminNav',
@@ -14,10 +14,10 @@ export const AdminNav = createSlice({
     reducers: {
         setNavActive: (state, action) => {
             state.ActiveNav = action.payload;
-        }
-    }
+        },
+    },
 });
 
 export const { setNavActive } = AdminNav.actions;
 
-export const AdminNavReducer = AdminNav.reducer;
+export const adminNavReducer = AdminNav.reducer;

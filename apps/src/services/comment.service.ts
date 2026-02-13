@@ -44,7 +44,7 @@ export async function addComment({ dealId, content, parentId = null, user, guest
     }
 }
 
-export async function likeCommentAsGuest(commentId: string) {
+export async function likeAsGuest(commentId: string) {
     try {
         const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/comment/${commentId}/like`, {
             method: 'PATCH',
@@ -67,14 +67,10 @@ export async function likeCommentAsGuest(commentId: string) {
     }
 }
 
-export async function likeCommentAsUser(commentId: string, userId: string) {
+export async function likeAsUser(commentId: string) {
     try {
         const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/comment/${commentId}/like`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ userId }),
         });
 
         if (!data.success) {

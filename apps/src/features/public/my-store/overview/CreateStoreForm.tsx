@@ -43,6 +43,12 @@ export default function CreateStoreForm() {
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            name: '',
+            website: '',
+            description: '',
+            logo: undefined,
+        },
     });
 
     const {

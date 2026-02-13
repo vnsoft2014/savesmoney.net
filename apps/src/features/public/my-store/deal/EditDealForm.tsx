@@ -21,12 +21,12 @@ import {
     StoreSelect,
     TagsInput,
 } from '@/features/common/deal/edit-form';
-import { updateDeal } from '@/services/admin/deal';
+import { DealForm as DealFormType, dealSchema } from '@/features/common/schemas/Deal.schema';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form } from '@/shared/shadecn/ui/form';
 import { DealRaw } from '@/shared/types';
 import { toast } from 'react-toastify';
-import { DealForm as DealFormType, dealSchema } from '../../common/schemas/Deal.schema';
+import { updateDeal } from '../services';
 
 interface Props {
     deal: DealRaw;
@@ -68,10 +68,9 @@ export default function EditDealForm({ deal }: Props) {
 
     const onSubmit = async (values: DealFormType) => {
         const res = await updateDeal(deal._id, { _id: deal._id, ...values });
-
         if (res.success) {
             toast.success(res.message);
-            router.push('/dashboard');
+            router.push('/my-store');
         } else {
             toast.error(res.message);
         }

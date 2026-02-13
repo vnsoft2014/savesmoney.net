@@ -22,7 +22,7 @@ export default function Page() {
 
     if (loading)
         return (
-            <div className="min-h-screen flex justify-between items-center">
+            <div className="min-h-[80vh] flex justify-between items-center">
                 <Loading />
             </div>
         );
@@ -32,9 +32,9 @@ export default function Page() {
     }
 
     return (
-        <>
+        <div className="min-h-[80vh] py-6">
             <StoreProfile store={res.data} />
-            <OverView />
-        </>
+            <OverView store={res.data} />
+        </div>
     );
 }

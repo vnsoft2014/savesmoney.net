@@ -207,7 +207,7 @@ export default function DealDataTable() {
         },
 
         {
-            name: 'Purchase Link',
+            name: 'Deal Link',
             cell: (row: Deal) => (
                 <div className="flex items-center gap-2">
                     <a

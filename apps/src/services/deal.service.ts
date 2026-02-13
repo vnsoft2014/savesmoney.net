@@ -42,8 +42,6 @@ export const getActiveDeals = async (
             params.append('expireAt', 'null');
         }
 
-        params.append('invalid', 'false');
-
         if (options?.author) params.append('author', options.author);
 
         if (options?.userStore) params.append('userStore', options.userStore);
@@ -99,7 +97,6 @@ export const getExpiringSoon = async (
         }
 
         params.append('expireAt', 'null');
-        params.append('invalid', 'false');
 
         const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/list?${params.toString()}`, {
             method: 'GET',

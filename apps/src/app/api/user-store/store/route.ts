@@ -246,7 +246,7 @@ export async function GET(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: 'You must create a store before posting a deal',
+                    message: MESSAGES.ERROR.NOT_FOUND,
                 },
                 { status: 400 },
             );

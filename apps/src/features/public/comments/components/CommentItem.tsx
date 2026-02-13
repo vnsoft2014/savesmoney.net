@@ -1,13 +1,13 @@
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { likeCommentAsGuest, likeCommentAsUser } from '@/services/comment.service';
+import { likeAsGuest, likeAsUser } from '@/services/comment.service';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Separator } from '@/shared/shadecn/ui/separator';
 import { Comment } from '@/shared/types';
 import { getInitials } from '@/utils/utils';
 import { ChevronDown, Loader2, ThumbsUp } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useCommentReplies } from '../hooks/useCommentReplies';
 import CommentForm from './CommentForm';
 
@@ -22,25 +22,48 @@ export default function CommentItem({ comment, dealId, level = 0, onMutate }: Pr
     const { user, isSignin } = useAuth();
     const [replying, setReplying] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const [guestLikedIds, setGuestLikedIds] = useState<string[]>([]);
 
     const { replies, isLoading, mutate: mutateReplies } = useCommentReplies(comment._id, expanded);
 
+    useEffect(() => {
+        if (!isSignin) {
+            const likes = JSON.parse(localStorage.getItem('guest_liked_comments') || '[]');
+            setGuestLikedIds(likes);
+        }
+    }, [isSignin]);
+
     const isLiked = useMemo(() => {
-        if (isSignin) return comment.likedBy?.includes(user?._id ?? '');
-        const guestLikes = JSON.parse(localStorage.getItem('guest_liked_comments') || '[]');
-        return guestLikes.includes(comment._id);
-    }, [comment, isSignin, user]);
+        if (isSignin) {
+            return comment.likedBy?.includes(user?._id ?? '');
+        }
+
+        return guestLikedIds.includes(comment._id);
+    }, [comment, isSignin, user, guestLikedIds]);
 
     const handleLike = async () => {
+        if (loading) return;
         if (isLiked) return;
 
+        setLoading(true);
+
         if (!isSignin) {
-            await likeCommentAsGuest(comment._id);
-            const likes = JSON.parse(localStorage.getItem('guest_liked_comments') || '[]');
-            localStorage.setItem('guest_liked_comments', JSON.stringify([...likes, comment._id]));
+            const res = await likeAsGuest(comment._id);
+
+            if (res.success) {
+                const updatedLikes = [...guestLikedIds, comment._id];
+
+                localStorage.setItem('guest_liked_comments', JSON.stringify(updatedLikes));
+
+                setGuestLikedIds(updatedLikes);
+            }
         } else {
-            await likeCommentAsUser(comment._id, user!._id);
+            await likeAsUser(comment._id);
         }
+
+        setLoading(false);
 
         onMutate();
     };
@@ -58,7 +81,12 @@ export default function CommentItem({ comment, dealId, level = 0, onMutate }: Pr
                     <p className="text-sm">{comment.content}</p>
 
                     <div className="flex gap-2 pt-1">
-                        <Button size="sm" variant={isLiked ? 'default' : 'outline'} onClick={handleLike}>
+                        <Button
+                            size="sm"
+                            disabled={loading}
+                            variant={isLiked ? 'default' : 'outline'}
+                            onClick={handleLike}
+                        >
                             <ThumbsUp className="h-4 w-4" />
                             {comment.likes}
                         </Button>
@@ -78,14 +106,20 @@ export default function CommentItem({ comment, dealId, level = 0, onMutate }: Pr
             </div>
 
             {replying && (
-                <CommentForm
-                    dealId={dealId}
-                    parentId={comment._id}
-                    onSuccess={() => {
-                        setReplying(false);
-                        onMutate();
-                    }}
-                />
+                <div className="my-4">
+                    <CommentForm
+                        dealId={dealId}
+                        parentId={comment._id}
+                        onSuccess={() => {
+                            setReplying(false);
+                            onMutate();
+
+                            if (expanded) {
+                                mutateReplies();
+                            }
+                        }}
+                    />
+                </div>
             )}
 
             {expanded && (

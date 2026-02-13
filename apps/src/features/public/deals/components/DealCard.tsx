@@ -42,7 +42,7 @@ const DealCard = memo(({ deal }: DealCardProps) => {
                         {deal.flashDeal && deal.expireAt && (
                             <div className="py-1 bg-orange-600">
                                 <div className="flex justify-center items-center gap-1 text-sm md:text-base text-white font-sans-condensed font-bold">
-                                    <span className="hidden md:inline-block mr-2">Ends in</span>
+                                    <span className="hidden md:inline-block mr-1">Ends in</span>
                                     <IoFlame className="inline-block md:hidden w-4 h-4 text-white mr-1" />
 
                                     <FlashDealCountdown expireAt={deal.expireAt} />

@@ -8,6 +8,7 @@ export interface IUserStore extends Document {
     description?: string;
     author?: mongoose.Types.ObjectId;
     isActive: boolean;
+    totalRevenue: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -44,6 +45,11 @@ const UserStoreSchema: Schema<IUserStore> = new Schema(
         isActive: {
             type: Boolean,
             default: true,
+        },
+        totalRevenue: {
+            type: Number,
+            default: 0,
+            min: 0,
         },
     },
     {
