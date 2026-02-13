@@ -10,7 +10,7 @@ export const subscribeDeal = async (
     isRegisteredUser?: boolean,
     source: string = 'popup',
 ) => {
-    const data = await fetcher('/api/deal-subscribers/subscribe', {
+    const data = await fetcher('/api/subscriber/subscribe', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
