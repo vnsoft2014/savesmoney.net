@@ -6,7 +6,7 @@ export * from './dealType';
 export * from './export';
 export * from './sitemap';
 export * from './store';
-export * from './UserStore';
+export * from './userStore';
 
 export type HeadlinePosition = 'left' | 'center' | 'right';
 

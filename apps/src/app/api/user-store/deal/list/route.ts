@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 const querySchema = Joi.object({
     page: Joi.number().integer().min(1).default(1),
-    limit: Joi.number().integer().min(1).max(50).default(10),
+    limit: Joi.number().integer().min(1).max(50).default(20),
     search: Joi.string().allow('').optional(),
     sortField: Joi.string().valid('createdAt', 'expiredAt', 'originalPrice', 'discountPrice').default('createdAt'),
     sortOrder: Joi.string().valid('asc', 'desc').default('desc'),

@@ -1,24 +1,28 @@
 'use client';
 
-import { getOverviewStats, getTopDeals } from '@/services/admin/overview';
+import { useState } from 'react';
 import useSWR from 'swr';
-import { StatsCards, TopDealsTable } from './components';
+
+import { StatsCards, TopDealsTable, TopStoresTable } from './components';
+import { getOverviewStats, getTopDeals, getTopStores } from './services';
 
 export default function OverviewData() {
-    const { data: stats, isLoading: isLoadingStats, error: statsError } = useSWR('overview-stats', getOverviewStats);
+    const [activeTab, setActiveTab] = useState<'deals' | 'stores'>('deals');
 
-    const {
-        data: topDeals,
-        isLoading: isLoadingTopDeals,
-        error: topDealsError,
-    } = useSWR('overview-top-deals', getTopDeals);
+    const { data: stats, isLoading: isLoadingStats } = useSWR('overview-stats', getOverviewStats);
 
-    if (isLoadingStats || isLoadingTopDeals) {
+    const { data: topDeals, isLoading: isLoadingTopDeals } = useSWR(
+        activeTab === 'deals' ? 'overview-top-deals' : null,
+        getTopDeals,
+    );
+
+    const { data: topStores, isLoading: isLoadingTopStores } = useSWR(
+        activeTab === 'stores' ? 'overview-top-stores' : null,
+        getTopStores,
+    );
+
+    if (isLoadingStats) {
         return <div className="p-6 text-sm text-muted-foreground">Loading overview...</div>;
-    }
-
-    if (statsError || topDealsError) {
-        return <div className="p-6 text-red-500">Failed to load overview data</div>;
     }
 
     return (
@@ -27,9 +31,48 @@ export default function OverviewData() {
 
             {stats && <StatsCards stats={stats} />}
 
+            {/* Tabs */}
             <div>
-                <h2 className="mb-3 text-lg font-semibold">Top Deals</h2>
-                {topDeals && <TopDealsTable deals={topDeals} />}
+                <div className="mb-4 flex gap-4 border-b">
+                    <button
+                        onClick={() => setActiveTab('deals')}
+                        className={`pb-2 text-sm font-medium ${
+                            activeTab === 'deals' ? 'border-b-2 border-black' : 'text-muted-foreground'
+                        }`}
+                    >
+                        Top Deals
+                    </button>
+
+                    <button
+                        onClick={() => setActiveTab('stores')}
+                        className={`pb-2 text-sm font-medium ${
+                            activeTab === 'stores' ? 'border-b-2 border-black' : 'text-muted-foreground'
+                        }`}
+                    >
+                        Top Stores
+                    </button>
+                </div>
+
+                {/* Tab Content */}
+                {activeTab === 'deals' && (
+                    <>
+                        {isLoadingTopDeals ? (
+                            <div className="text-sm text-muted-foreground">Loading deals...</div>
+                        ) : (
+                            topDeals && <TopDealsTable deals={topDeals} />
+                        )}
+                    </>
+                )}
+
+                {activeTab === 'stores' && (
+                    <>
+                        {isLoadingTopStores ? (
+                            <div className="text-sm text-muted-foreground">Loading stores...</div>
+                        ) : (
+                            topStores && <TopStoresTable stores={topStores} />
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

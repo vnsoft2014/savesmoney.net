@@ -9,7 +9,7 @@ type Props = {
 const DealTypesGrid = ({ dealTypes }: Props) => {
     return (
         <section className="font-sans-condensed">
-            <h3 className="hidden md:block md:text-lg lg:text-xl font-bold">All Deal Types</h3>
+            <h3 className="md:text-lg lg:text-xl font-bold">All Categories</h3>
 
             <div className="bg-white mt-5 py-3 md:py-4">
                 <div id="deal-types" className="md:max-h-90 overflow-y-auto scroll-smooth">
@@ -29,7 +29,7 @@ const DealTypesGrid = ({ dealTypes }: Props) => {
                                     />
                                 </div>
 
-                                <div className="text-xs md:text-sm uppercase font-bold tracking-tight text-center">
+                                <div className="text-xs md:text-sm uppercase font-bold tracking-tight text-center group-hover:text-primary transition">
                                     {dealType.name}
                                 </div>
                             </Link>

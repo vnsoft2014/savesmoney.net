@@ -42,3 +42,23 @@ export async function getTopDeals() {
         return [];
     }
 }
+
+export async function getTopStores() {
+    try {
+        const data = await fetcherWithAuth(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/overview/top-stores?limit=20`,
+            {
+                method: 'GET',
+                cache: 'no-store',
+            },
+        );
+
+        if (!data.success) {
+            throw new Error(data?.message || 'Failed to fetch top stores');
+        }
+
+        return data.data;
+    } catch (_: unknown) {
+        return [];
+    }
+}

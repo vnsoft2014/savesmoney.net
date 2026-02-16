@@ -1,7 +1,7 @@
 'use client';
+import { useAuth } from '@/hooks/useAuth';
 import { useIdleLogout } from '@/hooks/useIdleLogout';
 import { AutoLogoutWarning } from '@/shared/components/widgets';
-import Cookies from 'js-cookie';
 import Link from 'next/link';
 import { useState } from 'react';
 import { GiLoincloth } from 'react-icons/gi';
@@ -9,13 +9,13 @@ import { IoIosAddCircle } from 'react-icons/io';
 import { IoHomeOutline } from 'react-icons/io5';
 
 export default function AdminNavbar() {
+    const { logout } = useAuth();
+
     const [isOpen, setIsOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const handleSignOut = () => {
-        Cookies.remove('token');
-        localStorage.clear();
-        location.reload();
+        logout();
     };
 
     const { showPopup, stayLoggedIn, logoutNow } = useIdleLogout(() => {

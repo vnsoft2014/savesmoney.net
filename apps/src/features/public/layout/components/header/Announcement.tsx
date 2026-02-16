@@ -24,15 +24,13 @@ const Announcement = () => {
                 <div className="xl:container mx-auto px-3">
                     <div className="flex justify-between items-center gap-2 md:gap-4 py-3">
                         <div className="shrink-0">
-                            <Link href="/" prefetch={false}>
+                            <Link
+                                href="/"
+                                prefetch={false}
+                                className="outline-none focus:outline-none focus-visible:outline-none"
+                            >
                                 <Logo />
                             </Link>
-                            <div className="hidden lg:block overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-200 mt-1">
-                                <span className="bg-blue-800 py-0.5 px-1 font-semibold text-xs md:text-sm">NEW!</span>
-                                <span className="cursor-pointer text-gray-100 text-xs md:text-sm hover:text-white transition-colors">
-                                    Saving Money with Big Deals
-                                </span>
-                            </div>
                         </div>
 
                         <div className="flex-1 lg:max-w-2xl">

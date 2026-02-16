@@ -14,7 +14,7 @@ export default function ActiveDealsTab({ deals }: Props) {
     return (
         <section>
             <div className="py-4">
-                <div className="grid gap-3 grid-cols-1 md:grid-cols-3 xl:grid-cols-5">
+                <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
                     {deals.map((deal, index) => {
                         return (
                             <React.Fragment key={`initial-${deal._id}`}>

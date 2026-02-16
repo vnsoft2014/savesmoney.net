@@ -1,5 +1,31 @@
 import mongoose from 'mongoose';
 
+const AffiliateStoreSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        slug: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+        },
+        affiliateId: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        enabled: {
+            type: Boolean,
+            default: true,
+        },
+    },
+    { _id: false },
+);
+
 const SettingsSchema = new mongoose.Schema({
     websiteTitle: {
         type: String,
@@ -45,9 +71,14 @@ const SettingsSchema = new mongoose.Schema({
     socialLinks: {
         facebookPage: { type: String, trim: true, default: '' },
         facebookGroup: { type: String, trim: true, default: '' },
-        x: { type: String, trim: true, default: '' }, // X = Twitter
+        x: { type: String, trim: true, default: '' },
         instagram: { type: String, trim: true, default: '' },
         linkedin: { type: String, trim: true, default: '' },
+    },
+
+    affiliateStores: {
+        type: [AffiliateStoreSchema],
+        default: [],
     },
 });
 

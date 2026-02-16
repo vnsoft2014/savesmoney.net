@@ -7,9 +7,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { registerMe } from '@/services/auth';
-
-import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
 import { Checkbox } from '@/shared/shadecn/ui/checkbox';
@@ -19,6 +16,7 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { SocialAuthButtons } from '../components';
 import { SignUpForm as SignUpFormType, signUpSchema } from '../schemas/SignUp.schema';
+import { registerMe } from '../services';
 
 const SignUpForm = () => {
     const router = useRouter();
@@ -46,41 +44,37 @@ const SignUpForm = () => {
     } = form;
 
     const onSubmit = async (values: SignUpFormType) => {
-        try {
-            const res = await registerMe({
-                name: values.name,
-                email: values.email,
-                password: values.password,
-            });
+        const res = await registerMe({
+            name: values.name,
+            email: values.email,
+            password: values.password,
+        });
 
-            if (!res.success) {
-                toast.error(res.message || 'Registration failed');
-                return;
-            }
-
-            const loginResult = await signIn('credentials', {
-                redirect: false,
-                email: values.email,
-                password: values.password,
-            });
-
-            if (loginResult?.error) {
-                toast.error('Account created but auto login failed');
-                return;
-            }
-
-            toast.success('Account created successfully 🎉');
-
-            const safeRedirect = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
-
-            router.push(safeRedirect);
-        } catch (error) {
-            toast.error(MESSAGES.ERROR.INTERNAL_SERVER);
+        if (!res.success) {
+            toast.error(res.message || 'Registration failed');
+            return;
         }
+
+        const loginResult = await signIn('credentials', {
+            redirect: false,
+            email: values.email,
+            password: values.password,
+        });
+
+        if (loginResult?.error) {
+            toast.error('Account created but auto login failed');
+            return;
+        }
+
+        toast.success('Account created successfully 🎉');
+
+        const safeRedirect = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
+
+        router.push(safeRedirect);
     };
 
     return (
-        <div className="min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-229px)] flex items-center justify-center px-4">
+        <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
             <Card className="w-full max-w-150 p-4 md:p-8 inset-shadow-2xs">
                 <CardHeader className="space-y-4 text-center mb-6">
                     <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">

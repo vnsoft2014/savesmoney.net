@@ -13,7 +13,7 @@ import { Button } from '@/shared/shadecn/ui/button';
 import { ScrollArea } from '@/shared/shadecn/ui/scroll-area';
 import { Separator } from '@/shared/shadecn/ui/separator';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/shared/shadecn/ui/sheet';
-import { headerData } from '../data';
+import { supportData } from '../data';
 import { MenuLink } from '../types';
 import MenuItem from './MenuItem';
 import UserProfile from './UserProfile';
@@ -119,10 +119,40 @@ const MobileMenu = () => {
                         ))}
 
                         <Separator className="my-4" />
+
+                        <div className="w-full">
+                            <div className="flex items-center justify-between rounded-sm transition-colors cursor-pointer duration-200 hover:bg-linear-to-r hover:from-blue-50 hover:to-indigo-50">
+                                <Link
+                                    href="/my-store/deal/add"
+                                    prefetch={false}
+                                    onClick={closeMenu}
+                                    className="flex-1 px-4 py-2 text-sm font-medium transition-colors text-gray-800 hover:text-blue-600"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-700/20">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="w-4 h-4"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                strokeWidth={2.5}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                            </svg>
+                                        </div>
+                                        Post a Deal
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <Separator className="my-4" />
+
                         <p className="px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
                             Support
                         </p>
-                        {headerData.map((item, idx) => (
+                        {supportData.map((item, idx) => (
                             <MenuItem key={idx} item={item} level={0} onToggle={closeMenu} />
                         ))}
 

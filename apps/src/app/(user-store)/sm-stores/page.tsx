@@ -1,5 +1,5 @@
 import StoreFilter from '@/features/dashboard/user-store/StoreFilter';
-import { StoresListing } from '@/features/public/sm-stores';
+import { HeroAffiliateCTA, StoresListing } from '@/features/public/sm-stores';
 import { getUserStores } from '@/services/user-store';
 import { Breadcrumb } from '@/shared/components/common';
 import { SITE } from '@/utils/site';
@@ -29,7 +29,7 @@ const Page = async (props: Props) => {
             icon: <Home className="w-4 h-4" />,
         },
         {
-            label: 'All Stores',
+            label: 'All SM Stores',
             icon: <FileText className="w-4 h-4" />,
             active: true,
         },
@@ -43,6 +43,8 @@ const Page = async (props: Props) => {
 
                     <StoreFilter />
                 </div>
+
+                <HeroAffiliateCTA />
 
                 <StoresListing
                     initStoreListResponse={storeListResponse}

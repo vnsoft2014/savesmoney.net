@@ -28,4 +28,8 @@ export const MESSAGES = {
         SIZE_EXCEEDED: (maxMB: number) => `File size too large. Maximum ${maxMB}MB allowed.`,
         VALID: 'File is valid.',
     },
+    AUTH: {
+        USER_ALREADY_EXIST: 'User Already Exist.',
+        ACCOUNT_CREATED: 'Account created successfully.',
+    },
 } as const;

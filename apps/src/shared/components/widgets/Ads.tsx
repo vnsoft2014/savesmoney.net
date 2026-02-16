@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
-
 type AdsProps = {
     slot: string;
     format?: 'auto' | 'fluid';
@@ -12,13 +10,13 @@ type AdsProps = {
 const ADS_CLIENT = 'ca-pub-7598560907189118';
 
 export default function Ads({ slot, format = 'auto', responsive = true, className = '' }: AdsProps) {
-    useEffect(() => {
-        try {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-            console.error('Adsense error', e);
-        }
-    }, []);
+    // useEffect(() => {
+    //     try {
+    //         (window.adsbygoogle = window.adsbygoogle || []).push({});
+    //     } catch (e) {
+    //         console.error('Adsense error', e);
+    //     }
+    // }, []);
 
     return (
         <div className="py-4 h-20 hidden">

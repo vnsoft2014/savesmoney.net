@@ -1,40 +1,9 @@
-'use client';
-
-import { CreateStoreForm, OverView, StoreProfile } from '@/features/public/my-store/overview';
-import { getUserStore } from '@/services/user-store';
-import { Loading } from '@/shared/components/common';
-import { useEffect, useState } from 'react';
+import { MyStore, MyStoreShell } from '@/features/public/my-store/overview';
 
 export default function Page() {
-    const [res, setRes] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchStore = async () => {
-            const data = await getUserStore();
-
-            setRes(data);
-            setLoading(false);
-        };
-
-        fetchStore();
-    }, []);
-
-    if (loading)
-        return (
-            <div className="min-h-[80vh] flex justify-between items-center">
-                <Loading />
-            </div>
-        );
-
-    if (!res?.success) {
-        return <CreateStoreForm />;
-    }
-
     return (
-        <div className="min-h-[80vh] py-6">
-            <StoreProfile store={res.data} />
-            <OverView store={res.data} />
-        </div>
+        <MyStoreShell title="My Store">
+            <MyStore />
+        </MyStoreShell>
     );
 }

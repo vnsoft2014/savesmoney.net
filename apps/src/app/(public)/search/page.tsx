@@ -1,6 +1,5 @@
 import SearchsContent from '@/features/public/deal-detail/SearchsContent';
 import DealsFilters from '@/features/public/deals/DealsFilters';
-import Sidebar from '@/features/public/layout/Sidebar';
 import { getDealTypes, getStores, searchDeals } from '@/services';
 import Breadcrumb from '@/shared/components/common/Breadcrumb';
 import { SITE } from '@/utils/site';
@@ -13,11 +12,13 @@ export const metadata: Metadata = {
     title: `Search | ${SITE.name}`,
 };
 
-interface PageProps {
-    searchParams?: { [key: string]: string | string[] | undefined };
+interface Props {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-const Page = async ({ searchParams }: PageProps) => {
+const Page = async (props: Props) => {
+    const searchParams = await props.searchParams;
+
     const initialQuery = typeof searchParams?.q === 'string' ? searchParams.q : '';
     const initialDealType = typeof searchParams?.dealType === 'string' ? searchParams.dealType : '';
     const initialStore = typeof searchParams?.store === 'string' ? searchParams.store : '';
@@ -48,23 +49,19 @@ const Page = async ({ searchParams }: PageProps) => {
 
     return (
         <div className="container min-h-screen mx-auto pb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-5">
-                <main className="lg:col-span-4 px-4">
-                    <div className="flex flex-col xl:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs md:mb-3 py-3">
-                        <Breadcrumb items={breadcrumbItems} />
+            <div className="px-3 pt-6 pb-10">
+                <div className="flex flex-col xl:flex-row flex-wrap justify-between items-center gap-2 breadcrumbs md:mb-3 py-3">
+                    <Breadcrumb items={breadcrumbItems} />
 
-                        <DealsFilters dealTypes={dealTypes} stores={stores} />
-                    </div>
+                    <DealsFilters dealTypes={dealTypes} stores={stores} />
+                </div>
 
-                    <SearchsContent
-                        initialDealsData={initialDealsData}
-                        initialDealType={initialDealType}
-                        initialStore={initialStore}
-                        initialQuery={initialQuery}
-                    />
-                </main>
-
-                <Sidebar />
+                <SearchsContent
+                    initialDealsData={initialDealsData}
+                    initialDealType={initialDealType}
+                    initialStore={initialStore}
+                    initialQuery={initialQuery}
+                />
             </div>
         </div>
     );

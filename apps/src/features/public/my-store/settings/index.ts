@@ -1,1 +1,1 @@
-export { default as StoreSettingsForm } from './StoreSettingsForm';
+export { default as Settings } from './Settings';

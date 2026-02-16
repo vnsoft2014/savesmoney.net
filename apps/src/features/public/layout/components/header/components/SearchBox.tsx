@@ -171,7 +171,7 @@ const SearchBox = () => {
                                                 </div>
 
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="flex items-start gap-2 mb-1">
+                                                    <div className="relative flex items-start gap-2 mb-1">
                                                         <div className="text-xs md:text-[15px] font-medium text-gray-900 line-clamp-2 flex-1">
                                                             {deal.shortDescription}
                                                         </div>

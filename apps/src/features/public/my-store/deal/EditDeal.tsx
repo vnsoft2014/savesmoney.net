@@ -1,6 +1,5 @@
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import 'react-quill-new/dist/quill.snow.css';
@@ -32,7 +31,7 @@ interface Props {
     deal: DealRaw;
 }
 
-export default function EditDealForm({ deal }: Props) {
+export default function EditDeal({ deal }: Props) {
     const router = useRouter();
 
     const form = useForm<DealFormType>({
@@ -70,7 +69,7 @@ export default function EditDealForm({ deal }: Props) {
         const res = await updateDeal(deal._id, { _id: deal._id, ...values });
         if (res.success) {
             toast.success(res.message);
-            router.push('/my-store');
+            router.push('/my-store/deals');
         } else {
             toast.error(res.message);
         }
@@ -79,13 +78,6 @@ export default function EditDealForm({ deal }: Props) {
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-                <div className="flex items-center gap-3 mb-6">
-                    <Button variant="ghost" onClick={() => router.back()}>
-                        <ArrowLeft />
-                    </Button>
-                    <h1 className="text-2xl font-bold">Edit Deal</h1>
-                </div>
-
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         <PictureUploadField name="picture" />

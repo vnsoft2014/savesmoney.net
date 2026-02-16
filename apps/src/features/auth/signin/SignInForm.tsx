@@ -65,7 +65,7 @@ const SignInForm = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-140px)] lg:min-h-[calc(100vh-180px)] md:min-h-[calc(100vh-229px)] flex items-center justify-center px-4">
+        <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
             <Card className="w-full max-w-150 p-4 md:p-8 inset-shadow-2xs">
                 <CardHeader className="space-y-4 text-center mb-6">
                     <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">

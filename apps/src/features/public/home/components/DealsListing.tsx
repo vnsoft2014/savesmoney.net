@@ -52,7 +52,7 @@ const DealsListing = ({ initDealListResponse }: Props) => {
             )}
 
             <div
-                className={`grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
+                className={`grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
                 ${isLoading ? 'opacity-30 pointer-events-none' : 'opacity-100'}
                 transition-opacity`}
             >

@@ -1,5 +1,6 @@
 import { DesktopPage, MobilePage } from '@/features/public/home';
 import { getActiveDeals, getDealTypes, getStores } from '@/services';
+import { getUserStores } from '@/services/user-store';
 import { headers } from 'next/headers';
 
 interface Props {
@@ -16,18 +17,24 @@ const Page = async (props: Props) => {
     const initialDealType = (searchParams.dealType as string) || '';
     const initialStore = (searchParams.store as string) || '';
 
-    const [dealListResponse, dealTypes, stores] = await Promise.all([
+    const [dealListResponse, dealTypes, stores, useStores] = await Promise.all([
         getActiveDeals(initialDealType, initialStore, 1, {
             limit: 50,
         }),
         getDealTypes(),
         getStores(),
+        getUserStores('newest', 1),
     ]);
 
     return isMobile ? (
-        <MobilePage dealListResponse={dealListResponse} dealTypes={dealTypes} />
+        <MobilePage dealListResponse={dealListResponse} dealTypes={dealTypes} userStores={useStores.data} />
     ) : (
-        <DesktopPage dealListResponse={dealListResponse} dealTypes={dealTypes} stores={stores} />
+        <DesktopPage
+            dealListResponse={dealListResponse}
+            dealTypes={dealTypes}
+            stores={stores}
+            userStores={useStores.data}
+        />
     );
 };
 

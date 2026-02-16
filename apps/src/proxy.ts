@@ -62,8 +62,6 @@ export const config = {
         '/signup',
         '/forgot-password',
         '/reset-password',
-        '/my-store',
-        '/my-store/:path*',
         '/dashboard/:path*',
         '/user/:path*',
         '/api/admin/:path*',

@@ -1,11 +1,10 @@
-import { StoreSettingsForm } from '@/features/public/my-store/settings';
+import { MyStoreShell } from '@/features/public/my-store/overview';
+import { Settings } from '@/features/public/my-store/settings';
 
-export default async function SettingsPage() {
+export default async function Page() {
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-3 py-6">
-            <div className="w-full max-w-xl mx-auto">
-                <StoreSettingsForm />
-            </div>
-        </div>
+        <MyStoreShell title="Store Settings">
+            <Settings />
+        </MyStoreShell>
     );
 }

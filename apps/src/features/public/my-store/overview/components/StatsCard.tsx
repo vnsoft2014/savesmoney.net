@@ -1,9 +1,9 @@
 'use client';
 
-import { getOverviewStats } from '@/services/user-store';
 import { Card } from '@/shared/shadecn/ui/card';
 import { ArrowUpRight, Eye, Flame, Heart, MousePointerClick } from 'lucide-react';
 import useSWR from 'swr';
+import { getOverviewStats } from '../../services/overview.services';
 
 export default function StatsCards() {
     const { data: stats, error, isLoading } = useSWR('user-overview-stats', getOverviewStats);

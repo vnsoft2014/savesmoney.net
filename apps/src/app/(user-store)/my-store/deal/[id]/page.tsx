@@ -1,4 +1,5 @@
-import { EditDealForm } from '@/features/public/my-store/deal';
+import { EditDeal } from '@/features/public/my-store/deal';
+import { MyStoreShell } from '@/features/public/my-store/overview';
 import { getDealById } from '@/services';
 import { notFound } from 'next/navigation';
 
@@ -11,9 +12,11 @@ export default async function Page({ params }: Props) {
 
     const deal = await getDealById(id);
 
-    if (!deal) {
-        notFound();
-    }
+    if (!deal) return notFound();
 
-    return <EditDealForm deal={deal} />;
+    return (
+        <MyStoreShell title="Edit Deal">
+            <EditDeal deal={deal} />
+        </MyStoreShell>
+    );
 }

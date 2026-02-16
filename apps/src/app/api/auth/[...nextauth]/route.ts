@@ -1,4 +1,6 @@
-import { compare } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
+import crypto from 'crypto';
+
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import NextAuth from 'next-auth';
@@ -128,12 +130,18 @@ const handler = NextAuth({
             }
 
             if (!existingUser) {
+                const randomPassword = crypto.randomBytes(32).toString('hex');
+
+                // hash password
+                const hashedPassword = await hash(randomPassword, 10);
+
                 existingUser = await User.create({
                     email,
                     name: user.name || profile?.name || email,
                     avatar: user.image || null,
                     role: 'user',
                     isBlocked: false,
+                    password: hashedPassword,
                 });
             }
 

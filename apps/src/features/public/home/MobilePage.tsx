@@ -1,14 +1,16 @@
 'use client';
 
-import { DealListResponse, DealType } from '@/shared/types';
+import { DealListResponse, DealType, UserStore } from '@/shared/types';
 import { memo, useState } from 'react';
 import { DealTypesGrid } from './components';
 import ActiveDealsTab from './components/ActiveDealsTab';
+import StoresSlider from './components/StoresSlider';
 import { HomeSchema } from './seo';
 
 interface Props {
     dealListResponse: DealListResponse;
     dealTypes: DealType[];
+    userStores: UserStore[];
 }
 
 type TabKey = 'deal-types' | 'deals';
@@ -32,7 +34,7 @@ const TabButton = memo(({ active, children, onClick }: TabButtonProps) => (
 
 TabButton.displayName = 'TabButton';
 
-const MobilePage = ({ dealListResponse, dealTypes }: Props) => {
+const MobilePage = ({ dealListResponse, dealTypes, userStores }: Props) => {
     const [activeTab, setActiveTab] = useState<TabKey>('deal-types');
 
     return (
@@ -50,7 +52,13 @@ const MobilePage = ({ dealListResponse, dealTypes }: Props) => {
             </div>
 
             <div className="container mx-auto px-3 font-sans-condensed">
-                {activeTab === 'deal-types' && <DealTypesGrid dealTypes={dealTypes} />}
+                {activeTab === 'deal-types' && (
+                    <div className="py-4 space-y-6">
+                        <StoresSlider stores={userStores} />
+
+                        <DealTypesGrid dealTypes={dealTypes} />
+                    </div>
+                )}
 
                 {activeTab === 'deals' && <ActiveDealsTab deals={dealListResponse.data} />}
             </div>
