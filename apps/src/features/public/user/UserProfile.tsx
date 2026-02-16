@@ -136,41 +136,43 @@ const UserProfile = ({ user }: Props) => {
                             </div>
                         </div>
 
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Full name</FormLabel>
-                                    <FormControl>
-                                        <Input className="h-12 text-sm" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        <div className="space-y-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Full name</FormLabel>
+                                        <FormControl>
+                                            <Input className="h-12 text-sm" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input className="h-12 text-sm" {...field} disabled />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                            <Input className="h-12 text-sm" {...field} disabled />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-[13px]"
-                        >
-                            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Update Profile'}
-                        </Button>
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="bg-indigo-600 hover:bg-indigo-700 text-[13px]"
+                            >
+                                {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Update Profile'}
+                            </Button>
+                        </div>
                     </div>
                 </form>
             </Form>

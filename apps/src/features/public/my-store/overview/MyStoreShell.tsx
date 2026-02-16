@@ -3,15 +3,18 @@
 import { LayoutDashboard, Menu, Settings, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { getUserStore } from '@/services/user-store';
 import { Loading } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { ScrollArea } from '@/shared/shadecn/ui/scroll-area';
 import { Separator } from '@/shared/shadecn/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/shadecn/ui/sheet';
 import MyStoreGuestBanner from '../MyStoreGuestBanner';
+import { CreateStoreForm } from './components';
 
 type MyStoreShellProps = {
     children: React.ReactNode;
@@ -22,9 +25,28 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
     const pathname = usePathname();
     const { isSignin, isLoading } = useAuth();
 
+    const [storeRes, setStoreRes] = useState<any>(null);
+    const [loadingStore, setLoadingStore] = useState(false);
+
+    useEffect(() => {
+        if (!isSignin) return;
+
+        const fetchStore = async () => {
+            try {
+                setLoadingStore(true);
+                const data = await getUserStore();
+                setStoreRes(data);
+            } finally {
+                setLoadingStore(false);
+            }
+        };
+
+        fetchStore();
+    }, [isSignin]);
+
     if (isLoading) {
         return (
-            <div className="min-h-[90vh]  flex items-center justify-center">
+            <div className="min-h-[90vh] flex items-center justify-center">
                 <Loading />
             </div>
         );
@@ -32,6 +54,22 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
 
     if (!isSignin) {
         return <MyStoreGuestBanner />;
+    }
+
+    if (loadingStore) {
+        return (
+            <div className="min-h-[90vh] flex items-center justify-center">
+                <Loading />
+            </div>
+        );
+    }
+
+    if (!storeRes?.success) {
+        return (
+            <div className="min-h-full py-6">
+                <CreateStoreForm />
+            </div>
+        );
     }
 
     const menus = [
@@ -109,7 +147,6 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
                     <h1 className="text-sm font-semibold">{title}</h1>
                 </header>
 
-                {/* Content */}
                 <main className="flex-1 space-y-4 p-4 lg:p-6">{children}</main>
             </div>
         </div>
