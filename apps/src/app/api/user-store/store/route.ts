@@ -71,30 +71,27 @@ export async function POST(req: Request) {
         let logoUrl = '';
 
         if (logo instanceof File && logo.size > 0) {
-            try {
-                logoUrl = await uploadImage({
-                    file: logo,
-                    fileName: `user-store-${slug}-${randomUUID()}`,
-                    uploadFolder: 'uploads/user-stores',
-                    errorPrefix: 'STORE_LOGO',
-                });
-            } catch (err: any) {
-                if (err.message === 'INVALID_STORE_LOGO_TYPE') {
-                    return NextResponse.json({ success: false, message: 'Invalid logo type' }, { status: 400 });
-                }
+            //try {
+            logoUrl = await uploadImage({
+                file: logo,
+                fileName: `user-store-${slug}-${randomUUID()}`,
+                uploadFolder: 'uploads/user-stores',
+                errorPrefix: 'STORE_LOGO',
+            });
+            // } catch (err: any) {
+            //     if (err.message === 'INVALID_STORE_LOGO_TYPE') {
+            //         return NextResponse.json({ success: false, message: 'Invalid logo type' }, { status: 400 });
+            //     }
 
-                if (err.message === 'STORE_LOGO_TOO_LARGE') {
-                    return NextResponse.json(
-                        { success: false, message: 'Thumbnail size must be less than 1MB' },
-                        { status: 400 },
-                    );
-                }
+            //     if (err.message === 'STORE_LOGO_TOO_LARGE') {
+            //         return NextResponse.json(
+            //             { success: false, message: 'Thumbnail size must be less than 1MB' },
+            //             { status: 400 },
+            //         );
+            //     }
 
-                console.log('=============');
-                console.log(err);
-
-                return NextResponse.json({ success: false, message: 'Upload logo failed' }, { status: 500 });
-            }
+            //     return NextResponse.json({ success: false, message: 'Upload logo failed' }, { status: 500 });
+            // }
         }
 
         const store = await UserStore.create({
