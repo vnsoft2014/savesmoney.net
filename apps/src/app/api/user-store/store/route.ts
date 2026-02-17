@@ -90,6 +90,9 @@ export async function POST(req: Request) {
                     );
                 }
 
+                console.log('=============');
+                console.log(err);
+
                 return NextResponse.json({ success: false, message: 'Upload logo failed' }, { status: 500 });
             }
         }
