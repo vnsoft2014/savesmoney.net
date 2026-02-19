@@ -61,27 +61,6 @@ export default function PurchaseLinkInput({ deal }: Props) {
                     <span className="text-xs text-red-500 block mt-1">{errors[deal.id]?.purchaseLink}</span>
                 )}
             </div>
-
-            <div className="mt-4">
-                <div className="relative">
-                    <input
-                        type="text"
-                        value={deal.couponCode ?? ''}
-                        onChange={(e) => {
-                            updateDeal(deal.id, 'couponCode', e.target.value);
-                        }}
-                        placeholder="Coupon code"
-                        className={`w-full px-3 py-2 border rounded text-sm
-                        ${errors[deal.id]?.couponCode ? 'border-red-500' : 'border-gray-300'}
-                        focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                    `}
-                    />
-                </div>
-
-                {errors[deal.id]?.couponCode && (
-                    <span className="text-xs text-red-500 block mt-1">{errors[deal.id]?.couponCode}</span>
-                )}
-            </div>
         </td>
     );
 }

@@ -42,7 +42,7 @@ export default function DealTypeDataTable() {
             sortOrder,
         });
 
-        return `/api/common/deal-type/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal-type/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();

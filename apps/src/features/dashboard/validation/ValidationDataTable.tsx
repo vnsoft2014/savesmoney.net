@@ -38,7 +38,7 @@ export default function ValidationDataTable() {
             params.set('marked', marked);
         }
 
-        return `/api/admin/validation/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/validation/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();

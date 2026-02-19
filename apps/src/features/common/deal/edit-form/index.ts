@@ -1,4 +1,4 @@
-export { default as CouponCodeInput } from './CouponCodeInput';
+export { default as CouponsInput } from './CouponsInput';
 export { default as DealDescription } from './DealDescription';
 export { default as DealFlags } from './DealFlags';
 export { default as DealTypeSelect } from './DealTypeSelect';

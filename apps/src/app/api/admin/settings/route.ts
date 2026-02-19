@@ -7,23 +7,17 @@ import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
 const SettingsSchema = Joi.object({
-    websiteTitle: Joi.string().trim().min(2).max(160).required().messages({
-        'string.empty': 'Website Title is required',
-        'string.min': 'Website Title must be at least 2 characters',
-        'string.max': 'Website Title must be at most 160 characters',
-    }),
-
-    websiteDescription: Joi.string().trim().min(2).max(300).required().messages({
-        'string.empty': 'Website Description is required',
-        'string.min': 'Website Description must be at least 2 characters',
-        'string.max': 'Website Description must be at most 300 characters',
-    }),
+    websiteTitle: Joi.string().trim().min(2).max(160).required(),
+    websiteDescription: Joi.string().trim().min(2).max(300).required(),
 
     logo: Joi.any().optional(),
     favicon: Joi.any().optional(),
 
     holidayDealsLabel: Joi.string().trim().min(2).max(50).optional(),
     seasonalDealsLabel: Joi.string().trim().min(2).max(50).optional(),
+
+    footerQuote: Joi.string().trim().min(2).max(300).optional().allow(''),
+    footerQuoteAuthor: Joi.string().trim().min(2).max(100).optional().allow(''),
 
     adminEmail: Joi.string().email().lowercase().optional().allow(''),
 
@@ -58,6 +52,8 @@ export async function POST(req: Request) {
             holidayDealsLabel: formData.get('holidayDealsLabel')?.toString().trim(),
             seasonalDealsLabel: formData.get('seasonalDealsLabel')?.toString().trim(),
             adminEmail: formData.get('adminEmail')?.toString().trim(),
+            footerQuote: formData.get('footerQuote')?.toString().trim(),
+            footerQuoteAuthor: formData.get('footerQuoteAuthor')?.toString().trim(),
             socialLinks: {
                 facebookPage: (formData.get('socialLinks[facebookPage]') as string | null)?.trim() || '',
                 facebookGroup: (formData.get('socialLinks[facebookGroup]') as string | null)?.trim() || '',
@@ -92,6 +88,8 @@ export async function POST(req: Request) {
             holidayDealsLabel,
             seasonalDealsLabel,
             adminEmail,
+            footerQuote,
+            footerQuoteAuthor,
             socialLinks,
         } = value;
 
@@ -100,6 +98,9 @@ export async function POST(req: Request) {
         settings.holidayDealsLabel = holidayDealsLabel;
         settings.seasonalDealsLabel = seasonalDealsLabel;
         settings.adminEmail = adminEmail;
+        settings.footerQuote = footerQuote;
+        settings.footerQuoteAuthor = footerQuoteAuthor;
+
         settings.socialLinks = socialLinks;
 
         if (logo instanceof File && logo.size > 0) {

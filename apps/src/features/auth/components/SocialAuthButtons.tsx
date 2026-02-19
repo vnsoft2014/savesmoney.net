@@ -51,12 +51,6 @@ const SocialAuthButtons = () => {
                     loading={isLoading === 'facebook'}
                     onClick={() => handleSocialLogin('facebook')}
                 />
-                <SocialButton
-                    provider="apple"
-                    icon="/icons/apple.svg"
-                    loading={isLoading === 'apple'}
-                    onClick={() => handleSocialLogin('apple')}
-                />
             </div>
         </div>
     );

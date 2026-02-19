@@ -59,7 +59,7 @@ export default function UserDataTable() {
             role: activeTab,
         });
 
-        return `/api/admin/user/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/user/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();

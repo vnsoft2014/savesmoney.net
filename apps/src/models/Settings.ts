@@ -68,6 +68,16 @@ const SettingsSchema = new mongoose.Schema({
         trim: true,
     },
 
+    footerQuote: {
+        type: String,
+        trim: true,
+    },
+
+    footerQuoteAuthor: {
+        type: String,
+        trim: true,
+    },
+
     socialLinks: {
         facebookPage: { type: String, trim: true, default: '' },
         facebookGroup: { type: String, trim: true, default: '' },

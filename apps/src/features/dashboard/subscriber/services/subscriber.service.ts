@@ -2,7 +2,7 @@ import { fetcherWithAuth } from '@/utils/utils';
 import { getSession } from 'next-auth/react';
 
 export const deleteSubscriber = async (id: string) => {
-    const data = await fetcherWithAuth(`/api/admin/subscriber/${id}`, {
+    const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/subscriber/${id}`, {
         method: 'DELETE',
     });
 
@@ -12,7 +12,7 @@ export const deleteSubscriber = async (id: string) => {
 export const exportSubscriber = async (query: string) => {
     const session = await getSession();
 
-    const response = await fetch(`/api/admin/subscriber/export?${query}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/subscriber/export?${query}`, {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${session?.accessToken}`,

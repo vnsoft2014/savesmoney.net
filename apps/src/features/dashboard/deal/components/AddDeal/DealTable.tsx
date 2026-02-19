@@ -19,10 +19,11 @@ export default function DealTable({ deals }: Props) {
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-40">Deal Store</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-40">Exp. Date</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-48">Short Description</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-48">Price</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-32">Price</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-48">Purchase Link</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-48">Coupon Code</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-32">Description</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-80">More</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 w-48">More</th>
                     <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 w-20">Action</th>
                 </tr>
             </thead>

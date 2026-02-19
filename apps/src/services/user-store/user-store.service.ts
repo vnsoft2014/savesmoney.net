@@ -17,17 +17,34 @@ export const getUserStoreById = async (id: string) => {
 };
 
 export const getUserStore = async () => {
-    const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store`, {
-        method: 'GET',
-    });
+    try {
+        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store`, {
+            method: 'GET',
+        });
 
-    return data;
+        if (!data.success) {
+            throw new Error(data.message!);
+        }
+
+        return data.data;
+    } catch (error: unknown) {
+        return { name: '', website: '', description: '', logo: '' };
+    }
 };
 
-export const getUserStores = async (sort: string, page: number) => {
+export const getUserStores = async (sort: string, page: number, search: string) => {
     try {
+        const params = new URLSearchParams();
+
+        params.set('sort', sort);
+        params.set('page', page.toString());
+
+        if (search) {
+            params.set('search', search);
+        }
+
         const data = await fetcher(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/list?sort=${sort}&page=${page}&limit=30`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/list?${params.toString()}`,
             {
                 method: 'GET',
                 cache: 'no-store',

@@ -1,6 +1,8 @@
 import { MESSAGES } from '@/constants/messages';
 import connectDB from '@/DB/connectDB';
 import Deal from '@/models/Deal';
+import DealType from '@/models/DealType';
+import Store from '@/models/Store';
 import Joi from 'joi';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
@@ -75,7 +77,21 @@ export async function GET(req: Request) {
         const filter: any = {};
 
         // Search by deal name
-        if (search) filter.shortDescription = { $regex: search, $options: 'i' };
+        if (search) {
+            const regex = new RegExp(search, 'i');
+
+            const matchedDealTypes = await DealType.find({ name: regex }).select('_id').lean();
+            const dealTypeIds = matchedDealTypes.map((d) => d._id);
+
+            const matchedStores = await Store.find({ name: regex }).select('_id').lean();
+            const storeIds = matchedStores.map((s) => s._id);
+
+            filter.$or = [
+                { shortDescription: regex },
+                { dealType: { $in: dealTypeIds } },
+                { store: { $in: storeIds } },
+            ];
+        }
 
         // Filter by deal type
         if (dealType && mongoose.Types.ObjectId.isValid(dealType)) {

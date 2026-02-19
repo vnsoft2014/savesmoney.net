@@ -1,5 +1,6 @@
 import { PaginatedResponse } from '../../types/common';
 import { User } from '../../types/user';
+import { Coupon } from './coupon';
 import { DealType } from './dealType';
 import { Store } from './store';
 
@@ -17,18 +18,18 @@ export type DealFormValues = {
     description: string;
     flashDeal: boolean;
     flashDealExpireHours: number | null;
-    couponCode: string;
     tags: string[];
     hotTrend: boolean;
     holidayDeals: boolean;
     seasonalDeals: boolean;
     coupon: boolean;
+    coupons: Coupon[];
     clearance: boolean;
     disableExpireAt: boolean;
     author: string;
 };
 
-export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
+export type Deal<TDealType = DealType, TStore = Store, TUser = User, TCoupon = Coupon> = {
     _id: string;
     image: string;
     dealType: TDealType[];
@@ -42,13 +43,13 @@ export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
     purchaseLink: string;
     description: string;
     flashDeal: boolean;
-    flashDealExpireHours: number;
-    couponCode: string;
-    tags: string[];
+    flashDealExpireHours?: number;
+    tags?: string[];
     hotTrend: boolean;
     holidayDeals: boolean;
     seasonalDeals: boolean;
     coupon: boolean;
+    coupons?: TCoupon[];
     clearance: boolean;
     disableExpireAt: boolean;
     author: TUser;
@@ -57,9 +58,9 @@ export type Deal<TDealType = DealType, TStore = Store, TUser = User> = {
     updatedAt: string;
 };
 
-export type DealRaw = Deal<string, string, string>;
+export type DealRaw = Deal<string, string, string, Coupon>;
 
-export type DealFull = Deal<DealType, Store, User>;
+export type DealFull = Deal<DealType, Store, User, Coupon>;
 
 export type GetActiveDealsParams = {
     dealType?: string;

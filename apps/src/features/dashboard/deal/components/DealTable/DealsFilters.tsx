@@ -1,3 +1,9 @@
+'use client';
+
+import { getDealTypes } from '@/services';
+import { DealType } from '@/shared/types';
+import { useEffect, useState } from 'react';
+
 type Props = {
     search: string;
     setSearch: (value: string) => void;
@@ -29,76 +35,108 @@ export default function DealsFilters({
     setExpireAtTo,
     onClearFilters,
 }: Props) {
+    const [dealTypes, setDealTypes] = useState<DealType[]>([]);
+    const [loading, setLoading] = useState(false);
+
     const hasActiveFilters = search || dealTypeFilter || createdAtFrom || createdAtTo || expireAtFrom || expireAtTo;
 
-    return (
-        <div className="flex flex-col gap-3 py-2">
-            <div className="flex items-center gap-4">
-                {hasActiveFilters && (
-                    <button onClick={onClearFilters} className="text-sm text-red-600 hover:text-red-800 font-medium">
-                        Clear All Filters
-                    </button>
-                )}
-            </div>
+    useEffect(() => {
+        const fetchDealTypes = async () => {
+            try {
+                setLoading(true);
+                const res = await getDealTypes();
+                setDealTypes(res || []);
+            } catch (error) {
+                console.error('Failed to fetch deal types', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-gray-700">Deal Type:</label>
+        fetchDealTypes();
+    }, []);
+
+    return (
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div className="flex flex-wrap items-end gap-4">
+                <div className="flex flex-col gap-1 min-w-40">
+                    <label className="text-left text-xs font-medium text-gray-600">Deal Type</label>
+
                     <select
                         value={dealTypeFilter}
                         onChange={(e) => setDealTypeFilter(e.target.value)}
-                        className="px-3 py-1.5 border border-gray-300 rounded outline-none focus:border-indigo-600 text-sm"
+                        className="h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                        disabled={loading}
                     >
-                        <option value="">All Types</option>
-                        {/* {dealTypes.map((type) => (
+                        <option value="">All</option>
+
+                        {dealTypes.map((type) => (
                             <option key={type._id} value={type._id}>
                                 {type.name}
                             </option>
-                        ))} */}
+                        ))}
                     </select>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-gray-700">Expires:</label>
+                <div className="flex flex-col gap-1">
+                    <label className="text-left text-xs font-medium text-gray-600">Expire From</label>
                     <input
                         type="date"
                         value={expireAtFrom}
                         onChange={(e) => setExpireAtFrom(e.target.value)}
-                        className="px-3 py-1.5 border border-gray-300 rounded outline-none focus:border-indigo-600 text-sm"
+                        className="h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                     />
-                    <span className="text-gray-500">to</span>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                    <label className="text-left text-xs font-medium text-gray-600">Expire To</label>
                     <input
                         type="date"
                         value={expireAtTo}
                         onChange={(e) => setExpireAtTo(e.target.value)}
-                        className="px-3 py-1.5 border border-gray-300 rounded outline-none focus:border-indigo-600 text-sm"
+                        className="h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                     />
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium text-gray-700">Created:</label>
+                <div className="flex flex-col gap-1">
+                    <label className="text-left text-xs font-medium text-gray-600">Created From</label>
                     <input
                         type="date"
                         value={createdAtFrom}
                         onChange={(e) => setCreatedAtFrom(e.target.value)}
-                        className="px-3 py-1.5 border border-gray-300 rounded outline-none focus:border-indigo-600 text-sm"
+                        className="h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                     />
-                    <span className="text-gray-500">to</span>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                    <label className="text-left text-xs font-medium text-gray-600">Created To</label>
                     <input
                         type="date"
                         value={createdAtTo}
                         onChange={(e) => setCreatedAtTo(e.target.value)}
-                        className="px-3 py-1.5 border border-gray-300 rounded outline-none focus:border-indigo-600 text-sm"
+                        className="h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
                     />
                 </div>
 
-                <input
-                    className="w-60 dark:bg-transparent py-2 px-3 outline-none border-b-2 border-indigo-600 focus:border-orange-700 transition-colors"
-                    type="search"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search by Deal Name"
-                />
+                <div className="flex flex-col gap-1 flex-1 min-w-55">
+                    <label className="text-left text-xs font-medium text-gray-600">Search</label>
+                    <input
+                        type="search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search deal..."
+                        className="h-10 px-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none text-sm"
+                    />
+                </div>
+
+                {hasActiveFilters && (
+                    <button
+                        onClick={onClearFilters}
+                        className="h-10 px-4 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition text-sm font-medium"
+                    >
+                        Clear
+                    </button>
+                )}
             </div>
         </div>
     );

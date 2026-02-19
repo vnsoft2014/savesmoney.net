@@ -6,7 +6,7 @@ import CommentDataTable from '../comment/CommentDataTable';
 import DealTypeDataTable from '../deal-type/DealTypeDataTable';
 import DealDataTable from '../deal/DealDataTable';
 import OverviewData from '../overview/OverviewData';
-import { AffiliateStore, Settings } from '../settings';
+import { Settings } from '../settings';
 import StoreDataTable from '../store/StoreDataTable';
 import SubscriberDataTable from '../subscriber/SubscriberDataTable';
 import UserDealDataTable from '../user-store/UserDealsDataTable';
@@ -33,7 +33,6 @@ export default function SuperComponent() {
         case 'activeUsers':
             return <UserDataTable />;
         case 'activeSettings':
-            return <AffiliateStore />;
             return <Settings />;
         case 'activeUserDeals':
             return <UserDealDataTable />;

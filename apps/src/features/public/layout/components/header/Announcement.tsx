@@ -17,9 +17,6 @@ const Announcement = () => {
     return (
         <>
             {isAdmin && showPopup && <AutoLogoutWarning onStayActive={stayLoggedIn} onLogout={logoutNow} />}
-            <div className="hidden md:block w-full bg-blue-950 px-3 py-2 text-gray-200 text-[11px] italic text-center">
-                When you buy through links on Savesmoney.net, we may earn a commission.
-            </div>
             <div className="relative w-full bg-blue-900 border-b border-blue-800">
                 <div className="xl:container mx-auto px-3">
                     <div className="flex justify-between items-center gap-2 md:gap-4 py-3">

@@ -105,20 +105,21 @@ const Page = async ({ params }: Props) => {
     ];
 
     const daysRemaining = getDaysRemaining(deal.expireAt);
+    const coupons = deal.coupons ?? [];
 
     return (
         <>
             <DealDetailSchema deal={deal} />
-            <div className="container mx-auto pb-10">
+            <div className="xl:max-w-384 mx-auto pb-10">
                 <div className="px-4 py-3 text-gray-600">
                     <Breadcrumb items={breadcrumbItems} />
                 </div>
 
                 <div className="py-3 grid grid-cols-1 xl:grid-cols-8 lg:grid-cols-7">
-                    <div className="xl:col-span-6 lg:col-span-5 px-3 md:px-4">
-                        <div className="bg-white border">
+                    <div className="xl:col-span-6 lg:col-span-5 px-3">
+                        <div className="p-3 bg-white border border-gray-100 shadow-xs">
                             <div className="flex flex-col md:flex-row items-start">
-                                <div className="relative w-full xl:w-110 lg:w-90 md:w-70">
+                                <div className="relative w-full xl:w-85 lg:w-80 md:w-60">
                                     <DealPurchaseLink dealId={deal._id} href={deal.purchaseLink}>
                                         <ImageWithFallback
                                             src={deal.image?.replace(/_resized(?=\.)/, '')}
@@ -147,8 +148,8 @@ const Page = async ({ params }: Props) => {
                                     </div>
                                 </div>
 
-                                <div className="md:col-span-4 p-3 md:p-4">
-                                    <div className="flex items-center gap-2 mb-2 text-sm">
+                                <div className="md:flex-1 mt-4 md:mt-0 md:pl-4">
+                                    <div className="flex items-center gap-2 mb-2 text-[11px]">
                                         <div className="flex items-center gap-1">
                                             {Array.isArray(deal.dealType) &&
                                                 deal.dealType.map(
@@ -171,26 +172,34 @@ const Page = async ({ params }: Props) => {
                                         </span>
                                     </div>
 
-                                    <h1 className="text-base md:text-xl mb-4 font-sans-condensed font-bold">
+                                    <h1 className="text-xl md:text-2xl mb-4 font-sans-condensed font-bold">
                                         <DealPurchaseLink dealId={deal._id} href={deal.purchaseLink}>
                                             {deal.shortDescription}
                                         </DealPurchaseLink>
                                     </h1>
 
-                                    <DealPrice
-                                        originalPrice={deal.originalPrice}
-                                        discountPrice={deal.discountPrice}
-                                        percentageOff={deal.percentageOff}
-                                        size="lg"
-                                    />
+                                    <div className="flex items-center gap-3">
+                                        <DealPrice
+                                            originalPrice={deal.originalPrice}
+                                            discountPrice={deal.discountPrice}
+                                            percentageOff={deal.percentageOff}
+                                            size="lg"
+                                        />
+
+                                        {coupons?.length > 0 && (
+                                            <div>
+                                                {coupons.map((coupon, index) => (
+                                                    <CouponCodeBox
+                                                        key={index}
+                                                        code={coupon.code}
+                                                        comment={coupon.comment}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
 
                                     <DealStats dealId={deal._id} />
-
-                                    {deal.couponCode && (
-                                        <div className="mt-4">
-                                            <CouponCodeBox code={deal.couponCode} />
-                                        </div>
-                                    )}
 
                                     <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-5">
                                         <Button
@@ -212,15 +221,15 @@ const Page = async ({ params }: Props) => {
                             </div>
                         </div>
 
-                        <div className="mt-3 md:mt-6 bg-white border">
-                            <div className="px-3 md:px-4">
-                                <div className="flex gap-6 font-semibold mt-3 md:mt-4">
+                        <div className="mt-3 md:mt-6 bg-white border border-gray-100 shadow-xs">
+                            <div className="p-3 md:p-4">
+                                <div className="flex gap-6 font-semibold">
                                     <button className="border-b-2 border-black pb-2 text-lg md:text-xl font-sans-condensed font-bold">
                                         Product Details
                                     </button>
                                 </div>
 
-                                <div className="py-6">
+                                <div className="pt-6">
                                     <div className="product-details prose max-w-none text-base leading-6 text-gray-800">
                                         <p>
                                             <DealPurchaseLink
@@ -232,17 +241,6 @@ const Page = async ({ params }: Props) => {
                                             </DealPurchaseLink>{' '}
                                             has <strong>"{deal.shortDescription}"</strong> for the price of{' '}
                                             <strong>${deal.discountPrice}</strong>.
-                                        </p>
-                                        <p>
-                                            For more details, please click on{' '}
-                                            <DealPurchaseLink
-                                                dealId={deal._id}
-                                                href={deal.purchaseLink}
-                                                className="text-orange-600 underline"
-                                            >
-                                                this link
-                                            </DealPurchaseLink>
-                                            .
                                         </p>
                                         <h3 className="text-lg md:text-xl font-sans-condensed font-bold">
                                             Summary features:

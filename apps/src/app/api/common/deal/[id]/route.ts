@@ -29,6 +29,8 @@ export async function GET(req: Request, { params }: Props) {
             query = query.populate('dealType').populate('store').populate('author');
         }
 
+        query = query.populate('coupons');
+
         const deal = await query.lean();
 
         if (deal) {

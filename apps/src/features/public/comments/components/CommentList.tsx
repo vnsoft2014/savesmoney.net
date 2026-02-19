@@ -26,7 +26,7 @@ export default function CommentList({ dealId, onReady }: Props) {
     if (isLoading) return <CommentSkeleton />;
 
     return (
-        <div className="mt-3 p-3 md:p-6">
+        <div className="mt-3 py-3 md:py-6">
             <CommentHeader
                 count={total}
                 sortBy={sortBy}

@@ -12,7 +12,7 @@ export function useComments(dealId: string, sortBy: string) {
     const getKey = (pageIndex: number, previousPageData: any) => {
         if (previousPageData && !previousPageData.pagination?.hasMore) return null;
 
-        return `/api/common/deal/${dealId}/comments?page=${pageIndex + 1}&limit=5&sort=${sortBy}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/comments?page=${pageIndex + 1}&limit=5&sort=${sortBy}`;
     };
 
     const { data, error, size, setSize, isLoading, isValidating, mutate } = useSWRInfinite(getKey, fetcher);

@@ -3,13 +3,14 @@
 import { deleteDeal } from '@/services/admin/deal';
 import { formatPrice } from '@/utils/deal';
 import { fetcher, formatDate } from '@/utils/utils';
-import { Flame, Gift, Pencil, Scale, Sun, Tag, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 
+import { useDebounce } from '@/hooks/useDebounce';
 import { Loading } from '@/shared/components/common';
 import { Deal } from '@/shared/types/deal';
 import React from 'react';
@@ -52,26 +53,23 @@ export default function DealDataTable() {
     const [expireAtFrom, setExpireAtFrom] = useState('');
     const [expireAtTo, setExpireAtTo] = useState('');
 
-    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const debouncedSearch = useDebounce(search.trim(), 500);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearch(search);
-            setPage(1);
-        }, 500);
+        setPage(1);
+    }, [debouncedSearch]);
 
-        return () => clearTimeout(timer);
-    }, [search]);
-
-    // Build API URL with all filters
     const buildApiUrl = () => {
         const params = new URLSearchParams({
             page: page.toString(),
             limit: perPage.toString(),
-            search: debouncedSearch,
             sortField,
             sortOrder,
         });
+
+        if (debouncedSearch && debouncedSearch.length >= 3) {
+            params.append('search', debouncedSearch);
+        }
 
         if (dealTypeFilter) params.append('dealType', dealTypeFilter);
         if (createdAtFrom) params.append('createdAtFrom', createdAtFrom);
@@ -79,7 +77,7 @@ export default function DealDataTable() {
         if (expireAtFrom) params.append('expireAtFrom', expireAtFrom);
         if (expireAtTo) params.append('expireAtTo', expireAtTo);
 
-        return `/api/common/deal/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();
@@ -209,56 +207,14 @@ export default function DealDataTable() {
         {
             name: 'Deal Link',
             cell: (row: Deal) => (
-                <div className="flex items-center gap-2">
-                    <a
-                        href={row.purchaseLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline text-sm hover:text-blue-800"
-                    >
-                        Open
-                    </a>
-
-                    {row.hotTrend && (
-                        <IconWithTooltip tooltip="Hot Trend">
-                            <span className="text-red-600">
-                                <Flame size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.holidayDeals && (
-                        <IconWithTooltip tooltip="Holiday Deal">
-                            <span className="text-green-600">
-                                <Gift size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.seasonalDeals && (
-                        <IconWithTooltip tooltip="Seasonal Deal">
-                            <span className="text-orange-500">
-                                <Sun size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.coupon && (
-                        <IconWithTooltip tooltip="Coupon Available">
-                            <span className="text-yellow-600">
-                                <Tag size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.clearance && (
-                        <IconWithTooltip tooltip="Clearance Sale">
-                            <span className="text-purple-600">
-                                <Scale size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-                </div>
+                <a
+                    href={`/deals/deal-detail/${row.slug}-${row._id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline text-sm hover:text-blue-800"
+                >
+                    Open
+                </a>
             ),
             grow: 1,
         },
@@ -307,64 +263,64 @@ export default function DealDataTable() {
 
     return (
         <div className="w-full h-full data-table">
-            {isLoading ? (
-                <Loading />
-            ) : (
-                <>
-                    <DataTable
-                        columns={columns}
-                        data={dealData}
-                        pagination
-                        paginationServer
-                        paginationTotalRows={pagination.totalCount}
-                        paginationDefaultPage={page}
-                        onChangePage={handlePageChange}
-                        onChangeRowsPerPage={handlePerRowsChange}
-                        paginationPerPage={perPage}
-                        paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 50]}
-                        sortServer
-                        defaultSortFieldId="createdAt"
-                        defaultSortAsc={false}
-                        onSort={handleSort}
-                        title="Deals list"
-                        responsive
-                        fixedHeader={false}
-                        selectableRows
-                        selectableRowsHighlight
-                        highlightOnHover
-                        persistTableHead
-                        noDataComponent={
-                            <div className="p-6 text-center text-gray-500">
-                                {error ? 'Error loading deals' : 'No deals found'}
-                            </div>
-                        }
-                        subHeader
-                        subHeaderComponent={
-                            <DealsFilters
-                                search={search}
-                                setSearch={setSearch}
-                                dealTypeFilter={dealTypeFilter}
-                                setDealTypeFilter={setDealTypeFilter}
-                                createdAtFrom={createdAtFrom}
-                                setCreatedAtFrom={setCreatedAtFrom}
-                                createdAtTo={createdAtTo}
-                                setCreatedAtTo={setCreatedAtTo}
-                                expireAtFrom={expireAtFrom}
-                                setExpireAtFrom={setExpireAtFrom}
-                                expireAtTo={expireAtTo}
-                                setExpireAtTo={setExpireAtTo}
-                                onClearFilters={handleClearFilters}
-                            />
-                        }
-                        className="bg-white px-4 rounded-lg shadow"
-                    />
-
-                    <div className="mt-4 text-sm text-gray-600 text-center">
-                        Showing {dealData.length > 0 ? (page - 1) * perPage + 1 : 0} to{' '}
-                        {Math.min(page * perPage, pagination.totalCount)} of {pagination.totalCount} deals
+            <DataTable
+                columns={columns}
+                data={dealData}
+                pagination
+                paginationServer
+                paginationTotalRows={pagination.totalCount}
+                paginationDefaultPage={page}
+                onChangePage={handlePageChange}
+                onChangeRowsPerPage={handlePerRowsChange}
+                paginationPerPage={perPage}
+                paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 50]}
+                sortServer
+                defaultSortFieldId="createdAt"
+                defaultSortAsc={false}
+                onSort={handleSort}
+                title="Deals list"
+                responsive
+                fixedHeader={false}
+                selectableRows
+                selectableRowsHighlight
+                highlightOnHover
+                persistTableHead
+                progressPending={isLoading}
+                progressComponent={
+                    <div className="px-3 py-12">
+                        <Loading />
                     </div>
-                </>
-            )}
+                }
+                noDataComponent={
+                    <div className="p-6 text-center text-gray-500">
+                        {error ? 'Error loading deals' : 'No deals found'}
+                    </div>
+                }
+                subHeader
+                subHeaderComponent={
+                    <DealsFilters
+                        search={search}
+                        setSearch={setSearch}
+                        dealTypeFilter={dealTypeFilter}
+                        setDealTypeFilter={setDealTypeFilter}
+                        createdAtFrom={createdAtFrom}
+                        setCreatedAtFrom={setCreatedAtFrom}
+                        createdAtTo={createdAtTo}
+                        setCreatedAtTo={setCreatedAtTo}
+                        expireAtFrom={expireAtFrom}
+                        setExpireAtFrom={setExpireAtFrom}
+                        expireAtTo={expireAtTo}
+                        setExpireAtTo={setExpireAtTo}
+                        onClearFilters={handleClearFilters}
+                    />
+                }
+                className="bg-white px-4 rounded-lg shadow"
+            />
+
+            <div className="mt-4 text-sm text-gray-600 text-center">
+                Showing {dealData.length > 0 ? (page - 1) * perPage + 1 : 0} to{' '}
+                {Math.min(page * perPage, pagination.totalCount)} of {pagination.totalCount} deals
+            </div>
         </div>
     );
 }

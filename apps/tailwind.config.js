@@ -5,7 +5,7 @@ module.exports = {
         container: {
             center: true,
             screens: {
-                xl: '96rem',
+                '2xl': '96rem',
             },
         },
         extend: {

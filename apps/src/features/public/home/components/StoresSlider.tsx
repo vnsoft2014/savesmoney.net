@@ -1,6 +1,6 @@
 'use client';
 
-import { UserStore } from '@/shared/types';
+import { Store } from '@/shared/types';
 import Link from 'next/link';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,7 +14,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 type Props = {
-    stores: UserStore[];
+    stores: Store[];
 };
 
 const StoresSlider = ({ stores }: Props) => {
@@ -27,7 +27,7 @@ const StoresSlider = ({ stores }: Props) => {
     return (
         <section className="font-sans-condensed">
             <div className="flex justify-between items-center">
-                <h3 className="md:text-lg lg:text-xl font-bold">Retail Stores</h3>
+                <h3 className="md:text-lg lg:text-xl font-bold">All Stores</h3>
 
                 <div className="flex items-center gap-1 md:gap-3">
                     <button
@@ -54,10 +54,10 @@ const StoresSlider = ({ stores }: Props) => {
                 </div>
             </div>
 
-            <div className="mt-5 py-3 md:py-4 bg-white">
+            <div className="mt-5 px-3 py-3 md:py-4 bg-white">
                 <Swiper
                     modules={[Navigation, Autoplay]}
-                    spaceBetween={10}
+                    spaceBetween={15}
                     slidesPerView={3}
                     navigation={{
                         prevEl,
@@ -70,10 +70,10 @@ const StoresSlider = ({ stores }: Props) => {
                     }}
                     autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
                     breakpoints={{
-                        480: { slidesPerView: 4, spaceBetween: 20 },
-                        768: { slidesPerView: 6, spaceBetween: 24 },
-                        1024: { slidesPerView: 8, spaceBetween: 24 },
-                        1280: { slidesPerView: 10, spaceBetween: 30 },
+                        480: { slidesPerView: 4 },
+                        768: { slidesPerView: 6 },
+                        1024: { slidesPerView: 8 },
+                        1280: { slidesPerView: 10 },
                     }}
                     className="stores-swiper"
                 >
@@ -82,11 +82,11 @@ const StoresSlider = ({ stores }: Props) => {
                             <Link
                                 href={`/sm-stores/${store.slug}-${store._id}`}
                                 prefetch={false}
-                                className="group flex flex-col items-center p-3 text-center transition-all"
+                                className="group flex flex-col items-center text-center transition-all"
                             >
                                 <div className="relative w-full rounded-full p-1 border-2 border-transparent group-hover:scale-105 transition-all duration-300">
                                     <Image
-                                        src={store.logo || '/image.png'}
+                                        src={store.thumbnail || '/image.png'}
                                         alt={store.name}
                                         width={96}
                                         height={96}

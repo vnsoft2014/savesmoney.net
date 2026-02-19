@@ -126,7 +126,7 @@ export default function CommentForm({ dealId, parentId = null, onSuccess }: Prop
     };
 
     return (
-        <Card className="border">
+        <Card className="border border-gray-100 shadow-xs">
             <CardHeader className="p-4 border-b">
                 <CardTitle className="font-sans-condensed text-lg md:text-xl font-bold">Leave a Comment</CardTitle>
             </CardHeader>

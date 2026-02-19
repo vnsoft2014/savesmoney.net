@@ -34,7 +34,7 @@ const ValidityVote = ({ dealId }: Props) => {
 
             setDisabled(true);
 
-            const res = await fetch(`/api/common/deal/${dealId}/validity`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/validity`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ vote }),

@@ -1,6 +1,7 @@
 import { DealFormValues } from '@/shared/types';
 import { useDealContext } from '../../contexts';
 import ActionCell from './ActionCell';
+import CouponsInput from './CouponsInput';
 import DealFlags from './DealFlags';
 import DealTypeSelect from './DealTypeSelect';
 import DescriptionCell from './DescriptionCell';
@@ -36,6 +37,8 @@ export default function DealRow({ deal, index }: Props) {
             <PriceCell deal={deal} />
 
             <PurchaseLinkInput deal={deal} />
+
+            <CouponsInput deal={deal} error={errors[deal.id]?.coupons} />
 
             <DescriptionCell deal={deal} error={errors[deal.id]?.description} />
 

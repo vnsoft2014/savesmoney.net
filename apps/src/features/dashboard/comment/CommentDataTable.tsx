@@ -58,7 +58,7 @@ export default function CommentTable() {
             sortOrder,
         });
 
-        return `/api/admin/comment/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/comment/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();

@@ -77,7 +77,7 @@ export default function UserDealsDataTable() {
         if (expireAtFrom) params.append('expireAtFrom', expireAtFrom);
         if (expireAtTo) params.append('expireAtTo', expireAtTo);
 
-        return `/api/admin/user-store/deal/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/user-store/deal/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();
@@ -112,11 +112,14 @@ export default function UserDealsDataTable() {
 
     const handleChangeStatus = async (id: string, status: string) => {
         try {
-            const res = await fetcherWithAuth(`/api/admin/user-store/deal/${id}/status`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status }),
-            });
+            const res = await fetcherWithAuth(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/user-store/deal/${id}/status`,
+                {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status }),
+                },
+            );
 
             if (res.success) {
                 toast.success('Status updated');

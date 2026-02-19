@@ -42,7 +42,7 @@ export default function StoreDataTable() {
             sortOrder,
         });
 
-        return `/api/common/store/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/common/store/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();

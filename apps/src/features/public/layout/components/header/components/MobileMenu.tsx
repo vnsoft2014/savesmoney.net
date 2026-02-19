@@ -72,7 +72,7 @@ const MobileMenu = () => {
                                     <Link
                                         href="/dashboard"
                                         prefetch={false}
-                                        className="text-gray-800 hover:text-blue-600"
+                                        className="text-sm md:text-[15px] text-gray-800 hover:text-blue-600"
                                         onClick={() => setOpen(false)}
                                     >
                                         <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
@@ -87,7 +87,7 @@ const MobileMenu = () => {
                                 <Link
                                     href={`/user/profile/${user._id}`}
                                     prefetch={false}
-                                    className="text-gray-800 hover:text-blue-600"
+                                    className="text-sm md:text-[15px] text-gray-800 hover:text-blue-600"
                                     onClick={() => setOpen(false)}
                                 >
                                     <UserCircle className="mr-2 h-4 w-4" /> Profile
@@ -100,8 +100,11 @@ const MobileMenu = () => {
                         <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center">
                             <User className="h-6 w-6 text-muted-foreground" />
                         </div>
-                        <p className="text-sm text-muted-foreground">Sign in to access more features</p>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={handleSignIn}>
+                        <p className="text-sm md:text-[15px] text-muted-foreground">Sign in to access more features</p>
+                        <Button
+                            className="w-full text-sm md:text-[15px] bg-blue-600 hover:bg-blue-700"
+                            onClick={handleSignIn}
+                        >
                             Sign In
                         </Button>
                     </div>
@@ -111,7 +114,7 @@ const MobileMenu = () => {
 
                 <ScrollArea className="flex-1 px-2 py-4">
                     <div className="space-y-1">
-                        <p className="px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                        <p className="px-4 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
                             Menu
                         </p>
                         {links.map((item, idx) => (
@@ -126,7 +129,7 @@ const MobileMenu = () => {
                                     href="/my-store/deal/add"
                                     prefetch={false}
                                     onClick={closeMenu}
-                                    className="flex-1 px-4 py-2 text-sm font-medium transition-colors text-gray-800 hover:text-blue-600"
+                                    className="flex-1 px-4 py-2 text-sm md:text-[15px] font-medium transition-colors text-gray-800 hover:text-blue-600"
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-700/20">
@@ -149,7 +152,7 @@ const MobileMenu = () => {
 
                         <Separator className="my-4" />
 
-                        <p className="px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                        <p className="px-4 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
                             Support
                         </p>
                         {supportData.map((item, idx) => (
@@ -157,7 +160,7 @@ const MobileMenu = () => {
                         ))}
 
                         <Separator className="my-4" />
-                        <p className="px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
+                        <p className="px-4 text-[10px] md:text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-2">
                             Subscribe
                         </p>
                         <SubscribeBox />
@@ -168,7 +171,7 @@ const MobileMenu = () => {
                     <div className="p-4 border-t">
                         <Button
                             variant="destructive"
-                            className="w-full px-4 py-3 bg-linear-to-r from-red-500 to-red-600 text-white rounded-md hover:from-red-600 hover:to-red-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl active:scale-98 items-center justify-center space-x-2"
+                            className="w-full px-4 py-3 bg-linear-to-r from-red-500 to-red-600 text-white rounded-md hover:from-red-600 hover:to-red-700 transition-all duration-200 text-sm md:text-[15px] font-medium shadow-lg hover:shadow-xl active:scale-98 items-center justify-center space-x-2"
                             onClick={handleSignOut}
                         >
                             <LogOut className="mr-2 h-4 w-4" /> Sign Out

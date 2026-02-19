@@ -31,7 +31,7 @@ function MenuItem({ item, level, onToggle }: Props) {
                     href={item.href}
                     prefetch={false}
                     onClick={onToggle}
-                    className="flex-1 px-4 py-2.5 text-sm font-medium transition-colors text-gray-800 hover:text-blue-600"
+                    className="flex-1 px-4 py-2.5 text-sm md:text-[15px] font-medium transition-colors text-gray-800 hover:text-blue-600"
                 >
                     {item.label}
                 </Link>

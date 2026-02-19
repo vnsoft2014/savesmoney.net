@@ -7,7 +7,6 @@ import { Card, CardContent } from '@/shared/shadecn/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
 import { Input } from '@/shared/shadecn/ui/input';
 import { Textarea } from '@/shared/shadecn/ui/textarea';
-import { UserStore } from '@/shared/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImagePlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -15,56 +14,33 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { z } from 'zod';
-
-const formSchema = z.object({
-    name: z.string().min(3, 'Store name must be at least 3 characters'),
-    website: z
-        .string()
-        .trim()
-        .optional()
-        .refine(
-            (val) => {
-                if (!val) return true;
-                try {
-                    new URL(val);
-                    return true;
-                } catch {
-                    return false;
-                }
-            },
-            { message: 'Invalid website URL' },
-        ),
-    description: z.string().optional(),
-    logo: z.any().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { UserStoreForm as UserStoreFormType, userStoreSchema } from '../../schemas/StoreForm.schema';
 
 export default function StoreSettingsForm() {
     const router = useRouter();
 
-    const [store, setStore] = useState<UserStore>();
     const [loading, setLoading] = useState(true);
 
     const [preview, setPreview] = useState<string | null>(null);
 
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<UserStoreFormType>({
+        resolver: zodResolver(userStoreSchema),
         defaultValues: {
-            name: store?.name || '',
-            website: store?.website || '',
-            description: store?.description || '',
-            logo: store?.logo || '',
+            name: '',
+            website: '',
+            description: '',
+            logo: '',
         },
     });
 
-    const {
-        handleSubmit,
-        formState: { isSubmitting },
-    } = form;
+    const { handleSubmit, formState } = form;
 
-    const onSubmit = async (values: FormValues) => {
+    const onSubmit = async (values: UserStoreFormType) => {
+        if (!preview) {
+            toast.error('Store logo is required');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('name', values.name);
         formData.append('website', values.website || '');
@@ -87,28 +63,23 @@ export default function StoreSettingsForm() {
     useEffect(() => {
         const fetchStore = async () => {
             setLoading(true);
-            const res = await getUserStore();
 
-            if (res.success) {
-                const data = res.data;
-                setStore(data);
+            const store = await getUserStore();
 
-                setPreview(data?.logo || null);
+            setPreview(store?.logo || null);
 
-                form.reset({
-                    name: data?.name || '',
-                    website: data?.website || '',
-                    description: data?.description || '',
-                    logo: undefined,
-                });
-            } else {
-                toast.error(res.message || 'Loading failed');
-            }
+            form.reset({
+                name: store?.name || '',
+                website: store?.website || '',
+                description: store?.description || '',
+                logo: '',
+            });
+
             setLoading(false);
         };
 
         fetchStore();
-    }, [form]);
+    }, []);
 
     if (loading)
         return (
@@ -132,7 +103,9 @@ export default function StoreSettingsForm() {
                             name="logo"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col items-center space-y-4">
-                                    <FormLabel>Store Logo</FormLabel>
+                                    <FormLabel>
+                                        Store Logo <span className="text-red-500">*</span>
+                                    </FormLabel>
                                     <FormControl>
                                         <label className="cursor-pointer inline-block">
                                             <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
@@ -175,10 +148,15 @@ export default function StoreSettingsForm() {
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Store Name</FormLabel>
+                                        <FormLabel>
+                                            Store Name <span className="text-red-500">*</span>
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input className="rounded-xl" {...field} />
+                                            <Input maxLength={60} {...field} />
                                         </FormControl>
+                                        <div className="text-xs text-gray-400 text-right">
+                                            {field.value?.length || 0}/60
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -189,13 +167,12 @@ export default function StoreSettingsForm() {
                                 name="website"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Website</FormLabel>
+                                        <FormLabel>
+                                            Website <span className="text-gray-400 text-sm">(Optional)</span>
+                                        </FormLabel>
+
                                         <FormControl>
-                                            <Input
-                                                className="rounded-xl"
-                                                placeholder="https://example.com"
-                                                {...field}
-                                            />
+                                            <Input placeholder="https://example.com" maxLength={255} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -207,10 +184,15 @@ export default function StoreSettingsForm() {
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Description</FormLabel>
+                                        <FormLabel>
+                                            Description <span className="text-red-500">*</span>
+                                        </FormLabel>
                                         <FormControl>
-                                            <Textarea className="min-h-30" {...field} />
+                                            <Textarea className="min-h-30" maxLength={300} {...field} />
                                         </FormControl>
+                                        <div className="text-xs text-gray-400 text-right">
+                                            {field.value?.length || 0}/300
+                                        </div>
                                         <FormMessage />
                                     </FormItem>
                                 )}
@@ -218,8 +200,8 @@ export default function StoreSettingsForm() {
                         </div>
 
                         <div className="flex justify-end">
-                            <Button type="submit" disabled={isSubmitting} className="min-w-35">
-                                {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                            <Button type="submit" disabled={formState.isSubmitting} className="min-w-35">
+                                {formState.isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                 Save Changes
                             </Button>
                         </div>

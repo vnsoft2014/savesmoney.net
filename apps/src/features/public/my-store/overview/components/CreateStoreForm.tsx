@@ -12,37 +12,13 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { z } from 'zod';
-
-const formSchema = z.object({
-    name: z.string().min(3, 'Store name must be at least 3 characters'),
-    website: z
-        .string()
-        .trim()
-        .optional()
-        .refine(
-            (val) => {
-                if (!val) return true;
-                try {
-                    new URL(val);
-                    return true;
-                } catch {
-                    return false;
-                }
-            },
-            { message: 'Invalid website URL' },
-        ),
-    description: z.string().optional(),
-    logo: z.any().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { UserStoreForm as UserStoreFormType, userStoreSchema } from '../../schemas/StoreForm.schema';
 
 export default function CreateStoreForm() {
     const [preview, setPreview] = useState<string | null>(null);
 
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<UserStoreFormType>({
+        resolver: zodResolver(userStoreSchema),
         defaultValues: {
             name: '',
             website: '',
@@ -56,7 +32,12 @@ export default function CreateStoreForm() {
         formState: { isSubmitting },
     } = form;
 
-    const onSubmit = async (values: FormValues) => {
+    const onSubmit = async (values: UserStoreFormType) => {
+        if (!preview) {
+            toast.error('Store logo is required');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('name', values.name);
         formData.append('website', values.website || '');
@@ -96,7 +77,9 @@ export default function CreateStoreForm() {
                                     name="logo"
                                     render={({ field }) => (
                                         <FormItem className="flex flex-col items-center space-y-4">
-                                            <FormLabel>Store Logo</FormLabel>
+                                            <FormLabel>
+                                                Store Logo <span className="text-red-500">*</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <label className="cursor-pointer">
                                                     <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
@@ -136,7 +119,9 @@ export default function CreateStoreForm() {
                                     name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Store Name</FormLabel>
+                                            <FormLabel>
+                                                Store Name <span className="text-red-500">*</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     placeholder="Enter your store name"
@@ -144,6 +129,9 @@ export default function CreateStoreForm() {
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <div className="text-xs text-gray-400 text-right">
+                                                {field.value?.length || 0}/60
+                                            </div>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -154,7 +142,9 @@ export default function CreateStoreForm() {
                                     name="website"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Website</FormLabel>
+                                            <FormLabel>
+                                                Website <span className="text-gray-400 text-sm">(Optional)</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Input
                                                     className="rounded-xl"
@@ -172,7 +162,9 @@ export default function CreateStoreForm() {
                                     name="description"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Description</FormLabel>
+                                            <FormLabel>
+                                                Description <span className="text-red-500">*</span>
+                                            </FormLabel>
                                             <FormControl>
                                                 <Textarea
                                                     placeholder="Tell customers about your store..."
@@ -180,6 +172,9 @@ export default function CreateStoreForm() {
                                                     {...field}
                                                 />
                                             </FormControl>
+                                            <div className="text-xs text-gray-400 text-right">
+                                                {field.value?.length || 0}/300
+                                            </div>
                                             <FormMessage />
                                         </FormItem>
                                     )}

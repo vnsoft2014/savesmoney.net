@@ -62,11 +62,11 @@ const SignUpForm = () => {
         });
 
         if (loginResult?.error) {
-            toast.error('Account created but auto login failed');
+            toast.error('Account created but auto login failed!');
             return;
         }
 
-        toast.success('Account created successfully 🎉');
+        toast.success('Account created successfully!');
 
         const safeRedirect = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
 

@@ -40,7 +40,7 @@ export default function UserStoreDataTable() {
             sortOrder,
         });
 
-        return `/api/admin/user-store/store/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/user-store/store/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();
@@ -58,11 +58,14 @@ export default function UserStoreDataTable() {
 
     const handleToggleStatus = async (id: string, currentStatus: boolean) => {
         try {
-            const res = await fetcherWithAuth(`/api/admin/user-store/store/${id}/status`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isActive: !currentStatus }),
-            });
+            const res = await fetcherWithAuth(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/user-store/store/${id}/status`,
+                {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isActive: !currentStatus }),
+                },
+            );
 
             if (res.success) {
                 await mutate(apiUrl);

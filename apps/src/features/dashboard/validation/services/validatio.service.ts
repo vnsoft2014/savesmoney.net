@@ -3,7 +3,7 @@ import { fetcherWithAuth } from '@/utils/utils';
 
 export const deleteValidation = async (id: string) => {
     try {
-        const data = await fetcherWithAuth(`/api/admin/deal-validation/${id}`, {
+        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/deal-validation/${id}`, {
             method: 'DELETE',
         });
 
@@ -22,7 +22,7 @@ export const deleteValidation = async (id: string) => {
 
 export const updateValidationStatus = async (dealId: string, invalid: boolean) => {
     try {
-        const data = await fetcherWithAuth(`/api/admin/deal/${dealId}/validation`, {
+        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/deal/${dealId}/validation`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

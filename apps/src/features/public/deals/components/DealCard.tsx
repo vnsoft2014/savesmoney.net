@@ -20,35 +20,37 @@ const DealCard = memo(({ deal }: DealCardProps) => {
     const dealUrl = `/deals/deal-detail/${deal.slug}-${deal._id}`;
 
     return (
-        <article className="block bg-white border">
+        <article className="block bg-white border border-gray-100 shadow-xs">
             {deal.image && (
-                <div className="relative w-full h-auto overflow-hidden">
-                    <Image
-                        src={deal.image}
-                        alt={deal.shortDescription}
-                        className="object-cover"
-                        loading="lazy"
-                        width={535}
-                        height={535}
-                    />
-                    <DealLabel
-                        flashDeal={deal.flashDeal}
-                        coupon={deal.coupon}
-                        clearance={deal.clearance}
-                        daysRemaining={daysRemaining}
-                    />
+                <div className="relative w-full h-auto px-2 pt-2 overflow-hidden">
+                    <div className="relative">
+                        <Image
+                            src={deal.image}
+                            alt={deal.shortDescription}
+                            className="object-cover"
+                            loading="lazy"
+                            width={535}
+                            height={535}
+                        />
+                        <DealLabel
+                            flashDeal={deal.flashDeal}
+                            coupon={deal.coupon}
+                            clearance={deal.clearance}
+                            daysRemaining={daysRemaining}
+                        />
 
-                    <div className="absolute bottom-0 left-0 right-0">
-                        {deal.flashDeal && deal.expireAt && (
-                            <div className="py-1 bg-orange-600">
-                                <div className="flex justify-center items-center gap-1 text-sm md:text-base text-white font-sans-condensed font-bold">
-                                    <span className="hidden md:inline-block mr-1">Ends in</span>
-                                    <IoFlame className="inline-block md:hidden w-4 h-4 text-white mr-1" />
+                        <div className="absolute bottom-0 left-0 right-0">
+                            {deal.flashDeal && deal.expireAt && (
+                                <div className="py-1 bg-orange-600">
+                                    <div className="flex justify-center items-center gap-1 text-sm md:text-base text-white font-sans-condensed font-bold">
+                                        <span className="hidden md:inline-block mr-1">Ends in</span>
+                                        <IoFlame className="inline-block md:hidden w-4 h-4 text-white mr-1" />
 
-                                    <FlashDealCountdown expireAt={deal.expireAt} />
+                                        <FlashDealCountdown expireAt={deal.expireAt} />
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

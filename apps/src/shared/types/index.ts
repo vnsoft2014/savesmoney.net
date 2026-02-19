@@ -1,6 +1,7 @@
 import React from 'react';
 
 export * from './comment';
+export * from './coupon';
 export * from './deal';
 export * from './dealType';
 export * from './export';

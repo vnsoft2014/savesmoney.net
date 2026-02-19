@@ -78,10 +78,6 @@ const DealSchema = new mongoose.Schema(
             default: false,
         },
         flashDealExpireHours: Number,
-        couponCode: {
-            type: String,
-            required: false,
-        },
         tags: {
             type: [String],
             default: [],
@@ -102,6 +98,12 @@ const DealSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        coupons: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Coupon',
+            },
+        ],
         clearance: {
             type: Boolean,
             default: false,

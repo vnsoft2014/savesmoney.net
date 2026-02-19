@@ -2,6 +2,7 @@ import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck } from '@/middleware/authCheck';
+import { Coupon } from '@/models/Coupon';
 import Deal from '@/models/Deal';
 import { DealFormValues } from '@/shared/types';
 import { validateRequest } from '@/utils/validators/validate';
@@ -66,13 +67,21 @@ const ClientDealSchema = Joi.object({
     description: Joi.string().required(),
     flashDeal: Joi.boolean().optional(),
     flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
-    couponCode: Joi.string().allow('').optional(),
     tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
 
     hotTrend: Joi.boolean().default(false),
     holidayDeals: Joi.boolean().default(false),
     seasonalDeals: Joi.boolean().default(false),
     coupon: Joi.boolean().default(false),
+    coupons: Joi.array()
+        .items(
+            Joi.object({
+                code: Joi.string().trim().required(),
+                comment: Joi.string().trim().required(),
+            }),
+        )
+        .optional()
+        .default([]),
     clearance: Joi.boolean().default(false),
     disableExpireAt: Joi.boolean().default(false),
     author: Joi.string().required(),
@@ -169,8 +178,10 @@ export async function POST(req: Request) {
             );
         }
 
-        const dealsToSave = data.map((deal) => {
-            const { disableExpireAt, flashDeal, flashDealExpireHours, coupon, clearance } = deal;
+        const dealsToSave = [];
+
+        for (const deal of data) {
+            const { disableExpireAt, flashDeal, flashDealExpireHours, coupon, coupons, clearance } = deal;
 
             let expireAt = null;
 
@@ -190,7 +201,20 @@ export async function POST(req: Request) {
                 }
             }
 
-            return {
+            let couponIds: any[] = [];
+
+            if (coupons.length > 0) {
+                const createdCoupons = await Coupon.insertMany(
+                    coupons.map((c) => ({
+                        code: c.code,
+                        comment: c.comment,
+                    })),
+                );
+
+                couponIds = createdCoupons.map((c) => c._id);
+            }
+
+            dealsToSave.push({
                 image: deal.picture ?? null,
                 dealType: deal.dealType,
                 store: deal.store,
@@ -205,7 +229,7 @@ export async function POST(req: Request) {
                 description: deal.description,
                 flashDeal,
                 flashDealExpireHours: deal.flashDealExpireHours,
-                couponCode: deal.couponCode,
+                coupons: couponIds,
                 tags: deal.tags ?? [],
 
                 hotTrend: deal.hotTrend ?? false,
@@ -218,8 +242,8 @@ export async function POST(req: Request) {
                 disableExpireAt: deal.disableExpireAt ?? false,
 
                 author: deal.author,
-            };
-        });
+            });
+        }
 
         const savedDeals = await Deal.insertMany(dealsToSave);
 

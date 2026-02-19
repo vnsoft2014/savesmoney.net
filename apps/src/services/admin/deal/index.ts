@@ -7,7 +7,7 @@ export const addNewDeals = async (deals: DealFormValues[]) => {
     const payload = deals.map(({ id, ...rest }) => rest);
 
     try {
-        const data = await fetcherWithAuth(`/api/admin/deal`, {
+        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/deal`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ export const deleteDeal = async (id: string) => {
     try {
         const session = await getSession();
 
-        const res = await fetch(`/api/admin/deal/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/deal/${id}`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${session?.accessToken}`,

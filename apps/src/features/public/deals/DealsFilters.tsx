@@ -150,7 +150,9 @@ const DealsFilters = ({ dealTypes, stores }: DealsFiltersProps) => {
 
     return (
         <div className="flex flex-col-reverse lg:flex-row items-center gap-3 lg:gap-0 mt-2 md:mt-0 font-sans">
-            {isPending && <span className="text-sm opacity-60">Updating…</span>}
+            {isPending && (
+                <span className="inline-block w-3 h-3 mr-2 animate-spin rounded-full border border-current border-t-transparent" />
+            )}
             {hasActiveFilters && (
                 <div className="flex justify-end flex-wrap gap-2 mr-3">
                     {filters.dealType && (

@@ -9,36 +9,22 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
 
-    const sort = searchParams.get('sort') || 'newest';
+    const sort = searchParams.get('sort') || 'popular';
+    const search = searchParams.get('search') || '';
+
     const currentPage = Math.max(parseInt(searchParams.get('page') || '1'), 1);
     const limit = Math.max(parseInt(searchParams.get('limit') || '30'), 1);
 
     const skip = (currentPage - 1) * limit;
 
     try {
-        if (sort === 'newest') {
-            const totalCount = await UserStore.countDocuments({ isActive: true });
+        const searchMatch = search ? { name: { $regex: search, $options: 'i' } } : {};
 
-            const stores = await UserStore.find({ isActive: true })
-                .sort({ createdAt: -1, _id: -1 })
-                .skip(skip)
-                .limit(limit)
-                .lean();
-
-            return NextResponse.json({
-                success: true,
-                data: stores,
-                pagination: {
-                    currentPage,
-                    totalPages: Math.ceil(totalCount / limit),
-                    totalCount,
-                    limit,
-                    hasNextPage: currentPage * limit < totalCount,
-                    hasPrevPage: currentPage > 1,
-                },
-            });
-        }
-
+        /**
+         * =========================
+         * POPULAR STORES
+         * =========================
+         */
         if (sort === 'popular') {
             const aggregation = await Deal.aggregate([
                 {
@@ -63,7 +49,7 @@ export async function GET(req: NextRequest) {
                 },
                 {
                     $group: {
-                        _id: '$userStore', // ✅ dùng userStore
+                        _id: '$userStore',
                         totalViews: {
                             $sum: { $ifNull: ['$stats.views', 0] },
                         },
@@ -71,18 +57,17 @@ export async function GET(req: NextRequest) {
                 },
                 {
                     $lookup: {
-                        from: 'userstores', // collection của UserStore
+                        from: 'userstores',
                         localField: '_id',
                         foreignField: '_id',
                         as: 'store',
                     },
                 },
-                {
-                    $unwind: '$store',
-                },
+                { $unwind: '$store' },
                 {
                     $match: {
                         'store.isActive': true,
+                        ...(search ? { 'store.name': { $regex: search, $options: 'i' } } : {}),
                     },
                 },
                 {
@@ -95,9 +80,7 @@ export async function GET(req: NextRequest) {
                         totalViews: 1,
                     },
                 },
-                {
-                    $sort: { totalViews: -1 },
-                },
+                { $sort: { totalViews: -1 } },
                 {
                     $facet: {
                         data: [{ $skip: skip }, { $limit: limit }],
@@ -123,9 +106,24 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        const totalCount = await UserStore.countDocuments({ isActive: true });
+        /**
+         * =========================
+         * SEARCH ONLY (non-popular fallback)
+         * =========================
+         */
+        const totalCount = await UserStore.countDocuments({
+            isActive: true,
+            ...searchMatch,
+        });
 
-        const stores = await UserStore.find({ isActive: true }).skip(skip).limit(limit).lean();
+        const stores = await UserStore.find({
+            isActive: true,
+            ...searchMatch,
+        })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
         return NextResponse.json({
             success: true,

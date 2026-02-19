@@ -1,5 +1,5 @@
 import { Ads } from '@/shared/components/widgets';
-import { DealListResponse, DealType, Store, UserStore } from '@/shared/types';
+import { DealListResponse, DealType, Store } from '@/shared/types';
 import { DealsFilters } from '../deals';
 import { DealsListing, DealTypesGrid } from './components';
 import StoreSlider from './components/StoresSlider';
@@ -9,19 +9,18 @@ interface Props {
     dealListResponse: DealListResponse;
     dealTypes: DealType[];
     stores: Store[];
-    userStores: UserStore[];
 }
 
-const DesktopPage = async ({ dealListResponse, dealTypes, stores, userStores }: Props) => {
+const DesktopPage = async ({ dealListResponse, dealTypes, stores }: Props) => {
     return (
         <>
             <HomeSchema />
 
-            <div className="container min-h-screen mx-auto">
+            <div className="container min-h-screen">
                 <div className="px-3 pt-6 pb-10 space-y-8">
                     <DealTypesGrid dealTypes={dealTypes} />
 
-                    <StoreSlider stores={userStores} />
+                    <StoreSlider stores={stores} />
 
                     <Ads slot="2176866845" />
 

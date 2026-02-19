@@ -45,7 +45,7 @@ export default function SubscriberDataTable() {
         if (subscribedAtFrom) params.append('subscribedAtFrom', subscribedAtFrom);
         if (subscribedAtTo) params.append('subscribedAtTo', subscribedAtTo);
 
-        return `/api/admin/subscriber/list?${params.toString()}`;
+        return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/subscriber/list?${params.toString()}`;
     };
 
     const apiUrl = buildApiUrl();

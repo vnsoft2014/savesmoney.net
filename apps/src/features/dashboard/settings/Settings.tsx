@@ -12,13 +12,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/shared/shadecn/ui/input';
 import { Textarea } from '@/shared/shadecn/ui/textarea';
 import { settingsDefault } from '@/utils/settings';
+import { ImagePlus } from 'lucide-react';
+import Image from 'next/image';
 import { SettingsForm as SettingsFormType, settingsSchema } from './schemas';
 
 export default function Settings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [logoFile, setLogoFile] = useState<File | null>(null);
-    const [faviconFile, setFaviconFile] = useState<File | null>(null);
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
+    const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
 
     const form = useForm<SettingsFormType>({
         resolver: zodResolver(settingsSchema),
@@ -27,29 +29,31 @@ export default function Settings() {
 
     useEffect(() => {
         const fetchSettings = async () => {
-            try {
-                const settings = await getSettings();
-                if (settings) {
-                    form.reset({
-                        websiteTitle: settings.websiteTitle || '',
-                        websiteDescription: settings.websiteDescription || '',
-                        holidayDealsLabel: settings.holidayDealsLabel || '',
-                        seasonalDealsLabel: settings.seasonalDealsLabel || '',
-                        adminEmail: settings.adminEmail || '',
-                        socialLinks: {
-                            facebookPage: settings.socialLinks?.facebookPage || '',
-                            facebookGroup: settings.socialLinks?.facebookGroup || '',
-                            x: settings.socialLinks?.x || '',
-                            instagram: settings.socialLinks?.instagram || '',
-                            linkedin: settings.socialLinks?.linkedin || '',
-                        },
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-            } finally {
-                setLoading(false);
-            }
+            const settings = await getSettings();
+
+            setLogoPreview(settings.logo);
+            setFaviconPreview(settings.favicon);
+
+            form.reset({
+                logo: '',
+                favicon: '',
+                websiteTitle: settings.websiteTitle || '',
+                websiteDescription: settings.websiteDescription || '',
+                holidayDealsLabel: settings.holidayDealsLabel || '',
+                seasonalDealsLabel: settings.seasonalDealsLabel || '',
+                adminEmail: settings.adminEmail || '',
+
+                footerQuote: settings.footerQuote || '',
+                footerQuoteAuthor: settings.footerQuoteAuthor || '',
+                socialLinks: {
+                    facebookPage: settings.socialLinks?.facebookPage || '',
+                    facebookGroup: settings.socialLinks?.facebookGroup || '',
+                    x: settings.socialLinks?.x || '',
+                    instagram: settings.socialLinks?.instagram || '',
+                    linkedin: settings.socialLinks?.linkedin || '',
+                },
+            });
+            setLoading(false);
         };
 
         fetchSettings();
@@ -65,12 +69,15 @@ export default function Settings() {
         formData.append('seasonalDealsLabel', values.seasonalDealsLabel || '');
         formData.append('adminEmail', values.adminEmail);
 
+        formData.append('footerQuote', values.footerQuote || '');
+        formData.append('footerQuoteAuthor', values.footerQuoteAuthor || '');
+
         Object.entries(values.socialLinks).forEach(([key, value]) => {
             formData.append(`socialLinks[${key}]`, value || '');
         });
 
-        if (logoFile) formData.append('logo', logoFile);
-        if (faviconFile) formData.append('favicon', faviconFile);
+        if (values.logo?.[0]) formData.append('logo', values.logo?.[0]);
+        if (values.logo?.[0]) formData.append('favicon', values.favicon?.[0]);
 
         const result = await updateSettings(formData);
 
@@ -84,6 +91,90 @@ export default function Settings() {
         <div className="max-w-3xl mx-auto bg-white p-6">
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <section className="space-y-4">
+                        <h2 className="text-xl font-semibold mb-4">Branding</h2>
+
+                        <FormField
+                            control={form.control}
+                            name="logo"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col items-center space-y-4">
+                                    <FormLabel>Logo</FormLabel>
+                                    <FormControl>
+                                        <label className="cursor-pointer inline-block">
+                                            <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
+                                                {logoPreview ? (
+                                                    <Image
+                                                        src={logoPreview}
+                                                        alt="Preview"
+                                                        width={112}
+                                                        height={112}
+                                                        className="w-full h-full object-cover rounded-2xl"
+                                                    />
+                                                ) : (
+                                                    <ImagePlus className="w-6 h-6 text-gray-400" />
+                                                )}
+                                            </div>
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    field.onChange(e.target.files);
+                                                    if (file) {
+                                                        setLogoPreview(URL.createObjectURL(file));
+                                                    }
+                                                }}
+                                            />
+                                        </label>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="favicon"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col items-center space-y-4">
+                                    <FormLabel>Favicon</FormLabel>
+                                    <FormControl>
+                                        <label className="cursor-pointer inline-block">
+                                            <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
+                                                {faviconPreview ? (
+                                                    <Image
+                                                        src={faviconPreview}
+                                                        alt="Preview"
+                                                        width={112}
+                                                        height={112}
+                                                        className="w-full h-full object-cover rounded-2xl"
+                                                    />
+                                                ) : (
+                                                    <ImagePlus className="w-6 h-6 text-gray-400" />
+                                                )}
+                                            </div>
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    field.onChange(e.target.files);
+                                                    if (file) {
+                                                        setFaviconPreview(URL.createObjectURL(file));
+                                                    }
+                                                }}
+                                            />
+                                        </label>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </section>
+
                     <section className="space-y-4">
                         <h2 className="text-xl font-semibold mb-4">Website Info</h2>
 
@@ -157,6 +248,38 @@ export default function Settings() {
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input type="email" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </section>
+
+                    <section className="space-y-4">
+                        <h2 className="text-xl font-semibold mb-4">Footer Quote</h2>
+
+                        <FormField
+                            control={form.control}
+                            name="footerQuote"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Quote</FormLabel>
+                                    <FormControl>
+                                        <Textarea rows={3} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="footerQuoteAuthor"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Author</FormLabel>
+                                    <FormControl>
+                                        <Input {...field} placeholder="Author name" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

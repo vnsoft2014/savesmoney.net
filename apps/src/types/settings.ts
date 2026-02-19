@@ -6,6 +6,8 @@ export type SettingsForm = {
     holidayDealsLabel: string;
     seasonalDealsLabel: string;
     adminEmail: string;
+    footerQuote?: string;
+    footerQuoteAuthor?: string;
     socialLinks: {
         facebookPage: string;
         facebookGroup: string;

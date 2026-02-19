@@ -37,7 +37,7 @@ export default function DealLabel({
 
     return (
         <span
-            className={`absolute top-0 right-0 inline-flex items-center px-2 py- rounded-sm text-xs font-semibold ${colorClasses}`}
+            className={`absolute top-0 right-0 inline-flex items-center px-2 text-xs font-semibold ${colorClasses}`}
             aria-label={label}
         >
             {label}

@@ -1,5 +1,4 @@
-import StoreFilter from '@/features/dashboard/user-store/StoreFilter';
-import { HeroAffiliateCTA, StoresListing } from '@/features/public/sm-stores';
+import { HeroAffiliateCTA, StoreFilter, StoresListing } from '@/features/public/sm-stores';
 import { getUserStores } from '@/services/user-store';
 import { Breadcrumb } from '@/shared/components/common';
 import { SITE } from '@/utils/site';
@@ -17,10 +16,13 @@ interface Props {
 const Page = async (props: Props) => {
     const searchParams = await props.searchParams;
 
-    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'newest';
+    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'popular';
+
     const pageNum = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
 
-    const storeListResponse = await getUserStores(initialSort, pageNum);
+    const search = typeof searchParams?.search === 'string' ? searchParams.search : '';
+
+    const storeListResponse = await getUserStores(initialSort, pageNum, search);
 
     const breadcrumbItems = [
         {

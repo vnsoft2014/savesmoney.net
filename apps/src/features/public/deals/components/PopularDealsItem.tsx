@@ -20,7 +20,7 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
     const dealUrl = `/deals/deal-detail/${deal.slug}-${deal._id}`;
 
     return (
-        <article className="flex font-sans-condensed bg-white border border-gray-200">
+        <article className="flex font-sans-condensed bg-white border border-gray-100 shadow-xs">
             {deal.image && (
                 <div className="relative w-29 bg-gray-100">
                     <Image src={deal.image} alt={deal.shortDescription} fill className="object-cover" loading="lazy" />
@@ -36,7 +36,7 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
             <div className="flex-1 p-2">
                 <Link
                     href={dealUrl}
-                    className="min-h-10 mb-1 text-gray-800 line-clamp-2 text-sm font-semibold hover:text-orange-600 transition-colors"
+                    className="min-h-10 mb-1 text-gray-800 line-clamp-2 text-base font-semibold hover:text-orange-600 transition-colors"
                 >
                     {deal.shortDescription}
                 </Link>

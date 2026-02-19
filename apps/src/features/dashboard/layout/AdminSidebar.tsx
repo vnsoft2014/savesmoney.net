@@ -6,7 +6,7 @@ import {
     Bell,
     BrickWall,
     Home,
-    LayoutDashboard,
+    LogOut,
     MessageCircle,
     Package,
     PlusCircle,
@@ -148,17 +148,33 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
 
             {item.children && (
                 <ul className="ml-6 border-l border-gray-200 pl-3">
-                    {item.children.map((child) => (
-                        <li key={child.key} className="py-2">
-                            <button
-                                onClick={() => child.activeKey && onClick(child.activeKey)}
-                                className="flex items-center w-full text-sm"
-                            >
+                    {item.children.map((child) => {
+                        const childContent = (
+                            <>
                                 {child.icon}
                                 {child.label}
-                            </button>
-                        </li>
-                    ))}
+                            </>
+                        );
+
+                        return (
+                            <li key={child.key} className="py-2">
+                                {child.href ? (
+                                    <Link href={child.href} className="flex items-center w-full text-sm">
+                                        {childContent}
+                                    </Link>
+                                ) : child.activeKey ? (
+                                    <button
+                                        onClick={() => onClick(child.activeKey!)}
+                                        className="flex items-center w-full text-sm"
+                                    >
+                                        {childContent}
+                                    </button>
+                                ) : (
+                                    <div className="flex items-center w-full text-sm">{childContent}</div>
+                                )}
+                            </li>
+                        );
+                    })}
                 </ul>
             )}
         </li>
@@ -167,7 +183,7 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
 
 export default function AdminSidebar() {
     const dispatch = useDispatch();
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const handleSetActive = useCallback(
         (key: string) => {
@@ -176,24 +192,34 @@ export default function AdminSidebar() {
         [dispatch],
     );
 
-    return (
-        <aside className="w-70 h-full hidden md:block bg-white dark:text-black overflow-y-auto">
-            <div className="w-full flex items-center py-2 px-2 h-20 gap-3">
-                <Link href="/" className="flex items-center justify-center">
-                    <Home size={30} className="mx-2 text-blue-500" />
-                </Link>
+    const handleSignOut = () => {
+        logout();
+    };
 
-                <h1 className="flex items-center text-xl font-semibold">
-                    <LayoutDashboard className="mx-2" />
-                    Dashboard
-                </h1>
+    return (
+        <aside className="md:w-64 bg-white border-r border-gray-200 min-h-screen">
+            <div className="flex items-center h-20 px-4 border-b">
+                <Link href="/" className="flex items-center gap-2">
+                    <Home size={24} className="text-blue-500" />
+                    <span className="font-semibold text-lg">Dashboard</span>
+                </Link>
             </div>
 
-            <ul className="flex px-4 flex-col">
+            <ul className="flex-1 px-4 py-4 flex flex-col overflow-y-auto">
                 {NAV_ITEMS.filter((item) => !item.role || item.role === user?.role).map((item) => (
                     <MenuItem key={item.key} item={item} onClick={handleSetActive} />
                 ))}
             </ul>
+
+            <div className="px-4 pb-6 pt-4 border-t">
+                <button
+                    onClick={handleSignOut}
+                    className="flex items-center w-full py-2 px-3 text-red-600 hover:bg-red-50 rounded-lg transition"
+                >
+                    <LogOut size={18} className="mr-2" />
+                    Logout
+                </button>
+            </div>
         </aside>
     );
 }
