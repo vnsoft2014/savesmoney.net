@@ -22,7 +22,14 @@ export function useAuth() {
         }
     }, [session]);
 
+    const AUTH_PAGES = ['/signin', '/signup', '/forgot-password', '/reset-password'];
+
     const login = () => {
+        if (AUTH_PAGES.some((page) => pathname.startsWith(page))) {
+            router.push('/signin');
+            return;
+        }
+
         const redirect = pathname === '/' ? '/' : pathname;
         router.push(`/signin?callbackUrl=${encodeURIComponent(redirect)}`);
     };

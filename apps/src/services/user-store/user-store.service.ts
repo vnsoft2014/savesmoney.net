@@ -26,9 +26,12 @@ export const getUserStore = async () => {
             throw new Error(data.message!);
         }
 
-        return data.data;
+        return data;
     } catch (error: unknown) {
-        return { name: '', website: '', description: '', logo: '' };
+        return {
+            success: false,
+            data: { name: '', website: '', description: '', logo: '' },
+        };
     }
 };
 

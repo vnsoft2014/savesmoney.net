@@ -37,6 +37,7 @@ export default function EditDealForm({ deal }: Props) {
 
     const form = useForm<DealFormType>({
         resolver: zodResolver(dealSchema),
+        shouldFocusError: true,
         defaultValues: {
             picture: deal.image,
             dealType: deal.dealType,
@@ -55,7 +56,7 @@ export default function EditDealForm({ deal }: Props) {
 
             flashDeal: deal.flashDeal,
             flashDealExpireHours: deal.flashDealExpireHours,
-            tags: deal.tags,
+            tags: deal.tags ?? [],
             hotTrend: deal.hotTrend,
             holidayDeals: deal.holidayDeals,
             seasonalDeals: deal.seasonalDeals,
@@ -64,7 +65,7 @@ export default function EditDealForm({ deal }: Props) {
 
     const {
         handleSubmit,
-        formState: { isSubmitting, errors },
+        formState: { isSubmitting },
     } = form;
 
     const onSubmit = async (values: DealFormType) => {

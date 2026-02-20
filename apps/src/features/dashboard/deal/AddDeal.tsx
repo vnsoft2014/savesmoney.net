@@ -44,8 +44,6 @@ export default function AddDeal() {
 
     const [checkingDuplicate, setCheckingDuplicate] = useState<CheckingDuplicateState>({});
 
-    const [loading, setLoading] = useState(false);
-
     useEffect(() => {
         document.title = 'Add Deal | Admin Dashboard';
     }, []);
@@ -391,12 +389,7 @@ export default function AddDeal() {
                                 errors={errors}
                                 setErrors={setErrors}
                             >
-                                <DealTable
-                                    deals={deals}
-                                    onAddDeal={addNewRow}
-                                    onSave={saveAllDeals}
-                                    loading={loading}
-                                />
+                                <DealTable deals={deals} onAddDeal={addNewRow} onSave={saveAllDeals} />
                             </DealProvider>
                         </div>
                     </div>

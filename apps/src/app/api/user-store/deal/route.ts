@@ -2,6 +2,7 @@ import { MESSAGES } from '@/constants/messages';
 import { USER_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
+import { Coupon } from '@/models/Coupon';
 import Deal from '@/models/Deal';
 import { UserStore } from '@/models/UserStore';
 import { DealFormValues } from '@/shared/types';
@@ -68,13 +69,23 @@ const ClientDealSchema = Joi.object({
     description: Joi.string().required(),
     flashDeal: Joi.boolean().optional(),
     flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
-    couponCode: Joi.string().allow('').optional(),
     tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
 
     hotTrend: Joi.boolean().default(false),
     holidayDeals: Joi.boolean().default(false),
     seasonalDeals: Joi.boolean().default(false),
+
     coupon: Joi.boolean().default(false),
+    coupons: Joi.array()
+        .items(
+            Joi.object({
+                code: Joi.string().trim().min(1).required(),
+                comment: Joi.string().trim().min(1).required(),
+            }),
+        )
+        .optional()
+        .default([]),
+
     clearance: Joi.boolean().default(false),
     disableExpireAt: Joi.boolean().default(false),
 }).custom((value, helpers) => {
@@ -163,7 +174,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const { disableExpireAt, flashDeal, flashDealExpireHours, coupon, clearance } = deal;
+        const { disableExpireAt, flashDeal, flashDealExpireHours, coupon, coupons, clearance } = deal;
 
         let expireAt: Date | null = null;
 
@@ -181,6 +192,14 @@ export async function POST(req: Request) {
 
         if (userStore) {
             userStoreId = userStore._id;
+        }
+
+        let couponIds = [];
+        if (coupons !== undefined) {
+            if (coupons.length > 0) {
+                const createdCoupons = await Coupon.insertMany(coupons);
+                couponIds = createdCoupons.map((c) => c._id);
+            }
         }
 
         const slug = slugify(deal.shortDescription, { lower: true, strict: true });
@@ -201,7 +220,6 @@ export async function POST(req: Request) {
 
             flashDeal: deal.flashDeal ?? false,
             flashDealExpireHours: deal.flashDealExpireHours ?? null,
-            couponCode: deal.couponCode ?? '',
             tags: deal.tags ?? [],
 
             hotTrend: deal.hotTrend ?? false,
@@ -209,6 +227,7 @@ export async function POST(req: Request) {
             seasonalDeals: deal.seasonalDeals ?? false,
 
             coupon: deal.coupon ?? false,
+            coupons: couponIds,
             clearance: deal.clearance ?? false,
             disableExpireAt: deal.disableExpireAt ?? false,
 

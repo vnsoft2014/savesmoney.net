@@ -8,11 +8,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import {
-    CouponCodeInput,
+    CouponsInput,
     DealDescription,
     DealFlags,
     DealTypeSelect,
-    DuplicateInput,
     ExpiredDateField,
     FlashDealInput,
     PictureUploadField,
@@ -27,6 +26,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form } from '@/shared/shadecn/ui/form';
 import { toast } from 'react-toastify';
+import { DuplicateInput } from './components';
 
 export default function AddDeal() {
     const { isSignin } = useAuth();
@@ -35,9 +35,29 @@ export default function AddDeal() {
 
     const form = useForm<DealFormType>({
         resolver: zodResolver(dealSchema),
-        mode: 'onSubmit',
-        reValidateMode: 'onBlur',
         shouldFocusError: true,
+        defaultValues: {
+            picture: '',
+            dealType: [],
+            store: '',
+            expiredDate: '',
+            disableExpireAt: false,
+            coupon: false,
+            coupons: [],
+            clearance: false,
+            shortDescription: '',
+            originalPrice: 0,
+            discountPrice: 0,
+            percentageOff: '',
+            purchaseLink: '',
+            description: '',
+            flashDeal: false,
+            flashDealExpireHours: 0,
+            tags: [],
+            hotTrend: false,
+            holidayDeals: false,
+            seasonalDeals: false,
+        },
     });
 
     const {
@@ -79,7 +99,7 @@ export default function AddDeal() {
                         <DealFlags />
 
                         <FlashDealInput />
-                        <CouponCodeInput />
+                        <CouponsInput />
 
                         <DealDescription />
 

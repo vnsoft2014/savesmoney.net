@@ -38,9 +38,10 @@ export default function DealRow({ deal, index }: Props) {
 
             <PurchaseLinkInput deal={deal} />
 
-            <CouponsInput deal={deal} error={errors[deal.id]?.coupons} />
-
-            <DescriptionCell deal={deal} error={errors[deal.id]?.description} />
+            <td className="w-32 space-y-4 px-4 py-3">
+                <DescriptionCell deal={deal} error={errors[deal.id]?.description} />
+                <CouponsInput deal={deal} error={errors[deal.id]?.coupons} />
+            </td>
 
             <DealFlags deal={deal} />
 

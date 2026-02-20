@@ -76,8 +76,8 @@ const ClientDealSchema = Joi.object({
     coupons: Joi.array()
         .items(
             Joi.object({
-                code: Joi.string().trim().required(),
-                comment: Joi.string().trim().required(),
+                code: Joi.string().trim().min(1).required(),
+                comment: Joi.string().trim().min(1).required(),
             }),
         )
         .optional()

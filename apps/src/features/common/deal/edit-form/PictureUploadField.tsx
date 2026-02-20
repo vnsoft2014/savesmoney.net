@@ -29,7 +29,7 @@ export default function PictureUploadField({ name }: Props) {
                     e.preventDefault();
                     const file = item.getAsFile();
                     if (file) {
-                        //await handleUploadImage(file);
+                        await handleUploadImage(file);
                     }
                     break;
                 }

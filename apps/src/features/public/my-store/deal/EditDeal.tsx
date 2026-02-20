@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
 import {
-    CouponCodeInput,
+    CouponsInput,
     DealDescription,
     DealFlags,
     DealTypeSelect,
@@ -36,6 +36,7 @@ export default function EditDeal({ deal }: Props) {
 
     const form = useForm<DealFormType>({
         resolver: zodResolver(dealSchema),
+        shouldFocusError: true,
         defaultValues: {
             picture: deal.image,
             dealType: deal.dealType,
@@ -43,6 +44,7 @@ export default function EditDeal({ deal }: Props) {
             expiredDate: deal.expireAt,
             disableExpireAt: deal.disableExpireAt,
             coupon: deal.coupon,
+            coupons: deal.coupons ?? [],
             clearance: deal.clearance,
             shortDescription: deal.shortDescription,
             originalPrice: deal.originalPrice,
@@ -50,10 +52,9 @@ export default function EditDeal({ deal }: Props) {
             percentageOff: deal.percentageOff,
             purchaseLink: deal.purchaseLink,
             description: deal.description,
-            couponCode: deal.couponCode,
             flashDeal: deal.flashDeal,
             flashDealExpireHours: deal.flashDealExpireHours,
-            tags: deal.tags,
+            tags: deal.tags ?? [],
             hotTrend: deal.hotTrend,
             holidayDeals: deal.holidayDeals,
             seasonalDeals: deal.seasonalDeals,
@@ -96,7 +97,7 @@ export default function EditDeal({ deal }: Props) {
                         <DealFlags />
 
                         <FlashDealInput />
-                        <CouponCodeInput />
+                        <CouponsInput />
 
                         <DealDescription />
 

@@ -1,15 +1,25 @@
 import { FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
 import { Input } from '@/shared/shadecn/ui/input';
+import { useEffect } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 export default function PriceFields() {
-    const { control, getValues } = useFormContext();
+    const { control, getValues, setValue } = useFormContext();
 
     const originalPrice = useWatch({ control, name: 'originalPrice' });
     const discountPrice = useWatch({ control, name: 'discountPrice' });
 
-    const percent =
-        originalPrice && discountPrice ? `${Math.round(((originalPrice - discountPrice) / originalPrice) * 100)}%` : '';
+    const original = Number(originalPrice);
+    const discount = Number(discountPrice);
+
+    const percent = original > 0 && discount >= 0 ? `${Math.round(((original - discount) / original) * 100)}%` : '';
+
+    useEffect(() => {
+        setValue('percentageOff', percent, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+    }, [percent, setValue]);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -27,11 +37,10 @@ export default function PriceFields() {
                         </FormLabel>
 
                         <Input
-                            type="number"
+                            type="text"
+                            inputMode="decimal"
                             placeholder="299"
-                            min={0}
-                            step={0.01}
-                            value={field.value ?? ''}
+                            value={field.value || ''}
                             onChange={(e) => field.onChange(Number(e.target.value))}
                         />
 
@@ -55,11 +64,10 @@ export default function PriceFields() {
                         <FormLabel>Discount Price</FormLabel>
 
                         <Input
-                            type="number"
+                            type="text"
+                            inputMode="decimal"
                             placeholder="269"
-                            min={0}
-                            step={0.01}
-                            value={field.value ?? ''}
+                            value={field.value || ''}
                             onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                         />
 

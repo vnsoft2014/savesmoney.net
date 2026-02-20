@@ -7,30 +7,47 @@ import './User';
 
 export interface DealDocument extends Document {
     image?: string;
+
     dealType: Types.ObjectId[];
+
     store: Types.ObjectId;
-    author: Types.ObjectId;
+
     expireAt?: Date | null;
-    disableExpireAt?: boolean;
-    isFlashDeal?: boolean;
+
     shortDescription: string;
+
     slug: string;
-    description: string;
-    flashDeal: boolean;
-    flashDealExpireHours: number;
+
     originalPrice?: number;
     discountPrice?: number;
     percentageOff?: string;
+
     purchaseLink: string;
-    couponCode: string;
+
+    description: string;
+
+    flashDeal?: boolean;
+    flashDealExpireHours?: number;
+
     tags?: string[];
+
     hotTrend?: boolean;
     holidayDeals?: boolean;
     seasonalDeals?: boolean;
+
     coupon?: boolean;
+    coupons?: Types.ObjectId[];
+
     clearance?: boolean;
-    invalid?: boolean;
-    userStore?: Types.ObjectId;
+
+    disableExpireAt?: boolean;
+
+    author: Types.ObjectId;
+
+    userStore?: Types.ObjectId | null;
+
+    status?: 'pending' | 'published' | 'rejected' | 'invalid';
+
     createdAt: Date;
     updatedAt: Date;
 }

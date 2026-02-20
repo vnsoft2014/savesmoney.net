@@ -294,6 +294,49 @@ export async function PATCH(req: Request, { params }: Props) {
     }
 }
 
+export async function GET(req: Request, { params }: Props) {
+    try {
+        await connectDB();
+
+        const role = await authCheck(req);
+
+        if (!assertRole(role, ADMIN_ROLES)) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: MESSAGES.ERROR.FORBIDDEN,
+                },
+                { status: 403 },
+            );
+        }
+
+        const { searchParams } = new URL(req.url);
+        const populate = searchParams.get('populate') === 'true';
+
+        const { id } = await params;
+
+        let query = Deal.findOne({
+            _id: id,
+        });
+
+        if (populate) {
+            query = query.populate('dealType').populate('store').populate('author');
+        }
+
+        query = query.populate('coupons');
+
+        const deal = await query.lean();
+
+        if (deal) {
+            return NextResponse.json({ success: true, data: deal });
+        } else {
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 204 });
+        }
+    } catch (error) {
+        return NextResponse.json({ success: false, message: MESSAGES.ERROR.INTERNAL_SERVER }, { status: 500 });
+    }
+}
+
 export async function DELETE(req: Request, { params }: Props) {
     try {
         await connectDB();

@@ -10,6 +10,12 @@ export const dealSchema = z
         expiredDate: z.string().nullable(),
         disableExpireAt: z.boolean().optional(),
         coupon: z.boolean().optional(),
+        coupons: z.array(
+            z.object({
+                code: z.string().min(1, 'Coupon code is required'),
+                comment: z.string().min(1, 'Comment is required'),
+            }),
+        ),
         clearance: z.boolean().optional(),
 
         shortDescription: z.string().min(1, 'Short description is required'),
@@ -27,12 +33,6 @@ export const dealSchema = z
         description: z.string().refine((val) => stripHtmlTags(val).length > 0, 'Description is required'),
         flashDeal: z.boolean().optional(),
         flashDealExpireHours: z.number().nullable(),
-        coupons: z.array(
-            z.object({
-                code: z.string().min(1, 'Coupon code is required'),
-                comment: z.string().min(1, 'Comment is required'),
-            }),
-        ),
 
         tags: z.array(z.string()).optional(),
 

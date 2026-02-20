@@ -66,6 +66,16 @@ export default function Deals() {
 
     return (
         <div className="bg-white shadow-xs">
+            <div className="flex items-center justify-end p-4 border-b">
+                <Link
+                    href="/my-store/deal/add"
+                    prefetch={false}
+                    className="inline-flex items-center px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                    + Add Deal
+                </Link>
+            </div>
+
             <div className="overflow-x-auto">
                 <Table>
                     <TableHeader>
@@ -92,7 +102,7 @@ export default function Deals() {
                                     />
                                     <Link
                                         href={`/deals/deal-detail/${deal.slug}-${deal._id}`}
-                                        className="line-clamp-1 font-bold whitespace-nowrap hover:text-gray-700 transition-colors"
+                                        className="max-w-64 line-clamp-2 font-bold hover:text-gray-700 transition-colors"
                                         prefetch={false}
                                     >
                                         {deal.shortDescription}

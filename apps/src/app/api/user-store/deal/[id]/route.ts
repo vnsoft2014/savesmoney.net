@@ -2,6 +2,7 @@ import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ONLY, USER_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
+import { Coupon } from '@/models/Coupon';
 import Deal from '@/models/Deal';
 import { validateRequest } from '@/utils/validators/validate';
 import Joi from 'joi';
@@ -80,7 +81,6 @@ const UpdateDealSchema = Joi.object({
     flashDeal: Joi.boolean().optional(),
     flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
 
-    couponCode: Joi.string().allow('').optional(),
     tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
 
     hotTrend: Joi.boolean().optional(),
@@ -88,6 +88,16 @@ const UpdateDealSchema = Joi.object({
     seasonalDeals: Joi.boolean().optional(),
 
     coupon: Joi.boolean().default(false),
+    coupons: Joi.array()
+        .items(
+            Joi.object({
+                code: Joi.string().trim().min(1).required(),
+                comment: Joi.string().trim().min(1).required(),
+            }),
+        )
+        .optional()
+        .default([]),
+
     clearance: Joi.boolean().default(false),
     disableExpireAt: Joi.boolean().optional(),
 })
@@ -151,6 +161,7 @@ export async function PATCH(req: Request, { params }: Props) {
             holidayDeals,
             seasonalDeals,
             coupon,
+            coupons,
             clearance,
             disableExpireAt,
         } = value;
@@ -227,10 +238,6 @@ export async function PATCH(req: Request, { params }: Props) {
         if (purchaseLink !== undefined) updateData.purchaseLink = purchaseLink;
         if (description !== undefined) updateData.description = description;
 
-        if (couponCode !== undefined) {
-            updateData.couponCode = couponCode;
-        }
-
         if (tags !== undefined) updateData.tags = tags;
 
         if (hotTrend !== undefined) updateData.hotTrend = hotTrend;
@@ -238,6 +245,15 @@ export async function PATCH(req: Request, { params }: Props) {
         if (seasonalDeals !== undefined) updateData.seasonalDeals = seasonalDeals;
 
         if (coupon !== undefined) updateData.coupon = coupon;
+        if (coupons !== undefined) {
+            if (coupons.length > 0) {
+                const createdCoupons = await Coupon.insertMany(coupons);
+                updateData.coupons = createdCoupons.map((c) => c._id);
+            } else {
+                updateData.coupons = [];
+            }
+        }
+
         if (clearance !== undefined) updateData.clearance = clearance;
 
         const authenticated = await authUser(req);
@@ -295,6 +311,54 @@ export async function PATCH(req: Request, { params }: Props) {
                 status: 500,
             },
         );
+    }
+}
+
+export async function GET(req: Request, { params }: Props) {
+    try {
+        await connectDB();
+
+        const role = await authCheck(req);
+
+        if (!assertRole(role, USER_ROLES)) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: MESSAGES.ERROR.FORBIDDEN,
+                },
+                { status: 403 },
+            );
+        }
+
+        const { searchParams } = new URL(req.url);
+        const populate = searchParams.get('populate') === 'true';
+
+        const { id } = await params;
+
+        const authenticated = await authUser(req);
+
+        const author = authenticated!.sub;
+
+        let query = Deal.findOne({
+            _id: id,
+            author,
+        });
+
+        if (populate) {
+            query = query.populate('dealType').populate('store').populate('author');
+        }
+
+        query = query.populate('coupons');
+
+        const deal = await query.lean();
+
+        if (deal) {
+            return NextResponse.json({ success: true, data: deal });
+        } else {
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 204 });
+        }
+    } catch (error) {
+        return NextResponse.json({ success: false, message: MESSAGES.ERROR.INTERNAL_SERVER }, { status: 500 });
     }
 }
 

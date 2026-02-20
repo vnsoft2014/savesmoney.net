@@ -61,7 +61,7 @@ export const POST = async (req: Request) => {
 
                 if (err.message === 'DEAL_TYPE_THUMBNAIL_TOO_LARGE') {
                     return NextResponse.json(
-                        { success: false, message: 'Thumbnail size must be less than 1MB' },
+                        { success: false, message: 'Thumbnail size must be less than 0.5MB' },
                         { status: 400 },
                     );
                 }

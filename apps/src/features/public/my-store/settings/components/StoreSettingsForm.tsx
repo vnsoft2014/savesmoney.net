@@ -64,7 +64,9 @@ export default function StoreSettingsForm() {
         const fetchStore = async () => {
             setLoading(true);
 
-            const store = await getUserStore();
+            const res = await getUserStore();
+
+            const store = res.data;
 
             setPreview(store?.logo || null);
 

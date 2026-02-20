@@ -22,7 +22,7 @@ export async function GET(req: Request, { params }: Props) {
 
         let query = Deal.findOne({
             _id: id,
-            //status: { $in: ['published', 'invalid'] },
+            status: { $in: ['published', 'invalid'] },
         });
 
         if (populate) {

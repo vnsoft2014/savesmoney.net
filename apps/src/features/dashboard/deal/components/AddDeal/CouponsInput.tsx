@@ -35,7 +35,7 @@ export default function CouponsInput({ deal, error }: Props) {
     };
 
     return (
-        <td className="px-4 py-3 align-top">
+        <>
             <div className="space-y-3">
                 {coupons?.map((coupon, index) => (
                     <div key={index} className="rounded-lg border border-gray-200 p-3 space-y-2 bg-white">
@@ -77,6 +77,6 @@ export default function CouponsInput({ deal, error }: Props) {
 
                 {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
             </div>
-        </td>
+        </>
     );
 }
