@@ -145,9 +145,23 @@ const handler = NextAuth({
                 });
             }
 
+            const expiresIn = 60 * 60 * 24;
+
+            const accessToken = jwt.sign(
+                {
+                    sub: existingUser._id.toString(),
+                    role: existingUser.role,
+                },
+                process.env.NEXTAUTH_SECRET!,
+                { expiresIn },
+            );
+
             user.id = existingUser._id.toString();
             user.role = existingUser.role;
             user.avatar = existingUser.avatar;
+
+            (user as any).accessToken = accessToken;
+            (user as any).accessTokenExpires = Date.now() + expiresIn * 1000;
 
             return true;
         },

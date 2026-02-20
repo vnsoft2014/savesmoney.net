@@ -50,7 +50,7 @@ export default function HeroAffiliateCTA() {
 
                     <div className="w-full lg:w-auto flex flex-col items-center">
                         <Link
-                            href="/post-deal"
+                            href="/my-store/deal/add"
                             className="group relative w-full sm:w-auto
                                        px-8 py-4 sm:px-10 sm:py-5
                                        bg-white text-indigo-700
