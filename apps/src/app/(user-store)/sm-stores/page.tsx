@@ -16,7 +16,7 @@ interface Props {
 const Page = async (props: Props) => {
     const searchParams = await props.searchParams;
 
-    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'popular';
+    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'name';
 
     const pageNum = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
 

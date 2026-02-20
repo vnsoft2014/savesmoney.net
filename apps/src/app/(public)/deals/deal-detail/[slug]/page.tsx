@@ -248,8 +248,10 @@ const Page = async ({ params }: Props) => {
                                             Summary features:
                                         </h3>
                                         <div
-                                            className="deal-description"
-                                            dangerouslySetInnerHTML={{ __html: deal.description }}
+                                            className="deal-description max-w-full whitespace-normal wrap-break-word"
+                                            dangerouslySetInnerHTML={{
+                                                __html: deal.description.replace(/&nbsp;/g, ' '),
+                                            }}
                                         />
                                     </div>
                                 </div>

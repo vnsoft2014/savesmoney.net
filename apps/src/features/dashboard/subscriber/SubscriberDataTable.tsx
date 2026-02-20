@@ -14,7 +14,7 @@ import { fetcherWithAuth, formatDate } from '@/utils/utils';
 import { exportWithProgress } from '@/features/dashboard/export/utils/exportWithProgress';
 import { ExportProgressModal } from '../export/components';
 import { ExportFormat } from '../export/types';
-import { deleteSubscriber, exportSubscriber } from './services';
+import { deleteSubscriber, exportSubscriber } from '../services';
 
 export default function SubscriberDataTable() {
     const router = useRouter();

@@ -39,6 +39,7 @@ export async function GET(req: Request, { params }: Props) {
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 204 });
         }
     } catch (error) {
+        console.log(error);
         return NextResponse.json({ success: false, message: MESSAGES.ERROR.INTERNAL_SERVER }, { status: 500 });
     }
 }

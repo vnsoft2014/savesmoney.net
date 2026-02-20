@@ -9,10 +9,8 @@ export default function PriceFields() {
     const originalPrice = useWatch({ control, name: 'originalPrice' });
     const discountPrice = useWatch({ control, name: 'discountPrice' });
 
-    const original = Number(originalPrice);
-    const discount = Number(discountPrice);
-
-    const percent = original > 0 && discount >= 0 ? `${Math.round(((original - discount) / original) * 100)}%` : '';
+    const percent =
+        originalPrice && discountPrice ? `${Math.round(((originalPrice - discountPrice) / originalPrice) * 100)}%` : '';
 
     useEffect(() => {
         setValue('percentageOff', percent, {
@@ -37,9 +35,10 @@ export default function PriceFields() {
                         </FormLabel>
 
                         <Input
-                            type="text"
-                            inputMode="decimal"
+                            type="number"
                             placeholder="299"
+                            min={0}
+                            step={0.01}
                             value={field.value || ''}
                             onChange={(e) => field.onChange(Number(e.target.value))}
                         />
@@ -64,9 +63,10 @@ export default function PriceFields() {
                         <FormLabel>Discount Price</FormLabel>
 
                         <Input
-                            type="text"
-                            inputMode="decimal"
+                            type="number"
                             placeholder="269"
+                            min={0}
+                            step={0.01}
                             value={field.value || ''}
                             onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
                         />

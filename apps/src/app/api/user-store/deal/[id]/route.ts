@@ -74,7 +74,7 @@ const UpdateDealSchema = Joi.object({
 
     originalPrice: Joi.number().min(0).required(),
     discountPrice: Joi.number().min(0).optional().allow(null),
-    percentageOff: Joi.string().optional(),
+    percentageOff: Joi.string().allow('').optional(),
 
     purchaseLink: Joi.string().uri().optional(),
     description: Joi.string().optional(),

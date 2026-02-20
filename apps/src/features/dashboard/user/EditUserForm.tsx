@@ -14,8 +14,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { updateUser } from '../services';
 import { EditUserForm as EditUserFormType, editUserSchema } from './schemas';
-import { updateUser } from './services';
 
 interface Props {
     user: User;

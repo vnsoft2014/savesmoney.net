@@ -102,7 +102,7 @@ export default function Deals() {
                                     />
                                     <Link
                                         href={`/deals/deal-detail/${deal.slug}-${deal._id}`}
-                                        className="max-w-64 line-clamp-2 font-bold hover:text-gray-700 transition-colors"
+                                        className="line-clamp-2 font-bold hover:text-gray-700 transition-colors"
                                         prefetch={false}
                                     >
                                         {deal.shortDescription}

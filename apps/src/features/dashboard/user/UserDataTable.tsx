@@ -13,8 +13,8 @@ import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 import { ExportProgressModal } from '../export/components';
 import { ExportFormat } from '../export/types';
+import { deleteUser, exportUser } from '../services';
 import { UserFilters } from './components';
-import { deleteUser, exportUser } from './services';
 
 export default function UserDataTable() {
     const { mutate } = useSWRConfig();

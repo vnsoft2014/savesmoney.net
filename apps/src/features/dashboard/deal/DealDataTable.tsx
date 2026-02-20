@@ -21,21 +21,6 @@ interface IconWithTooltipProps {
     children: React.ReactNode;
 }
 
-const IconWithTooltip = ({ tooltip, children }: IconWithTooltipProps) => {
-    return (
-        <span className="relative group inline-flex">
-            {children}
-            <span
-                className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap
-                       rounded bg-gray-900 px-2 py-1 text-[11px] text-white
-                       opacity-0 group-hover:opacity-100 transition"
-            >
-                {tooltip}
-            </span>
-        </span>
-    );
-};
-
 export default function DealDataTable() {
     const { mutate } = useSWRConfig();
     const router = useRouter();

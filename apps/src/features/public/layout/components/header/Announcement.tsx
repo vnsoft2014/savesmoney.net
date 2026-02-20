@@ -28,6 +28,11 @@ const Announcement = () => {
                             >
                                 <Logo />
                             </Link>
+                            <div className="hidden lg:block overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-200 mt-1">
+                                <span className="cursor-pointer text-gray-100 text-xs md:text-sm hover:text-white transition-colors">
+                                    Ads-supported and referral-based community
+                                </span>
+                            </div>
                         </div>
 
                         <div className="flex-1 lg:max-w-2xl">

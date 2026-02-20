@@ -12,7 +12,7 @@ const Footer = () => {
 
     return (
         <footer className="bg-blue-900 text-gray-300">
-            <div className="container flex flex-col md:flex-row justify-between items-center gap-8 py-6">
+            <div className="container flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 lg:gap-20 xl:gap-30 py-6">
                 <div className="px-3 text-center md:text-left max-w-lg">
                     <div className="mx-auto container text-center">
                         {socials && (
@@ -77,15 +77,10 @@ const Footer = () => {
 
                         <div className="text-[13px]">
                             <p className="mb-2">
-                                When you buy through links on{' '}
-                                <span className="font-semibold text-white">Savesmoney.net</span>, we may earn a
-                                commission.
-                            </p>
-                            <p>
-                                For more support, please send us an email at{' '}
-                                <a href="mailto:support@savesmoney.net" className="underline hover:text-gray-200">
-                                    support@savesmoney.net
-                                </a>
+                                <span className="font-semibold text-white">Savesmoney and/or users</span> can earn
+                                commission through referral links.
+                                <br />
+                                We strike to provide best deals to the community.
                             </p>
                         </div>
                     </div>

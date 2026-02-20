@@ -132,13 +132,16 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
     return (
         <li className="mb-2">
             {item.href ? (
-                <Link href={item.href} className="flex items-center py-3 px-2">
+                <Link
+                    href={item.href}
+                    className="flex items-center py-3 px-2 rounded-lg hover:bg-blue-50 transition-colors"
+                >
                     {content}
                 </Link>
             ) : item.activeKey ? (
                 <button
                     onClick={() => onClick(item.activeKey!)}
-                    className="flex items-center py-3 px-2 w-full text-left"
+                    className="flex items-center py-3 px-2 w-full text-left rounded-lg hover:bg-blue-50 transition-colors"
                 >
                     {content}
                 </button>
@@ -159,13 +162,16 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                         return (
                             <li key={child.key} className="py-2">
                                 {child.href ? (
-                                    <Link href={child.href} className="flex items-center w-full text-sm">
+                                    <Link
+                                        href={child.href}
+                                        className="flex items-center w-full text-sm rounded-lg hover:bg-blue-50 transition-colors"
+                                    >
                                         {childContent}
                                     </Link>
                                 ) : child.activeKey ? (
                                     <button
                                         onClick={() => onClick(child.activeKey!)}
-                                        className="flex items-center w-full text-sm"
+                                        className="flex items-center w-full text-sm rounded-lg hover:bg-blue-50 transition-colors"
                                     >
                                         {childContent}
                                     </button>

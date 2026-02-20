@@ -1,6 +1,7 @@
 import mongoose, { Document, Types } from 'mongoose';
 import slugify from 'slugify';
 
+import './Coupon';
 import './DealType';
 import './Store';
 import './User';

@@ -63,7 +63,7 @@ const ClientDealSchema = Joi.object({
 
     originalPrice: Joi.number().min(0).required(),
     discountPrice: Joi.number().min(0).optional().allow(null),
-    percentageOff: Joi.string().allow(''),
+    percentageOff: Joi.string().allow('').optional(),
 
     purchaseLink: Joi.string().uri().required(),
     description: Joi.string().required(),

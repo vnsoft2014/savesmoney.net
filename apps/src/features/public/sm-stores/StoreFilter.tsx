@@ -13,7 +13,7 @@ export default function StoreFilter() {
 
     const searchParams = useSearchParams();
 
-    const currentSort = searchParams.get('sort') || 'popular';
+    const currentSort = searchParams.get('sort') || 'name';
     const currentSearch = searchParams.get('search') || '';
 
     const [search, setSearch] = useState(currentSearch);

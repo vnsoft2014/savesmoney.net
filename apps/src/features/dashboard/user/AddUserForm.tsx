@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+import { addUser } from '../services';
 import { AddUserForm as AddUserFormType, addUserSchema } from './schemas';
-import { addUser } from './services';
 
 export default function AddUserForm() {
     const router = useRouter();
