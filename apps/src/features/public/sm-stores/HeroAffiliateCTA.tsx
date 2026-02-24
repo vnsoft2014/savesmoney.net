@@ -23,7 +23,7 @@ export default function HeroAffiliateCTA() {
                                         text-white/90 mb-5 border border-white/10"
                         >
                             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            Earn credits with every approved deal
+                            Earn a commission with every approved deal
                         </div>
 
                         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight mb-5">
@@ -34,7 +34,7 @@ export default function HeroAffiliateCTA() {
                         </h2>
 
                         <p className="text-blue-100/90 text-sm sm:text-base leading-relaxed mx-auto lg:mx-0">
-                            You can post deals and earn credits when customers buy products through your links.
+                            You can post deals and earn a commission when customers buy products through your links.
                         </p>
 
                         <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-xs sm:text-sm text-white/80">

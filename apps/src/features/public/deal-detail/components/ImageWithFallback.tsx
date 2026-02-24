@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -14,13 +15,15 @@ export default function ImageWithFallback({ src, alt, fallback = '/image.png', c
     const [imgSrc, setImgSrc] = useState(src || fallback);
 
     return (
-        <Image
-            src={imgSrc}
-            alt={alt}
-            width={400}
-            height={400}
-            className={className}
-            onError={() => setImgSrc(fallback)}
-        />
+        <div className="relative flex h-full items-center">
+            <Image
+                src={imgSrc}
+                alt={alt}
+                width={320}
+                height={320}
+                className={cn('w-full max-h-full object-cover', className)}
+                onError={() => setImgSrc(fallback)}
+            />
+        </div>
     );
 }

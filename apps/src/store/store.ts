@@ -6,10 +6,8 @@ import storage from './storage';
 
 import { adminNavReducer } from '@/utils/AdminNavSlice';
 import { FrontendNavReducer } from '@/utils/FrontendNavSlice';
-import { userReducer } from '@/utils/UserDataSlice';
 
 const rootReducer = combineReducers({
-    user: userReducer,
     adminNav: adminNavReducer,
     frontendNav: FrontendNavReducer,
 });

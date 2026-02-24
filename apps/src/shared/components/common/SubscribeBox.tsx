@@ -3,13 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Mail } from 'lucide-react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { useAuth } from '@/hooks/useAuth';
-import { subscribeDeal } from '@/services/common/subscribe';
+import { subscribeDeal } from '@/services';
 import { Button } from '@/shared/shadecn/ui/button';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { toast } from 'react-toastify';
 
@@ -21,14 +21,14 @@ type FormValues = z.infer<typeof formSchema>;
 
 const SubscribeBox = () => {
     const { user, isSignin } = useAuth();
-
     const [loading, setLoading] = useState(false);
 
-    const form = useForm<FormValues>({
+    const { control, handleSubmit, reset } = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: '',
         },
+        mode: 'onChange',
     });
 
     const onSubmit = async (values: FormValues) => {
@@ -48,7 +48,7 @@ const SubscribeBox = () => {
                 toast.success("You're on the list!");
             }
 
-            form.reset();
+            reset();
         } catch (err: any) {
             toast.error(err.message || 'Subscribe failed!');
         } finally {
@@ -57,39 +57,26 @@ const SubscribeBox = () => {
     };
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-start gap-2 bg-white px-3 py-2">
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                    <Input
-                                        {...field}
-                                        type="email"
-                                        placeholder="Email..."
-                                        className="h-10 pl-10 text-sm"
-                                    />
-                                </div>
-                            </FormControl>
-                            <FormMessage className="text-xs mt-1" />
-                        </FormItem>
-                    )}
-                />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex items-start gap-2 bg-white px-3 py-2">
+            <Controller
+                name="email"
+                control={control}
+                render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid} className="flex-1">
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                            <Input {...field} type="email" placeholder="Email..." className="h-10 pl-10 text-sm" />
+                        </div>
 
-                <Button
-                    type="submit"
-                    size="sm"
-                    disabled={loading}
-                    className="h-10 text-sm bg-blue-600 hover:bg-blue-700"
-                >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit'}
-                </Button>
-            </form>
-        </Form>
+                        {fieldState.invalid && <FieldError className="text-xs mt-1" errors={[fieldState.error]} />}
+                    </Field>
+                )}
+            />
+
+            <Button type="submit" size="sm" disabled={loading} className="h-10 text-sm bg-blue-600 hover:bg-blue-700">
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit'}
+            </Button>
+        </form>
     );
 };
 

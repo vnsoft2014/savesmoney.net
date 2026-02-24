@@ -4,6 +4,9 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `Reset Password | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/reset-password`,
+    },
 };
 
 const Page = () => {

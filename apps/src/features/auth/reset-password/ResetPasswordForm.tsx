@@ -1,16 +1,17 @@
 'use client';
 
-import { resetPassword } from '@/services/common/user';
+import { resetPassword } from '@/services';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Eye, EyeOff, KeyRound, Loader2, Lock } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import * as z from 'zod';
 
 import { Button } from '@/shared/shadecn/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 
 const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -45,6 +46,7 @@ const ResetPasswordForm = () => {
             password: '',
             confirmPassword: '',
         },
+        mode: 'onChange',
     });
 
     const {
@@ -66,7 +68,6 @@ const ResetPasswordForm = () => {
                 toast.success(res.message || 'Password reset successfully');
             } else {
                 toast.error(res.message);
-                return;
             }
         } catch {
             toast.error('Failed to reset password');
@@ -75,57 +76,66 @@ const ResetPasswordForm = () => {
 
     if (isSuccess) {
         return (
-            <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl shadow-xl w-150 p-8 text-center">
-                    <div className="inline-block p-3 bg-green-100 rounded-full mb-4">
-                        <KeyRound className="w-8 h-8 text-green-600" />
-                    </div>
+            <div className="min-h-screen flex items-center justify-center px-4">
+                <Card className="w-full max-w-md shadow-xl">
+                    <CardHeader className="text-center space-y-4">
+                        <div className="mx-auto p-3 bg-green-100 rounded-full w-fit">
+                            <KeyRound className="w-8 h-8 text-green-600" />
+                        </div>
 
-                    <h1 className="font-bold text-gray-800 mb-2">Password Updated</h1>
-                    <p className="text-sm md:text-base text-gray-600 mb-8">
-                        Your password has been reset successfully.
-                    </p>
+                        <CardTitle>Password Updated</CardTitle>
+                        <CardDescription>Your password has been reset successfully.</CardDescription>
+                    </CardHeader>
 
-                    <Button onClick={() => router.push('/signin')} className="w-full bg-indigo-600 hover:bg-indigo-700">
-                        Go to Sign In
-                    </Button>
-                </div>
+                    <CardContent>
+                        <Button onClick={() => router.push('/signin')} className="w-full">
+                            Go to Sign In
+                        </Button>
+                    </CardContent>
+                </Card>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-150 p-8">
-                <div className="text-center mb-8">
-                    <div className="inline-block p-3 bg-indigo-100 rounded-full mb-4">
+        <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
+            <Card className="w-full max-w-150 p-4 md:p-8 border border-gray-100 shadow-xs">
+                <CardHeader className="space-y-4 text-center mb-6">
+                    <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">
                         <Lock className="w-8 h-8 text-indigo-600" />
                     </div>
+                    <div className="space-y-1">
+                        <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800">Reset Password</CardTitle>
+                        <CardDescription className="text-gray-600">Enter your new password below</CardDescription>
+                    </div>
+                </CardHeader>
 
-                    <h1 className="font-bold text-gray-800 mb-2">Reset Password</h1>
-                    <p className="text-sm md:text-base text-gray-600">Enter your new password below</p>
-                </div>
+                <CardContent>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FieldGroup>
+                            <Controller
+                                name="password"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid} className="gap-2">
+                                        <FieldLabel htmlFor="password" className="text-gray-700">
+                                            New Password
+                                        </FieldLabel>
 
-                <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>New Password</FormLabel>
-                                    <FormControl>
                                         <div className="relative">
                                             <Input
                                                 {...field}
-                                                className="text-sm"
+                                                id="password"
                                                 type={showPassword ? 'text' : 'password'}
                                                 placeholder="New password"
+                                                className="pr-10 h-12"
+                                                aria-invalid={fieldState.invalid}
                                             />
+
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                             >
                                                 {showPassword ? (
                                                     <EyeOff className="w-5 h-5" />
@@ -134,30 +144,35 @@ const ResetPasswordForm = () => {
                                                 )}
                                             </button>
                                         </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
 
-                        <FormField
-                            control={form.control}
-                            name="confirmPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Confirm Password</FormLabel>
-                                    <FormControl>
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="confirmPassword"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid} className="gap-2">
+                                        <FieldLabel htmlFor="confirm-password" className="text-gray-700">
+                                            Confirm Password
+                                        </FieldLabel>
+
                                         <div className="relative">
                                             <Input
                                                 {...field}
-                                                className="text-sm"
+                                                id="confirm-password"
                                                 type={showConfirmPassword ? 'text' : 'password'}
                                                 placeholder="Confirm password"
+                                                className="pr-10 h-12"
+                                                aria-invalid={fieldState.invalid}
                                             />
+
                                             <button
                                                 type="button"
                                                 onClick={() => setShowConfirmPassword((v) => !v)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                                             >
                                                 {showConfirmPassword ? (
                                                     <EyeOff className="w-5 h-5" />
@@ -166,32 +181,33 @@ const ResetPasswordForm = () => {
                                                 )}
                                             </button>
                                         </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
 
-                        <Button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700"
-                        >
-                            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Reset Password'}
-                        </Button>
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
 
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => router.push('/signin')}
-                            className="w-full flex items-center gap-2 text-gray-600"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to Sign In
-                        </Button>
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full h-12 font-semibold shadow-lg"
+                            >
+                                {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Reset Password'}
+                            </Button>
+
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => router.push('/signin')}
+                                className="w-full flex items-center gap-2"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                Back to Sign In
+                            </Button>
+                        </FieldGroup>
                     </form>
-                </Form>
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 };

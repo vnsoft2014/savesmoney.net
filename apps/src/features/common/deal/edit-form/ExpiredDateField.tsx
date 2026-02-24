@@ -1,20 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useController, useFormContext, useWatch } from 'react-hook-form';
 
 import { Checkbox } from '@/shared/shadecn/ui/checkbox';
-import { FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
+import { Label } from '@/shared/shadecn/ui/label';
 import { toDateInputValue } from '@/utils/utils';
 
 export default function ExpiredDateField() {
-    const {
-        control,
-        getValues,
-        setValue,
-        formState: { errors },
-    } = useFormContext();
+    const { control, setValue, trigger } = useFormContext();
 
     const [disableExpireAt, coupon, clearance, flashDeal] = useWatch({
         control,
@@ -23,55 +19,51 @@ export default function ExpiredDateField() {
 
     const isDisableExpireAt = disableExpireAt || coupon || clearance;
 
+    const { field: expiredField, fieldState: expiredState } = useController({
+        name: 'expiredDate',
+        control,
+    });
+
+    const { field: disableField } = useController({
+        name: 'disableExpireAt',
+        control,
+    });
+
     useEffect(() => {
         if (isDisableExpireAt || flashDeal) {
-            setValue('expiredDate', null);
+            setValue('expiredDate', '', { shouldDirty: true });
         }
-    }, [isDisableExpireAt, setValue]);
+    }, [isDisableExpireAt, flashDeal, setValue]);
 
     return (
         <>
-            <FormField
-                control={control}
-                name="expiredDate"
-                rules={{
-                    validate: (value) => (getValues('disableExpireAt') || value ? true : 'Expiry date is required'),
-                }}
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>
-                            Expiry Date <span className="text-red-500">*</span>
-                        </FormLabel>
+            <Field data-invalid={expiredState.invalid} className="gap-2">
+                <FieldLabel className="text-gray-700">
+                    Expiry Date <span className="text-red-500">*</span>
+                </FieldLabel>
 
-                        <Input
-                            type="date"
-                            value={toDateInputValue(field.value ?? '')}
-                            onChange={field.onChange}
-                            disabled={isDisableExpireAt || flashDeal}
-                            className={errors.expiredDate ? 'border-red-500' : ''}
-                        />
+                <Input
+                    {...expiredField}
+                    type="date"
+                    value={toDateInputValue(expiredField.value ?? null)}
+                    onChange={expiredField.onChange}
+                    disabled={isDisableExpireAt || flashDeal}
+                    aria-invalid={expiredState.invalid}
+                    className={expiredState.invalid ? 'border-red-500' : ''}
+                />
 
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
+                {expiredState.invalid && <FieldError errors={[expiredState.error]} />}
+            </Field>
 
-            <FormField
-                control={control}
-                name="disableExpireAt"
-                render={({ field }) => (
-                    <FormItem className="flex items-center gap-2 mt-2">
-                        <FormLabel className="mb-0">Disable Expiry</FormLabel>
+            <Field orientation="horizontal">
+                <Label>Disable Expiry</Label>
 
-                        <Checkbox
-                            className="mb-0"
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            disabled={coupon || clearance || flashDeal}
-                        />
-                    </FormItem>
-                )}
-            />
+                <Checkbox
+                    checked={disableField.value}
+                    onCheckedChange={disableField.onChange}
+                    disabled={coupon || clearance || flashDeal}
+                />
+            </Field>
         </>
     );
 }

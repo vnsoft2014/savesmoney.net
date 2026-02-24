@@ -1,6 +1,6 @@
 import mongoose, { Document, Types } from 'mongoose';
-import slugify from 'slugify';
 
+import { generateUniqueSlug } from '@/utils/sanitize';
 import './Coupon';
 import './DealType';
 import './Store';
@@ -70,7 +70,7 @@ const DealSchema = new mongoose.Schema(
         },
         expireAt: {
             type: Date,
-            default: null,
+            required: false,
         },
         shortDescription: {
             type: String,
@@ -80,9 +80,18 @@ const DealSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        originalPrice: Number,
-        discountPrice: Number,
-        percentageOff: String,
+        originalPrice: {
+            type: Number,
+            require: true,
+        },
+        discountPrice: {
+            type: Number,
+            required: false,
+        },
+        percentageOff: {
+            type: String,
+            required: false,
+        },
         purchaseLink: {
             type: String,
             required: true,
@@ -93,42 +102,56 @@ const DealSchema = new mongoose.Schema(
         },
         flashDeal: {
             type: Boolean,
-            default: false,
+            required: false,
         },
-        flashDealExpireHours: Number,
+        flashDealExpireHours: {
+            type: Number,
+            required: false,
+        },
         tags: {
             type: [String],
-            default: [],
+            default: undefined,
         },
         hotTrend: {
             type: Boolean,
-            default: false,
+            required: false,
         },
         holidayDeals: {
             type: Boolean,
-            default: false,
+            required: false,
         },
         seasonalDeals: {
             type: Boolean,
-            default: false,
+            required: false,
         },
         coupon: {
             type: Boolean,
-            default: false,
+            required: false,
         },
-        coupons: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Coupon',
-            },
-        ],
+        coupons: {
+            type: [
+                {
+                    code: {
+                        type: String,
+                        required: true,
+                        trim: true,
+                    },
+                    comment: {
+                        type: String,
+                        required: false,
+                        trim: true,
+                    },
+                },
+            ],
+            default: undefined,
+        },
         clearance: {
             type: Boolean,
-            default: false,
+            required: false,
         },
         disableExpireAt: {
             type: Boolean,
-            default: false,
+            required: false,
         },
         author: {
             type: mongoose.Schema.Types.ObjectId,
@@ -160,17 +183,7 @@ DealSchema.pre('insertMany', async function (docs: DealDocument[]) {
     for (const doc of docs) {
         if (!doc.shortDescription) continue;
 
-        const baseSlug = slugify(doc.shortDescription, {
-            lower: true,
-            strict: true,
-        });
-
-        let slug = baseSlug;
-        let count = 1;
-
-        while (await this.exists({ slug })) {
-            slug = `${baseSlug}-${count++}`;
-        }
+        const slug = generateUniqueSlug(doc.shortDescription);
 
         doc.slug = slug;
     }

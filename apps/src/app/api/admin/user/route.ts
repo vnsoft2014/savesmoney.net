@@ -1,9 +1,9 @@
 import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ONLY } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
-import { assertRole, authCheck } from '@/middleware/authCheck';
+import { uploadImage } from '@/lib/upload';
+import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import User from '@/models/User';
-import { uploadImage } from '@/utils/Upload';
 import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -34,7 +34,14 @@ const createUserSchema = Joi.object({
 
     role: Joi.string().valid('user', 'admin', 'contributor').default('user'),
 
-    avatar: Joi.any().optional(),
+    avatar: Joi.any()
+        .required()
+        .custom((value, helpers) => {
+            if (!(value instanceof File) || value.size === 0) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }),
 });
 
 export async function POST(req: Request) {
@@ -89,18 +96,26 @@ export async function POST(req: Request) {
 
         if (avatar instanceof File && avatar.size > 0) {
             try {
-                user.avatar = await uploadImage({
-                    file: avatar,
-                    fileName: `avatar-${user._id.toString()}`,
-                    uploadFolder: 'uploads/avatars',
-                    errorPrefix: 'AVATAR',
+                const authenticated = await authUser(req);
+
+                const author = authenticated!.sub;
+
+                const result = await uploadImage(avatar, {
+                    width: 300,
+                    height: 300,
+                    folder: 'uploads/avatars',
+                    type: 'avatar',
+                    uploadedBy: author,
+                    slug: 'avatar',
                 });
+
+                user.avatar = result.url;
             } catch (err: any) {
-                if (err.message === 'INVALID_AVATAR_TYPE') {
+                if (err.message === 'INVALID_IMAGE_TYPE') {
                     return NextResponse.json({ success: false, message: 'Invalid avatar type' }, { status: 400 });
                 }
 
-                if (err.message === 'AVATAR_TOO_LARGE') {
+                if (err.message === 'IMAGE_TOO_LARGE') {
                     return NextResponse.json(
                         { success: false, message: 'Avatar size must be less than 0.5MB' },
                         { status: 400 },

@@ -1,8 +1,8 @@
 'use client';
 
-import { getUserStore } from '@/services/user-store';
 import { Loading } from '@/shared/components/common';
 import { useEffect, useState } from 'react';
+import { getUserStore } from '../services';
 import { CreateStoreForm, OverView, StoreProfile } from './components';
 
 export default function MyStore() {
@@ -40,7 +40,7 @@ export default function MyStore() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-6 pb-10">
             <StoreProfile store={storeRes.data} />
             <OverView />
         </div>

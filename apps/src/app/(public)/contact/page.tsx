@@ -5,6 +5,9 @@ import { SITE } from '@/utils/site';
 
 export const metadata: Metadata = {
     title: `Contact Us | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/contact`,
+    },
 };
 
 const Page = () => {

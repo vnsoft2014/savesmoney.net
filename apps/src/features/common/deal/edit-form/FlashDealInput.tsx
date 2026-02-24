@@ -1,8 +1,11 @@
-import { Checkbox } from '@/shared/shadecn/ui/checkbox';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
-import { Input } from '@/shared/shadecn/ui/input';
+'use client';
+
 import { useEffect } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useController, useFormContext, useWatch } from 'react-hook-form';
+
+import { Checkbox } from '@/shared/shadecn/ui/checkbox';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
+import { Input } from '@/shared/shadecn/ui/input';
 
 export default function FlashDealInput() {
     const { control, setValue } = useFormContext();
@@ -12,9 +15,21 @@ export default function FlashDealInput() {
         name: 'flashDeal',
     });
 
+    const { field: flashField, fieldState: flashState } = useController({
+        name: 'flashDeal',
+        control,
+        defaultValue: false,
+    });
+
+    const { field: expireField, fieldState: expireState } = useController({
+        name: 'flashDealExpireHours',
+        control,
+        defaultValue: 0,
+    });
+
     useEffect(() => {
         if (!isFlashDeal) {
-            setValue('flashDealExpireHours', null, {
+            setValue('flashDealExpireHours', 0, {
                 shouldDirty: true,
                 shouldValidate: true,
             });
@@ -23,45 +38,32 @@ export default function FlashDealInput() {
 
     return (
         <div className="space-y-4">
-            <FormField
-                control={control}
-                name="flashDeal"
-                render={({ field }) => (
-                    <FormItem className="flex items-center gap-2">
-                        <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormLabel>Flash Deal</FormLabel>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
+            <Field data-invalid={flashState.invalid} orientation="horizontal">
+                <Checkbox
+                    checked={!!flashField.value}
+                    onCheckedChange={flashField.onChange}
+                    aria-invalid={flashState.invalid}
+                />
+                <FieldLabel className="text-gray-700">Flash Deal</FieldLabel>
+                {flashState.invalid && <FieldError errors={[flashState.error]} />}
+            </Field>
 
-            <FormField
-                control={control}
-                name="flashDealExpireHours"
-                render={({ field }) => {
-                    const { value, ...rest } = field;
+            <Field data-invalid={expireState.invalid} className="gap-2">
+                <FieldLabel className="text-gray-700">Time (hours)</FieldLabel>
 
-                    return (
-                        <FormItem>
-                            <FormLabel>Time</FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="number"
-                                    min={1}
-                                    step={1}
-                                    disabled={!isFlashDeal}
-                                    value={field.value ?? ''}
-                                    onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                                    placeholder="24"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    );
-                }}
-            />
+                <Input
+                    type="number"
+                    min={1}
+                    step={1}
+                    disabled={!isFlashDeal}
+                    value={expireField.value ?? ''}
+                    onChange={(e) => expireField.onChange(e.target.value ? Number(e.target.value) : null)}
+                    placeholder="24"
+                    aria-invalid={expireState.invalid}
+                />
+
+                {expireState.invalid && <FieldError errors={[expireState.error]} />}
+            </Field>
         </div>
     );
 }

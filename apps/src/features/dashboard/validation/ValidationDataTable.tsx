@@ -10,7 +10,7 @@ import Loading from '@/shared/components/common/Loading';
 import { ValidationData } from '@/types';
 import { fetcherWithAuth, formatDate } from '@/utils/utils';
 import { toast } from 'react-toastify';
-import { updateValidationStatus } from './services';
+import { updateValidationStatus } from '../services';
 
 export default function ValidationDataTable() {
     const { mutate } = useSWRConfig();

@@ -1,4 +1,4 @@
-import { checkDuplicate } from '@/services/admin/deal';
+import { checkDuplicate } from '../../services';
 import { CheckingDuplicateState } from '../types';
 
 let duplicateTimeout: ReturnType<typeof setTimeout> | null = null;

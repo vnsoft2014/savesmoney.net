@@ -1,6 +1,6 @@
+import { SitemapItem } from '@/shared/types';
 import Redis from 'ioredis';
 import { Metadata } from 'next';
-import { SitemapItem } from '@/shared/types';
 import { SITE } from './site';
 
 type SeoParams = {
@@ -71,7 +71,7 @@ export function generateSitemapXml(items: SitemapItem[]): string {
         .map(
             (item) => `
       <url>
-        <loc>${'https://savesmoney.net'}${item.loc}</loc>
+        <loc>${process.env.NEXT_PUBLIC_SITE_URL}${item.loc}</loc>
         ${item.lastmod ? `<lastmod>${item.lastmod}</lastmod>` : ''}
         ${item.changefreq ? `<changefreq>${item.changefreq}</changefreq>` : ''}
         ${item.priority !== undefined ? `<priority>${item.priority}</priority>` : ''}

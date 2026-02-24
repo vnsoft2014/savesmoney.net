@@ -32,6 +32,8 @@ const StoresSlider = ({ stores }: Props) => {
                 <div className="flex items-center gap-1 md:gap-3">
                     <button
                         ref={(node) => setPrevEl(node)}
+                        type="button"
+                        aria-label="Previous slide"
                         disabled={isBeginning}
                         className={`flex justify-center items-center w-7 h-7 md:w-9 md:h-9 rounded-full border transition
                             ${
@@ -45,6 +47,8 @@ const StoresSlider = ({ stores }: Props) => {
 
                     <button
                         ref={(node) => setNextEl(node)}
+                        type="button"
+                        aria-label="Next slide"
                         disabled={isEnd}
                         className={`flex justify-center items-center w-7 h-7 md:w-9 md:h-9 rounded-full border transition
                             ${isEnd ? 'border-border text-muted-foreground cursor-not-allowed' : 'hover:bg-muted'}`}
@@ -54,7 +58,7 @@ const StoresSlider = ({ stores }: Props) => {
                 </div>
             </div>
 
-            <div className="mt-5 px-3 py-3 md:py-4 bg-white">
+            <div className="mt-3 px-3 py-3 md:py-4 bg-white border border-gray-100 shadow-xs">
                 <Swiper
                     modules={[Navigation, Autoplay]}
                     spaceBetween={15}
@@ -80,14 +84,15 @@ const StoresSlider = ({ stores }: Props) => {
                     {stores.map((store) => (
                         <SwiperSlide key={store._id}>
                             <Link
-                                href={`/sm-stores/${store.slug}-${store._id}`}
+                                href={`/store/${store.slug}-${store._id}`}
                                 prefetch={false}
                                 className="group flex flex-col items-center text-center transition-all"
                             >
                                 <div className="relative w-full rounded-full p-1 border-2 border-transparent group-hover:scale-105 transition-all duration-300">
                                     <Image
                                         src={store.thumbnail || '/image.png'}
-                                        alt={store.name}
+                                        alt=""
+                                        aria-hidden="true"
                                         width={96}
                                         height={96}
                                         className="w-full aspect-square object-cover rounded-2xl border bg-muted"

@@ -12,7 +12,7 @@ import {
 } from '@/shared/shadecn/ui/navigation-menu';
 import { User } from '@/types';
 import { getInitials } from '@/utils/utils';
-import { LayoutDashboard, LogOut, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, LogOut, Store, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 
 interface Props {
@@ -78,6 +78,19 @@ const UserDropdown = ({ user, handleSignOut }: Props) => {
                                             >
                                                 <UserIcon className="mr-2 h-4 w-4" />
                                                 <span>Profile</span>
+                                            </Link>
+                                        </NavigationMenuLink>
+                                    </li>
+
+                                    <li>
+                                        <NavigationMenuLink asChild>
+                                            <Link
+                                                href={`/my-store`}
+                                                prefetch={false}
+                                                className="flex items-center px-2 py-1.5 text-sm rounded-sm hover:bg-slate-100 transition-colors"
+                                            >
+                                                <Store className="mr-2 h-4 w-4" />
+                                                <span>My Store</span>
                                             </Link>
                                         </NavigationMenuLink>
                                     </li>

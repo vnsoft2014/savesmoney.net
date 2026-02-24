@@ -1,7 +1,7 @@
 import { DealsFilters, DealsListing } from '@/features/public/deals';
-import { getActiveDeals, getDealTypes, getStores } from '@/services';
-import { getUserStoreById } from '@/services/user-store';
+import { getActiveDeals, getDealTypes, getStores, getUserStoreById } from '@/services';
 import { Breadcrumb } from '@/shared/components/common';
+import { SITE } from '@/utils/site';
 import { getIdFromSlug } from '@/utils/utils';
 import { Home, Store } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -23,11 +23,17 @@ export async function generateMetadata({ params }: Props) {
     if (res?.success) {
         return {
             title: `${res.data.name} | SavesMoney`,
+            alternates: {
+                canonical: `${SITE.url}/sm-stores/${slug}`,
+            },
         };
     }
 
     return {
         title: 'Deal Type | SavesMoney',
+        alternates: {
+            canonical: `${SITE.url}/sm-stores/${slug}`,
+        },
     };
 }
 
@@ -82,7 +88,6 @@ const Page = async ({ params, searchParams }: Props) => {
                     initDealListResponse={dealListResponse}
                     dealTypeName={userStore.name}
                     dealTypeSlug={userStore.slug}
-                    params={{}}
                 />
             </div>
         </div>

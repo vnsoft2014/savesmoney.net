@@ -42,7 +42,12 @@ const MobileMenu = () => {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="xl:hidden text-white hover:bg-white/10">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="xl:hidden text-white hover:bg-white/10"
+                    aria-label="Open menu"
+                >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                             strokeLinecap="round"

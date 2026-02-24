@@ -1,5 +1,5 @@
 import EditDealTypeForm from '@/features/dashboard/deal-type/EditDealTypeForm';
-import { getDealTypeById } from '@/services/admin/deal-type';
+import { getDealTypeById } from '@/services';
 import { notFound } from 'next/navigation';
 
 interface PageProps {

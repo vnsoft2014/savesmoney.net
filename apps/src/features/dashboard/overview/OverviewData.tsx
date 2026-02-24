@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 
+import { getOverviewStats, getTopDeals, getTopStores } from '../services';
 import { StatsCards, TopDealsTable, TopStoresTable } from './components';
-import { getOverviewStats, getTopDeals, getTopStores } from './services';
 
 export default function OverviewData() {
     const [activeTab, setActiveTab] = useState<'deals' | 'stores'>('deals');
@@ -31,7 +31,6 @@ export default function OverviewData() {
 
             {stats && <StatsCards stats={stats} />}
 
-            {/* Tabs */}
             <div>
                 <div className="mb-4 flex gap-4 border-b">
                     <button
@@ -53,7 +52,6 @@ export default function OverviewData() {
                     </button>
                 </div>
 
-                {/* Tab Content */}
                 {activeTab === 'deals' && (
                     <>
                         {isLoadingTopDeals ? (

@@ -3,14 +3,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BellRing, CheckCircle2, Loader2, Mail, Sparkles, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import { useAuth } from '@/hooks/useAuth';
-import { checkDealSubscriber, subscribeDeal } from '@/services/common/subscribe';
+import { checkDealSubscriber, subscribeDeal } from '@/services';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/shadecn/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { toast } from 'react-toastify';
 
@@ -30,28 +30,34 @@ export default function DealPopup() {
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const { control, handleSubmit, reset } = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: user?.name || '',
             email: user?.email || '',
         },
+        mode: 'onChange',
     });
 
     useEffect(() => {
         if (isSignin && user) {
-            form.reset({ name: user.name, email: user.email });
+            reset({
+                name: user.name,
+                email: user.email,
+            });
         }
-    }, [isSignin, user, form]);
+    }, [isSignin, user, reset]);
 
     useEffect(() => {
         if (authLoading) return;
 
         const closedAt = localStorage.getItem(STORAGE_KEY);
+
         if (closedAt && Date.now() - Number(closedAt) < COOLDOWN_TIME) return;
 
         const timer = setTimeout(async () => {
             const email = isSignin ? user?.email : '';
+
             if (!email) {
                 setShowPopup(true);
                 return;
@@ -103,9 +109,12 @@ export default function DealPopup() {
                                 <BellRing
                                     size={32}
                                     className="text-indigo-600 animate-bounce"
-                                    style={{ animationIterationCount: 2 }}
+                                    style={{
+                                        animationIterationCount: 2,
+                                    }}
                                 />
                             </div>
+
                             <div className="space-y-2 text-center">
                                 <h2 className="text-2xl font-extrabold tracking-tight">
                                     Don't Miss a Deal! <Sparkles className="inline-block text-yellow-400 w-5 h-5" />
@@ -116,67 +125,69 @@ export default function DealPopup() {
                             </div>
                         </DialogHeader>
 
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                                <FormField
-                                    control={form.control}
-                                    name="name"
-                                    render={({ field }) => (
-                                        <FormItem className="space-y-1">
-                                            <FormLabel className="block mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">
-                                                Full Name
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                                    <Input
-                                                        {...field}
-                                                        className="pl-10 h-12 text-sm"
-                                                        placeholder="Enter your name"
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage className="text-xs" />
-                                        </FormItem>
-                                    )}
-                                />
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                            <Controller
+                                name="name"
+                                control={control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid} className="space-y-1">
+                                        <FieldLabel className="block mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">
+                                            Full Name
+                                        </FieldLabel>
 
-                                <FormField
-                                    control={form.control}
-                                    name="email"
-                                    render={({ field }) => (
-                                        <FormItem className="space-y-1">
-                                            <FormLabel className="block mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">
-                                                Email Address
-                                            </FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                                                    <Input
-                                                        {...field}
-                                                        className="pl-10 h-12 text-sm"
-                                                        placeholder="name@company.com"
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage className="text-xs" />
-                                        </FormItem>
-                                    )}
-                                />
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                                            <Input
+                                                {...field}
+                                                className="pl-10 h-12 text-sm"
+                                                placeholder="Enter your name"
+                                            />
+                                        </div>
 
-                                <Button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="w-full h-12 text-base font-bold bg-indigo-600 hover:bg-indigo-700 mt-2"
-                                >
-                                    {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Notify Me of Deals'}
-                                </Button>
+                                        {fieldState.invalid && (
+                                            <FieldError className="text-xs" errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
 
-                                <p className="text-center text-[10px] text-muted-foreground italic">
-                                    We hate spam too. Unsubscribe at any time with one click.
-                                </p>
-                            </form>
-                        </Form>
+                            <Controller
+                                name="email"
+                                control={control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid} className="space-y-1">
+                                        <FieldLabel className="block mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">
+                                            Email Address
+                                        </FieldLabel>
+
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                                            <Input
+                                                {...field}
+                                                className="pl-10 h-12 text-sm"
+                                                placeholder="name@company.com"
+                                            />
+                                        </div>
+
+                                        {fieldState.invalid && (
+                                            <FieldError className="text-xs" errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full h-12 text-base font-bold bg-indigo-600 hover:bg-indigo-700 mt-2"
+                            >
+                                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Notify Me of Deals'}
+                            </Button>
+
+                            <p className="text-center text-[10px] text-muted-foreground italic">
+                                We hate spam too. Unsubscribe at any time with one click.
+                            </p>
+                        </form>
                     </div>
                 ) : (
                     <div className="p-10 text-center animate-in fade-in zoom-in duration-300">

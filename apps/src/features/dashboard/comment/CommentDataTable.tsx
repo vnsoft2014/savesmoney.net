@@ -11,7 +11,7 @@ import Loading from '@/shared/components/common/Loading';
 import { Comment } from '@/shared/types';
 import { fetcherWithAuth } from '@/utils/utils';
 import Link from 'next/link';
-import { deleteComment, updateApprove } from './services';
+import { deleteComment, updateApprove } from '../services';
 
 function ApproveSwitch({ checked, onChange }: { checked: boolean; onChange: (val: boolean) => void }) {
     return (
@@ -107,7 +107,9 @@ export default function CommentTable() {
             name: 'Deal',
             cell: (row: Comment) =>
                 row.deal && typeof row.deal === 'object' ? (
-                    <Link href={`/deals/deal-detail/${row.deal._id}`}>{row.deal.shortDescription}</Link>
+                    <Link className="truncate" href={`/deals/deal-detail/${row.deal._id}`}>
+                        {row.deal.shortDescription}
+                    </Link>
                 ) : (
                     '-'
                 ),

@@ -83,6 +83,6 @@ export interface FormProps {
     btnPosition?: 'left' | 'center' | 'right';
 }
 
-export interface PagePropsWithSlug {
-    params: Promise<{ slug: string; page?: number }>;
+export interface PropsWithPage {
+    params: Promise<{ page: string }>;
 }

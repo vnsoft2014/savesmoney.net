@@ -4,6 +4,9 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `Sign In | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/signin`,
+    },
 };
 
 const Page = () => {

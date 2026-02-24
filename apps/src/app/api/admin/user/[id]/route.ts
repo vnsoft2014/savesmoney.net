@@ -1,9 +1,9 @@
 import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ONLY, CONTRIBUTOR_ONLY } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
+import { uploadImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import User from '@/models/User';
-import { uploadImage } from '@/utils/Upload';
 import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -39,7 +39,14 @@ const updateUserSchema = Joi.object({
 
     role: Joi.string().valid('user', 'admin', 'contributor').required(),
 
-    avatar: Joi.any().optional(),
+    avatar: Joi.any()
+        .optional()
+        .custom((value, helpers) => {
+            if (!(value instanceof File) || value.size === 0) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }),
 
     isBlocked: Joi.boolean().optional(),
     blockReason: Joi.string().allow('', null).optional(),
@@ -126,19 +133,24 @@ export async function PATCH(req: Request, { params }: Props) {
 
         if (avatar instanceof File && avatar.size > 0) {
             try {
-                user.avatar = await uploadImage({
-                    file: avatar,
-                    fileName: `${user._id}-${Date.now()}`,
-                    oldImage: user.avatar,
+                const result = await uploadImage(avatar, {
+                    width: 300,
+                    height: 300,
+                    folder: 'uploads/avatars',
+                    type: 'avatar',
+                    uploadedBy: id,
+                    slug: 'avatar',
                 });
+
+                user.avatar = result.url;
             } catch (err: any) {
-                if (err.message === 'INVALID_AVATAR_TYPE') {
+                if (err.message === 'INVALID_IMAGE_TYPE') {
                     return NextResponse.json({ success: false, message: 'Invalid avatar type' }, { status: 400 });
                 }
 
-                if (err.message === 'AVATAR_TOO_LARGE') {
+                if (err.message === 'IMAGE_TOO_LARGE') {
                     return NextResponse.json(
-                        { success: false, message: 'Image size must be less than 0.5MB' },
+                        { success: false, message: 'Avatar size must be less than 0.5MB' },
                         { status: 400 },
                     );
                 }
@@ -189,7 +201,7 @@ export async function DELETE(req: Request, { params }: Props) {
 
         const authenticated = await authUser(req);
 
-        if (user._id.toString() === authenticated?.sub) {
+        if (user._id.toString() === authenticated!.sub) {
             return NextResponse.json(
                 {
                     success: false,

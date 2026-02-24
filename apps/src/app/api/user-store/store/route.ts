@@ -1,15 +1,12 @@
 import { MESSAGES } from '@/constants/messages';
 import { USER_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
+import { uploadImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import { UserStore } from '@/models/UserStore';
-import { uploadImage } from '@/utils/Upload';
-import { randomUUID } from 'crypto';
-import fs from 'fs';
+import { generateUniqueSlug, sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
-import path from 'path';
-import slugify from 'slugify';
 
 export const CreateStoreSchema = Joi.object({
     name: Joi.string().trim().min(3).max(60).required().messages({
@@ -20,8 +17,9 @@ export const CreateStoreSchema = Joi.object({
 
     website: Joi.string()
         .trim()
-        .max(255)
-        .allow('')
+        .max(50)
+        .allow('', null)
+        .optional()
         .custom((value, helpers) => {
             if (!value) return value;
 
@@ -85,11 +83,10 @@ export async function POST(req: Request) {
 
         const { error, value } = CreateStoreSchema.validate(body, { abortEarly: false });
         if (error) {
-            console.log(error);
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }
 
-        const { name, website, description, logo } = value;
+        let { name, website, description, logo } = value;
 
         const authenticated = await authUser(req);
 
@@ -101,26 +98,40 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, message: 'Store already exists' }, { status: 400 });
         }
 
-        const slug = slugify(name, { lower: true, strict: true });
+        name = stripHtml(name);
+        description = sanitizeDescription(description);
+        website = sanitizeUrl(website);
 
-        let logoUrl = '';
+        const slug = generateUniqueSlug(name);
+
+        const store = new UserStore({
+            name,
+            slug,
+            website,
+            description,
+            author,
+        });
 
         if (logo instanceof File && logo.size > 0) {
             try {
-                logoUrl = await uploadImage({
-                    file: logo,
-                    fileName: `user-store-${slug}-${randomUUID()}`,
-                    uploadFolder: 'uploads/user-stores',
-                    errorPrefix: 'STORE_LOGO',
+                const result = await uploadImage(logo, {
+                    width: 300,
+                    height: 300,
+                    folder: 'uploads/user-stores',
+                    type: 'thumbnail',
+                    uploadedBy: author,
+                    slug,
                 });
+
+                store.logo = result.url;
             } catch (err: any) {
-                if (err.message === 'INVALID_STORE_LOGO_TYPE') {
+                if (err.message === 'INVALID_IMAGE_TYPE') {
                     return NextResponse.json({ success: false, message: 'Invalid logo type' }, { status: 400 });
                 }
 
-                if (err.message === 'STORE_LOGO_TOO_LARGE') {
+                if (err.message === 'IMAGE_TOO_LARGE') {
                     return NextResponse.json(
-                        { success: false, message: 'Thumbnail size must be less than 0.5MB' },
+                        { success: false, message: 'Logo size must be less than 0.5MB' },
                         { status: 400 },
                     );
                 }
@@ -129,21 +140,14 @@ export async function POST(req: Request) {
             }
         }
 
-        const store = await UserStore.create({
-            name,
-            slug,
-            website,
-            description,
-            logo: logoUrl,
-            author,
-        });
+        await store.save();
 
         return NextResponse.json({
             success: true,
             store,
         });
     } catch (error) {
-        return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
+        return NextResponse.json({ success: false, message: MESSAGES.ERROR.INTERNAL_SERVER }, { status: 500 });
     }
 }
 
@@ -157,7 +161,8 @@ export const UpdateStoreSchema = Joi.object({
     website: Joi.string()
         .trim()
         .max(255)
-        .allow('')
+        .allow('', null)
+        .optional()
         .custom((value, helpers) => {
             if (!value) return value;
 
@@ -179,7 +184,14 @@ export const UpdateStoreSchema = Joi.object({
         'string.max': 'Description must be less than 300 characters',
     }),
 
-    logo: Joi.any().optional(),
+    logo: Joi.any()
+        .optional()
+        .custom((value, helpers) => {
+            if (!(value instanceof File) || value.size === 0) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }),
 });
 
 export async function PATCH(req: Request) {
@@ -208,13 +220,12 @@ export async function PATCH(req: Request) {
         };
 
         const { error, value } = UpdateStoreSchema.validate(body, { abortEarly: false });
-        console.log(error);
 
         if (error) {
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }
 
-        const { name, website, description, logo } = value;
+        let { name, website, description, logo } = value;
 
         const authenticated = await authUser(req);
 
@@ -227,40 +238,40 @@ export async function PATCH(req: Request) {
         }
 
         if (name) {
+            name = stripHtml(name);
             store.name = name;
         }
 
-        if (description !== null) store.description = description;
-        if (website !== null) store.website = website;
+        if (description !== null) {
+            description = sanitizeDescription(description);
+            store.description = description;
+        }
+
+        if (website !== null) {
+            website = sanitizeUrl(website);
+            store.website = website;
+        }
 
         if (logo instanceof File && logo.size > 0) {
             try {
-                const oldLogo = store.logo;
-
-                const newLogoUrl = await uploadImage({
-                    file: logo,
-                    fileName: `user-store-${store.slug}-${randomUUID()}`,
-                    uploadFolder: 'uploads/user-stores',
-                    errorPrefix: 'STORE_LOGO',
+                const result = await uploadImage(logo, {
+                    width: 300,
+                    height: 300,
+                    folder: 'uploads/user-stores',
+                    type: 'thumbnail',
+                    uploadedBy: author,
+                    slug: store.slug,
                 });
 
-                store.logo = newLogoUrl;
-
-                if (oldLogo) {
-                    const oldPath = path.join(process.cwd(), 'public', oldLogo);
-
-                    if (fs.existsSync(oldPath)) {
-                        fs.unlinkSync(oldPath);
-                    }
-                }
+                store.logo = result.url;
             } catch (err: any) {
-                if (err.message === 'INVALID_STORE_LOGO_TYPE') {
+                if (err.message === 'INVALID_IMAGE_TYPE') {
                     return NextResponse.json({ success: false, message: 'Invalid logo type' }, { status: 400 });
                 }
 
-                if (err.message === 'STORE_LOGO_TOO_LARGE') {
+                if (err.message === 'IMAGE_TOO_LARGE') {
                     return NextResponse.json(
-                        { success: false, message: 'Thumbnail size must be less than 0.5MB' },
+                        { success: false, message: 'Logo size must be less than 0.5MB' },
                         { status: 400 },
                     );
                 }

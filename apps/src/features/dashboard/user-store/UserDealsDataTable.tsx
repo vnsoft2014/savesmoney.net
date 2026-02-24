@@ -1,6 +1,5 @@
 'use client';
 
-import { deleteDeal } from '@/services/admin/deal';
 import { formatPrice } from '@/utils/deal';
 import { fetcherWithAuth, formatDate } from '@/utils/utils';
 import { Flame, Gift, Pencil, Scale, Sun, Tag, Trash2 } from 'lucide-react';
@@ -9,6 +8,7 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
+import { deleteDeal } from '../services';
 
 import { Loading } from '@/shared/components/common';
 import { Deal } from '@/shared/types/deal';
@@ -145,16 +145,6 @@ export default function UserDealsDataTable() {
 
     const handleUpdateDeal = (id: string) => {
         router.push(`/dashboard/deal/${id}`);
-    };
-
-    const handleClearFilters = () => {
-        setSearch('');
-        setDealTypeFilter('');
-        setCreatedAtFrom('');
-        setCreatedAtTo('');
-        setExpireAtFrom('');
-        setExpireAtTo('');
-        setPage(1);
     };
 
     const createDealColumns = (handleUpdate: (id: string) => void, handleDelete: (id: string) => void) => [

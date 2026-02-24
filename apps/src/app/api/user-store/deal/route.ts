@@ -2,23 +2,28 @@ import { MESSAGES } from '@/constants/messages';
 import { USER_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
-import { Coupon } from '@/models/Coupon';
 import Deal from '@/models/Deal';
 import { UserStore } from '@/models/UserStore';
-import { DealFormValues } from '@/shared/types';
-import { validateRequest } from '@/utils/validators/validate';
+import { generateUniqueSlug, sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
+import { uploadDealImage } from '@/utils/upload';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
-import slugify from 'slugify';
 
 export const dynamic = 'force-dynamic';
 
-const ClientDealSchema = Joi.object({
-    picture: Joi.string().allow(null),
+const addDealSchema = Joi.object({
+    picture: Joi.any()
+        .required()
+        .custom((value, helpers) => {
+            if (!(value instanceof File) || value.size === 0) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }),
     dealType: Joi.array().items(Joi.string()).min(1).required(),
     store: Joi.string().required(),
-    expireAt: Joi.string()
-        .allow(null, '')
+    expiredDate: Joi.string()
+        .allow('')
         .custom((value, helpers) => {
             const { disableExpireAt, coupon, clearance } = helpers.state.ancestors[0];
 
@@ -62,14 +67,15 @@ const ClientDealSchema = Joi.object({
     shortDescription: Joi.string().required(),
 
     originalPrice: Joi.number().min(0).required(),
-    discountPrice: Joi.number().min(0).optional().allow(null),
+    discountPrice: Joi.number().min(0).default(0),
     percentageOff: Joi.string().allow('').optional(),
 
     purchaseLink: Joi.string().uri().required(),
     description: Joi.string().required(),
-    flashDeal: Joi.boolean().optional(),
-    flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
-    tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
+    flashDeal: Joi.boolean().default(false),
+    flashDealExpireHours: Joi.number().default(0),
+
+    tags: Joi.array().items(Joi.string().trim().min(1)).default([]),
 
     hotTrend: Joi.boolean().default(false),
     holidayDeals: Joi.boolean().default(false),
@@ -122,10 +128,79 @@ export async function POST(req: Request) {
             );
         }
 
-        const { isValid, value, response } = await validateRequest(req, ClientDealSchema);
-        if (!isValid) return response;
+        const formData = await req.formData();
 
-        const deal = value as DealFormValues;
+        const rawCoupons = formData.getAll('coupons');
+
+        const parsedCoupons = rawCoupons.map((c) => {
+            if (typeof c === 'string') {
+                return JSON.parse(c);
+            }
+            return c;
+        });
+
+        const body = {
+            picture: formData.get('picture'),
+            dealType: formData.getAll('dealType'),
+            store: formData.get('store'),
+            expiredDate: formData.get('expiredDate'),
+
+            shortDescription: formData.get('shortDescription'),
+
+            originalPrice: formData.get('originalPrice'),
+            discountPrice: formData.get('discountPrice'),
+            percentageOff: formData.get('percentageOff'),
+
+            purchaseLink: formData.get('purchaseLink'),
+            description: formData.get('description'),
+
+            flashDeal: formData.get('flashDeal'),
+            flashDealExpireHours: formData.get('flashDealExpireHours'),
+
+            tags: formData.getAll('tags'),
+
+            hotTrend: formData.get('hotTrend'),
+            holidayDeals: formData.get('holidayDeals'),
+            seasonalDeals: formData.get('seasonalDeals'),
+
+            coupon: formData.get('coupon'),
+            coupons: parsedCoupons,
+
+            clearance: formData.get('clearance'),
+            disableExpireAt: formData.get('disableExpireAt'),
+        };
+
+        const { error, value } = addDealSchema.validate(body, {
+            abortEarly: false,
+            stripUnknown: true,
+        });
+
+        if (error) {
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
+        }
+
+        const {
+            picture,
+            dealType,
+            store,
+            expiredDate,
+            shortDescription,
+            originalPrice,
+            discountPrice,
+            percentageOff,
+            purchaseLink,
+            description,
+            flashDeal,
+            flashDealExpireHours,
+            tags,
+            hotTrend,
+            holidayDeals,
+            seasonalDeals,
+            coupon,
+            coupons,
+            clearance,
+            disableExpireAt,
+        } = value;
 
         const authenticated = await authUser(req);
 
@@ -134,7 +209,7 @@ export async function POST(req: Request) {
         const [existingDeal, userStore] = await Promise.all([
             Deal.findOne({
                 author: author,
-                $or: [{ purchaseLink: deal.purchaseLink }, { shortDescription: deal.shortDescription }],
+                $or: [{ purchaseLink: purchaseLink }, { shortDescription: shortDescription }],
             }).select('purchaseLink shortDescription'),
             UserStore.findOne({ author }).select('_id isActive').lean(),
         ]);
@@ -163,18 +238,15 @@ export async function POST(req: Request) {
             return NextResponse.json(
                 {
                     success: false,
-                    message: 'Duplicate data exists',
+                    message: 'Duplicate deal exists',
                     duplicates: {
-                        purchaseLink: existingDeal.purchaseLink === deal.purchaseLink ? deal.purchaseLink : null,
-                        shortDescription:
-                            existingDeal.shortDescription === deal.shortDescription ? deal.shortDescription : null,
+                        purchaseLink: existingDeal.purchaseLink === purchaseLink ? purchaseLink : null,
+                        shortDescription: existingDeal.shortDescription === shortDescription ? shortDescription : null,
                     },
                 },
                 { status: 409 },
             );
         }
-
-        const { disableExpireAt, flashDeal, flashDealExpireHours, coupon, coupons, clearance } = deal;
 
         let expireAt: Date | null = null;
 
@@ -183,8 +255,8 @@ export async function POST(req: Request) {
         } else {
             const finalDisableExpireAt = coupon === true || clearance === true ? true : Boolean(disableExpireAt);
 
-            if (!finalDisableExpireAt && deal.expireAt) {
-                expireAt = new Date(deal.expireAt + 'T23:59:59.000Z');
+            if (!finalDisableExpireAt && expiredDate) {
+                expireAt = new Date(expiredDate + 'T23:59:59.000Z');
             }
         }
 
@@ -194,49 +266,79 @@ export async function POST(req: Request) {
             userStoreId = userStore._id;
         }
 
-        let couponIds = [];
-        if (coupons !== undefined) {
-            if (coupons.length > 0) {
-                const createdCoupons = await Coupon.insertMany(coupons);
-                couponIds = createdCoupons.map((c) => c._id);
-            }
-        }
+        const slug = generateUniqueSlug(shortDescription);
 
-        const slug = slugify(deal.shortDescription, { lower: true, strict: true });
-
-        const newDeal = await Deal.create({
-            image: deal.picture ?? null,
-            dealType: deal.dealType,
-            store: deal.store,
+        const newDeal = new Deal({
+            dealType: dealType,
+            store: store,
             expireAt,
 
-            shortDescription: deal.shortDescription,
+            shortDescription: stripHtml(shortDescription),
             slug,
-            originalPrice: deal.originalPrice,
-            discountPrice: deal.discountPrice,
-            percentageOff: deal.percentageOff,
-            purchaseLink: deal.purchaseLink,
-            description: deal.description,
+            originalPrice: originalPrice,
+            discountPrice: discountPrice,
+            percentageOff: stripHtml(percentageOff),
+            purchaseLink: sanitizeUrl(purchaseLink),
+            description: sanitizeDescription(description),
 
-            flashDeal: deal.flashDeal ?? false,
-            flashDealExpireHours: deal.flashDealExpireHours ?? null,
-            tags: deal.tags ?? [],
+            flashDeal: flashDeal,
+            flashDealExpireHours: flashDealExpireHours || null,
+            tags: stripHtml(tags),
 
-            hotTrend: deal.hotTrend ?? false,
-            holidayDeals: deal.holidayDeals ?? false,
-            seasonalDeals: deal.seasonalDeals ?? false,
+            hotTrend: hotTrend,
+            holidayDeals: holidayDeals,
+            seasonalDeals: seasonalDeals,
 
-            coupon: deal.coupon ?? false,
-            coupons: couponIds,
-            clearance: deal.clearance ?? false,
-            disableExpireAt: deal.disableExpireAt ?? false,
+            coupon: coupon,
+            clearance: clearance,
+            disableExpireAt: disableExpireAt,
 
             userStore: userStoreId,
             author,
 
-            source: 'user',
             status: 'pending',
         });
+
+        if (coupons !== undefined) {
+            if (Array.isArray(coupons) && coupons.length > 0) {
+                newDeal.coupons = coupons.map((c) => ({
+                    code: stripHtml(c.code),
+                    comment: stripHtml(c.comment),
+                }));
+            } else {
+                newDeal.coupons = [];
+            }
+        }
+
+        if (picture instanceof File && picture.size > 0) {
+            try {
+                const authenticated = await authUser(req);
+
+                const author = authenticated!.sub;
+
+                newDeal.image = await uploadDealImage(picture, {
+                    resize: { width: 450, height: 450 },
+                    uploadedBy: author!,
+                });
+            } catch (error: unknown) {
+                const message = error instanceof Error ? error.message : '';
+
+                if (message === 'INVALID_IMAGE_TYPE') {
+                    return NextResponse.json({ success: false, message: 'Invalid thumbnail type' }, { status: 400 });
+                }
+
+                if (message === 'IMAGE_TOO_LARGE') {
+                    return NextResponse.json(
+                        { success: false, message: 'Thumbnail size must be less than 5MB' },
+                        { status: 400 },
+                    );
+                }
+
+                return NextResponse.json({ success: false, message: 'Upload thumbnail failed' }, { status: 500 });
+            }
+        }
+
+        await newDeal.save();
 
         return NextResponse.json(
             {

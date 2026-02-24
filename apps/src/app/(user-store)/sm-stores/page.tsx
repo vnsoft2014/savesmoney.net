@@ -1,5 +1,5 @@
 import { HeroAffiliateCTA, StoreFilter, StoresListing } from '@/features/public/sm-stores';
-import { getUserStores } from '@/services/user-store';
+import { getUserStores } from '@/services';
 import { Breadcrumb } from '@/shared/components/common';
 import { SITE } from '@/utils/site';
 import { FileText, Home } from 'lucide-react';
@@ -7,6 +7,9 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `SavesMoney Stores | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/sm-stores`,
+    },
 };
 
 interface Props {
@@ -16,7 +19,7 @@ interface Props {
 const Page = async (props: Props) => {
     const searchParams = await props.searchParams;
 
-    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'name';
+    const initialSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'all';
 
     const pageNum = typeof searchParams?.page === 'string' ? parseInt(searchParams.page) : 1;
 

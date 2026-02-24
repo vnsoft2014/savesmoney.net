@@ -60,7 +60,21 @@ export const fetcher = async (url: string, options: RequestInit = {}) => {
         },
     });
 
-    return res.json();
+    const contentType = res.headers.get('content-type');
+
+    let data: any = null;
+
+    if (contentType?.includes('application/json')) {
+        data = await res.json();
+    } else {
+        data = await res.text();
+    }
+
+    if (!res.ok) {
+        throw new Error(data?.message || data || `Request failed with status ${res.status}`);
+    }
+
+    return data;
 };
 
 export const fetcherWithAuth = async (url: string, options: RequestInit = {}) => {
@@ -78,7 +92,21 @@ export const fetcherWithAuth = async (url: string, options: RequestInit = {}) =>
         },
     });
 
-    return res.json();
+    const contentType = res.headers.get('content-type');
+
+    let data: any = null;
+
+    if (contentType?.includes('application/json')) {
+        data = await res.json();
+    } else {
+        data = await res.text();
+    }
+
+    if (!res.ok) {
+        throw new Error(data?.message || data || `Request failed with status ${res.status}`);
+    }
+
+    return data;
 };
 
 export const getTodayDateOnly = () => {
@@ -94,15 +122,6 @@ export const startOfDayUTC = (date: string): Date => {
 export const endOfDayUTC = (date: string): Date => {
     const [y, m, d] = date.split('-').map(Number);
     return new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999));
-};
-
-export const stripHtmlTags = (html: string): string => {
-    if (!html) return '';
-
-    return html
-        .replace(/<[^>]*>/g, '') // remove HTML tags
-        .replace(/\s+/g, ' ') // normalize spaces
-        .trim();
 };
 
 export const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id);

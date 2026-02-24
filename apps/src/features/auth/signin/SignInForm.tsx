@@ -5,14 +5,13 @@ import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
 import { Checkbox } from '@/shared/shadecn/ui/checkbox';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import Link from 'next/link';
 import { SocialAuthButtons } from '../components';
@@ -41,32 +40,28 @@ const SignInForm = () => {
     } = form;
 
     const onSubmit = async (values: SignInFormType) => {
-        try {
-            const res = await signIn('credentials', {
-                email: values.email,
-                password: values.password,
-                rememberMe: values.rememberMe,
-                redirect: false,
-            });
+        const res = await signIn('credentials', {
+            email: values.email,
+            password: values.password,
+            rememberMe: values.rememberMe,
+            redirect: false,
+        });
 
-            if (res?.error) {
-                toast.error(res.error);
-                return;
-            }
-
-            toast.success('Sign in successful');
-
-            const safeRedirect = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
-
-            router.push(safeRedirect);
-        } catch (error) {
-            toast.error(MESSAGES.ERROR.INTERNAL_SERVER);
+        if (res?.error) {
+            toast.error(res.error);
+            return;
         }
+
+        toast.success('Sign in successful');
+
+        const safeRedirect = redirectTo.startsWith('/') && !redirectTo.startsWith('//') ? redirectTo : '/';
+
+        router.push(safeRedirect);
     };
 
     return (
         <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
-            <Card className="w-full max-w-150 p-4 md:p-8 inset-shadow-2xs">
+            <Card className="w-full max-w-150 p-4 md:p-8 border border-gray-100 shadow-xs">
                 <CardHeader className="space-y-4 text-center mb-6">
                     <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">
                         <Lock className="w-8 h-8 text-indigo-600" />
@@ -77,79 +72,103 @@ const SignInForm = () => {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            <FormField
-                                control={form.control}
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FieldGroup>
+                            <Controller
                                 name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-gray-700">Email</FormLabel>
-                                        <FormControl>
-                                            <div className="relative">
-                                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input placeholder="your@email.com" className="pl-10 h-12" {...field} />
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="signin-email" className="text-gray-700">
+                                            Email
+                                        </FieldLabel>
+
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                                            <Input
+                                                {...field}
+                                                id="signin-email"
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder="your@email.com"
+                                                className="pl-10 h-12"
+                                                autoComplete="email"
+                                            />
+                                        </div>
+
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
                                 )}
                             />
 
-                            <FormField
-                                control={form.control}
+                            <Controller
                                 name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-gray-700">Password</FormLabel>
-                                        <FormControl>
-                                            <div className="relative">
-                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    className="pl-10 pr-10 h-12"
-                                                    placeholder="*********"
-                                                    {...field}
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                >
-                                                    {showPassword ? (
-                                                        <EyeOff className="h-4 w-4" />
-                                                    ) : (
-                                                        <Eye className="h-4 w-4" />
-                                                    )}
-                                                    <span className="sr-only">Toggle password visibility</span>
-                                                </Button>
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="signin-password" className="text-gray-700">
+                                            Password
+                                        </FieldLabel>
+
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                                            <Input
+                                                {...field}
+                                                id="signin-password"
+                                                aria-invalid={fieldState.invalid}
+                                                type={showPassword ? 'text' : 'password'}
+                                                placeholder="*********"
+                                                className="pl-10 pr-10 h-12"
+                                                autoComplete="current-password"
+                                            />
+
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                                <span className="sr-only">Toggle password visibility</span>
+                                            </Button>
+                                        </div>
+
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
                                 )}
                             />
 
                             <div className="flex items-center justify-between">
-                                <FormField
-                                    control={form.control}
+                                <Controller
                                     name="rememberMe"
+                                    control={form.control}
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                                            <FormControl>
-                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                                            </FormControl>
-                                            <FormLabel className="mb-0 text-sm font-normal text-gray-600 cursor-pointer">
+                                        <Field orientation="horizontal">
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                id="signin-remember"
+                                            />
+
+                                            <FieldLabel
+                                                htmlFor="signin-remember"
+                                                className="mb-0 text-sm font-normal text-gray-600 cursor-pointer"
+                                            >
                                                 Remember me?
-                                            </FormLabel>
-                                        </FormItem>
+                                            </FieldLabel>
+                                        </Field>
                                     )}
                                 />
+
                                 <Link
                                     href="/forgot-password"
-                                    className="text-sm text-indigo-600 hover:underline font-semibold"
+                                    className="shrink-0 text-sm text-indigo-600 hover:underline font-semibold"
                                 >
                                     Forgot Password?
                                 </Link>
@@ -168,10 +187,10 @@ const SignInForm = () => {
                                     Sign Up
                                 </Link>
                             </div>
-                        </form>
+                        </FieldGroup>
+                    </form>
 
-                        <SocialAuthButtons />
-                    </Form>
+                    <SocialAuthButtons />
                 </CardContent>
             </Card>
         </div>

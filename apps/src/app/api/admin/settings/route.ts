@@ -1,8 +1,8 @@
 import { MESSAGES } from '@/constants/messages';
 import connectDB from '@/DB/connectDB';
+import { uploadImageNormal } from '@/lib/upload';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import Settings from '@/models/Settings';
-import { uploadImage } from '@/utils/Upload';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
 
         if (logo instanceof File && logo.size > 0) {
             try {
-                settings.logo = await uploadImage({
+                settings.logo = await uploadImageNormal({
                     file: logo,
                     fileName: 'logo',
                     uploadFolder: 'uploads/images',
@@ -129,7 +129,7 @@ export async function POST(req: Request) {
 
         if (favicon instanceof File && favicon.size > 0) {
             try {
-                settings.favicon = await uploadImage({
+                settings.favicon = await uploadImageNormal({
                     file: favicon,
                     fileName: 'favicon',
                     uploadFolder: 'uploads/images',

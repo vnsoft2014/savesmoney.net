@@ -1,26 +1,31 @@
-import { FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
-import { Input } from '@/shared/shadecn/ui/input';
-import { useFormContext } from 'react-hook-form';
+'use client';
 
-export default function DuplicateInput({ name, label }: { name: 'shortDescription' | 'purchaseLink'; label: string }) {
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
+import { Input } from '@/shared/shadecn/ui/input';
+import { useController, useFormContext } from 'react-hook-form';
+
+type Props = {
+    name: 'shortDescription' | 'purchaseLink';
+    label: string;
+};
+
+export default function DuplicateInput({ name, label }: Props) {
     const { control } = useFormContext();
 
+    const { field, fieldState } = useController({
+        name,
+        control,
+    });
+
     return (
-        <FormField
-            control={control}
-            name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>{label} *</FormLabel>
-                    <Input
-                        {...field}
-                        onChange={(e) => {
-                            field.onChange(e.target.value);
-                        }}
-                    />
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
+        <Field data-invalid={fieldState.invalid} className="gap-2">
+            <FieldLabel className="text-gray-700">
+                {label} <span className="text-red-500">*</span>
+            </FieldLabel>
+
+            <Input {...field} aria-invalid={fieldState.invalid} />
+
+            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+        </Field>
     );
 }

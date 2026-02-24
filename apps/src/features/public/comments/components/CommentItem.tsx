@@ -1,6 +1,5 @@
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { likeAsGuest, likeAsUser } from '@/services/comment.service';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Separator } from '@/shared/shadecn/ui/separator';
@@ -9,6 +8,7 @@ import { getInitials } from '@/utils/utils';
 import { ChevronDown, Loader2, ThumbsUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useCommentReplies } from '../hooks/useCommentReplies';
+import { likeAsGuest, likeAsUser } from '../services';
 import CommentForm from './CommentForm';
 
 type Props = {

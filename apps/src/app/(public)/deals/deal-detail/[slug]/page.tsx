@@ -17,7 +17,9 @@ import { Ads } from '@/shared/components/widgets';
 import { Button } from '@/shared/shadecn/ui/button';
 import { DealFull } from '@/shared/types';
 import { getDaysRemaining, truncateDescription } from '@/utils/deal';
-import { formatDate, getIdFromSlug, stripHtmlTags } from '@/utils/utils';
+import { stripHtml } from '@/utils/sanitize';
+import { SITE } from '@/utils/site';
+import { formatDate, getIdFromSlug } from '@/utils/utils';
 import { FileText, Home } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -36,11 +38,14 @@ export async function generateMetadata({ params }: Props) {
     const deal: DealFull = await getDealById(dealId, true);
 
     if (deal) {
-        const description = truncateDescription(stripHtmlTags(deal.description), 160);
+        const description = truncateDescription(stripHtml(deal.description), 160);
 
         return {
             title: `${deal.shortDescription} | SavesMoney`,
             description,
+            alternates: {
+                canonical: `${SITE.url}/deals/deal-detail/${slug}`,
+            },
             keywords: deal.tags ?? [],
             openGraph: {
                 title: `${deal.shortDescription} | SavesMoney`,
@@ -67,6 +72,9 @@ export async function generateMetadata({ params }: Props) {
 
     return {
         title: 'Deal | SavesMoney',
+        alternates: {
+            canonical: `${SITE.url}/deals/deal-detail/${slug}`,
+        },
     };
 }
 
@@ -121,14 +129,9 @@ const Page = async ({ params }: Props) => {
                     <div className="xl:col-span-6 lg:col-span-5 px-3">
                         <div className="p-3 bg-white border border-gray-100 shadow-xs">
                             <div className="flex flex-col md:flex-row items-start">
-                                <div className="relative w-full xl:w-85 lg:w-80 md:w-60">
+                                <div className="relative w-full xl:w-85 lg:w-80 md:w-60 aspect-square">
                                     <DealPurchaseLink dealId={deal._id} href={deal.purchaseLink}>
-                                        <ImageWithFallback
-                                            src={deal.image?.replace(/_resized(?=\.)/, '')}
-                                            fallback={deal.image}
-                                            alt={deal.shortDescription}
-                                            className="w-full object-cover"
-                                        />
+                                        <ImageWithFallback src={deal.image} alt={deal.shortDescription} />
                                     </DealPurchaseLink>
 
                                     <DealLabel

@@ -1,4 +1,3 @@
-// comments/CommentHeader.tsx
 import { Button } from '@/shared/shadecn/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/shadecn/ui/select';
 
@@ -21,7 +20,7 @@ export default function CommentHeader({ count, sortBy, onSortChange, showComment
                 </Button>
 
                 <Select value={sortBy} onValueChange={onSortChange}>
-                    <SelectTrigger className="w-35 h-9 text-xs">
+                    <SelectTrigger className="w-35 h-9 text-xs" aria-label="Sort by">
                         <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>

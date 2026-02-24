@@ -1,9 +1,9 @@
 import { MESSAGES } from '@/constants/messages';
 import { USER_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
+import { uploadImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import User from '@/models/User';
-import { uploadImage } from '@/utils/Upload';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
@@ -33,8 +33,9 @@ export async function PATCH(req: Request) {
         await connectDB();
 
         const authenticated = await authUser(req);
+        const author = authenticated!.sub;
 
-        const user = await User.findById(authenticated?.sub);
+        const user = await User.findById(author);
 
         if (!user) {
             return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
@@ -54,18 +55,22 @@ export async function PATCH(req: Request) {
 
         if (avatar instanceof File && avatar.size > 0) {
             try {
-                user.avatar = await uploadImage({
-                    file: avatar,
-                    fileName: `avatar-${user._id.toString()}`,
-                    uploadFolder: 'uploads/avatars',
-                    errorPrefix: 'AVATAR',
+                const result = await uploadImage(avatar, {
+                    width: 300,
+                    height: 300,
+                    folder: 'uploads/avatars',
+                    type: 'avatar',
+                    uploadedBy: author,
+                    slug: 'avatar',
                 });
+
+                user.avatar = result.url;
             } catch (err: any) {
-                if (err.message === 'INVALID_AVATAR_TYPE') {
+                if (err.message === 'INVALID_IMAGE_TYPE') {
                     return NextResponse.json({ success: false, message: 'Invalid avatar type' }, { status: 400 });
                 }
 
-                if (err.message === 'AVATAR_TOO_LARGE') {
+                if (err.message === 'IMAGE_TOO_LARGE') {
                     return NextResponse.json(
                         { success: false, message: 'Avatar size must be less than 0.5MB' },
                         { status: 400 },

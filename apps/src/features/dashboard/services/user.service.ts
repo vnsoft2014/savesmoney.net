@@ -48,10 +48,6 @@ export const deleteUser = async (id: string) => {
             method: 'DELETE',
         });
 
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
         return data;
     } catch (error: unknown) {
         return {

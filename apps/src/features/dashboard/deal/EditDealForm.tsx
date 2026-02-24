@@ -21,12 +21,13 @@ import {
     StoreSelect,
     TagsInput,
 } from '@/features/common/deal/edit-form';
-import { updateDeal } from '@/services/admin/deal';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form } from '@/shared/shadecn/ui/form';
 import { DealRaw } from '@/shared/types';
+import { buildFormData } from '@/utils/buildFormData';
 import { toast } from 'react-toastify';
-import { DealForm as DealFormType, dealSchema } from '../../common/schemas/Deal.schema';
+import { EditDealForm as EditDealFormType, editDealSchema } from '../../common/schemas/Deal.schema';
+import { updateDeal } from '../services';
 
 interface Props {
     deal: DealRaw;
@@ -35,17 +36,17 @@ interface Props {
 export default function EditDealForm({ deal }: Props) {
     const router = useRouter();
 
-    const form = useForm<DealFormType>({
-        resolver: zodResolver(dealSchema),
+    const form = useForm<EditDealFormType>({
+        resolver: zodResolver(editDealSchema),
         shouldFocusError: true,
         defaultValues: {
-            picture: deal.image,
+            picture: undefined,
             dealType: deal.dealType,
             store: deal.store,
             expiredDate: deal.expireAt,
             disableExpireAt: deal.disableExpireAt,
             coupon: deal.coupon,
-            coupons: deal.coupons ?? [],
+            coupons: deal.coupons,
             clearance: deal.clearance,
             shortDescription: deal.shortDescription,
             originalPrice: deal.originalPrice,
@@ -56,7 +57,7 @@ export default function EditDealForm({ deal }: Props) {
 
             flashDeal: deal.flashDeal,
             flashDealExpireHours: deal.flashDealExpireHours,
-            tags: deal.tags ?? [],
+            tags: deal.tags,
             hotTrend: deal.hotTrend,
             holidayDeals: deal.holidayDeals,
             seasonalDeals: deal.seasonalDeals,
@@ -68,8 +69,10 @@ export default function EditDealForm({ deal }: Props) {
         formState: { isSubmitting },
     } = form;
 
-    const onSubmit = async (values: DealFormType) => {
-        const res = await updateDeal(deal._id, { _id: deal._id, ...values });
+    const onSubmit = async (values: EditDealFormType) => {
+        const fd = buildFormData(values);
+
+        const res = await updateDeal(deal._id, fd);
 
         if (res.success) {
             toast.success(res.message);
@@ -91,7 +94,7 @@ export default function EditDealForm({ deal }: Props) {
 
                 <Form {...form}>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <PictureUploadField name="picture" />
+                        <PictureUploadField thumbnail={deal.image} />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <DealTypeSelect />

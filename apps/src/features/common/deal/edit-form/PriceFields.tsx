@@ -1,7 +1,9 @@
-import { FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+'use client';
+
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { useEffect } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useController, useFormContext, useWatch } from 'react-hook-form';
 
 export default function PriceFields() {
     const { control, getValues, setValue } = useFormContext();
@@ -19,79 +21,68 @@ export default function PriceFields() {
         });
     }, [percent, setValue]);
 
+    const { field: originalField, fieldState: originalState } = useController({
+        name: 'originalPrice',
+        control,
+        rules: {
+            required: 'Original price is required',
+            min: { value: 0, message: 'Must be greater than 0' },
+        },
+    });
+
+    const { field: discountField, fieldState: discountState } = useController({
+        name: 'discountPrice',
+        control,
+        rules: {
+            validate: (value) => {
+                if (!value) return true;
+                return value <= getValues('originalPrice') ? true : 'Discount must be less than original price';
+            },
+        },
+    });
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormField
-                control={control}
-                name="originalPrice"
-                rules={{
-                    required: 'Original price is required',
-                    min: { value: 0, message: 'Must be greater than 0' },
-                }}
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>
-                            Original Price <span className="text-red-500">*</span>
-                        </FormLabel>
+            <Field data-invalid={originalState.invalid}>
+                <FieldLabel className="text-gray-700">
+                    Original Price <span className="text-red-500">*</span>
+                </FieldLabel>
 
-                        <Input
-                            type="number"
-                            placeholder="299"
-                            min={0}
-                            step={0.01}
-                            value={field.value || ''}
-                            onChange={(e) => field.onChange(Number(e.target.value))}
-                        />
+                <Input
+                    {...originalField}
+                    type="number"
+                    placeholder="299"
+                    min={0}
+                    step={0.01}
+                    value={originalField.value || ''}
+                    onChange={(e) => originalField.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                    aria-invalid={originalState.invalid}
+                />
 
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
+                {originalState.invalid && <FieldError errors={[originalState.error]} />}
+            </Field>
 
-            <FormField
-                control={control}
-                name="discountPrice"
-                rules={{
-                    validate: (value) => {
-                        if (!value) return true;
+            <Field data-invalid={discountState.invalid}>
+                <FieldLabel className="text-gray-700">Discount Price</FieldLabel>
 
-                        return value <= getValues('originalPrice') ? true : 'Discount must be less than original price';
-                    },
-                }}
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Discount Price</FormLabel>
+                <Input
+                    type="number"
+                    placeholder="269"
+                    min={0}
+                    step={0.01}
+                    value={discountField.value || null}
+                    onChange={(e) => discountField.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                    aria-invalid={discountState.invalid}
+                />
 
-                        <Input
-                            type="number"
-                            placeholder="269"
-                            min={0}
-                            step={0.01}
-                            value={field.value || ''}
-                            onChange={(e) => field.onChange(e.target.value === '' ? null : Number(e.target.value))}
-                        />
+                {discountState.invalid && <FieldError errors={[discountState.error]} />}
+            </Field>
 
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
+            <Field>
+                <FieldLabel className="text-gray-700">Percentage Off</FieldLabel>
 
-            <FormField
-                control={control}
-                name="percentageOff"
-                render={() => (
-                    <FormItem>
-                        <FormLabel>Percentage Off</FormLabel>
-
-                        <Input
-                            readOnly
-                            value={percent}
-                            placeholder="Auto-calculated"
-                            className="bg-gray-50 text-gray-600"
-                        />
-                    </FormItem>
-                )}
-            />
+                <Input readOnly value={percent} placeholder="Auto-calculated" className="bg-gray-50 text-gray-600" />
+            </Field>
         </div>
     );
 }

@@ -5,6 +5,7 @@ import { assertRole, authCheck } from '@/middleware/authCheck';
 import { Coupon } from '@/models/Coupon';
 import Deal from '@/models/Deal';
 import { DealFormValues } from '@/shared/types';
+import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
 import { validateRequest } from '@/utils/validators/validate';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -60,7 +61,7 @@ const ClientDealSchema = Joi.object({
     shortDescription: Joi.string().required(),
 
     originalPrice: Joi.number().min(0).required(),
-    discountPrice: Joi.number().min(0).required(),
+    discountPrice: Joi.number().min(0).default(0),
     percentageOff: Joi.string().allow('').optional(),
 
     purchaseLink: Joi.string().uri().required(),
@@ -221,16 +222,16 @@ export async function POST(req: Request) {
 
                 expireAt,
 
-                shortDescription: deal.shortDescription,
+                shortDescription: stripHtml(deal.shortDescription),
                 originalPrice: deal.originalPrice,
                 discountPrice: deal.discountPrice,
-                percentageOff: deal.percentageOff,
-                purchaseLink: deal.purchaseLink,
-                description: deal.description,
+                percentageOff: stripHtml(deal.percentageOff),
+                purchaseLink: sanitizeUrl(deal.purchaseLink),
+                description: sanitizeDescription(deal.description),
                 flashDeal,
                 flashDealExpireHours: deal.flashDealExpireHours,
                 coupons: couponIds,
-                tags: deal.tags ?? [],
+                tags: stripHtml(deal.tags) ?? [],
 
                 hotTrend: deal.hotTrend ?? false,
                 holidayDeals: deal.holidayDeals ?? false,

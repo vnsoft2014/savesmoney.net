@@ -19,13 +19,15 @@ import {
     StoreSelect,
     TagsInput,
 } from '@/features/common/deal/edit-form';
-import { DealForm as DealFormType, dealSchema } from '@/features/common/schemas/Deal.schema';
+import { AddDealForm as AddDealFormType, addDealSchema } from '@/features/common/schemas/Deal.schema';
 import { MyStoreGuestBanner } from '@/features/public/my-store';
-import { addDeal } from '@/features/public/my-store/services';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/shared/shadecn/ui/button';
+import { FieldGroup } from '@/shared/shadecn/ui/field';
 import { Form } from '@/shared/shadecn/ui/form';
+import { buildFormData } from '@/utils/buildFormData';
 import { toast } from 'react-toastify';
+import { addDeal } from '../services';
 import { DuplicateInput } from './components';
 
 export default function AddDeal() {
@@ -33,11 +35,10 @@ export default function AddDeal() {
 
     const router = useRouter();
 
-    const form = useForm<DealFormType>({
-        resolver: zodResolver(dealSchema),
-        shouldFocusError: true,
+    const form = useForm<AddDealFormType>({
+        resolver: zodResolver(addDealSchema),
         defaultValues: {
-            picture: '',
+            picture: undefined,
             dealType: [],
             store: '',
             expiredDate: '',
@@ -65,12 +66,12 @@ export default function AddDeal() {
         formState: { isSubmitting },
     } = form;
 
-    const onSubmit = async (values: DealFormType) => {
-        const res = await addDeal(values);
-
+    const onSubmit = async (values: AddDealFormType) => {
+        const fd = buildFormData(values);
+        const res = await addDeal(fd);
         if (res.success) {
             toast.success(res.message);
-            router.push('/my-store/deals');
+            router.push('/my-store');
         } else {
             toast.error(res.message);
         }
@@ -82,36 +83,38 @@ export default function AddDeal() {
         <div className="min-h-screen bg-gray-50 p-6">
             <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
                 <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <PictureUploadField name="picture" />
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FieldGroup>
+                            <PictureUploadField />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <DealTypeSelect />
-                            <StoreSelect />
-                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <DealTypeSelect />
+                                <StoreSelect />
+                            </div>
 
-                        <ExpiredDateField />
+                            <ExpiredDateField />
 
-                        <DuplicateInput name="shortDescription" label="Short Description" />
-                        <PriceFields />
-                        <DuplicateInput name="purchaseLink" label="Purchase Link" />
-                        <TagsInput />
-                        <DealFlags />
+                            <DuplicateInput name="shortDescription" label="Short Description" />
+                            <PriceFields />
+                            <DuplicateInput name="purchaseLink" label="Purchase Link" />
+                            <TagsInput />
+                            <DealFlags />
 
-                        <FlashDealInput />
-                        <CouponsInput />
+                            <FlashDealInput />
+                            <CouponsInput />
 
-                        <DealDescription />
+                            <DealDescription />
 
-                        <div className="col-span-full flex justify-end gap-3 mt-20">
-                            <Button type="button" variant="outline" onClick={() => router.back()}>
-                                Cancel
-                            </Button>
+                            <div className="col-span-full flex justify-end gap-3 mt-20">
+                                <Button type="button" variant="outline" onClick={() => router.back()}>
+                                    Cancel
+                                </Button>
 
-                            <Button type="submit" disabled={isSubmitting}>
-                                Save
-                            </Button>
-                        </div>
+                                <Button type="submit" disabled={isSubmitting}>
+                                    Save
+                                </Button>
+                            </div>
+                        </FieldGroup>
                     </form>
                 </Form>
             </div>

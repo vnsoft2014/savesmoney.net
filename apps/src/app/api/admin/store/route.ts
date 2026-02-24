@@ -1,9 +1,10 @@
 import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
-import { assertRole, authCheck } from '@/middleware/authCheck';
+import { uploadImage } from '@/lib/upload';
+import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import Store from '@/models/Store';
-import { uploadImage } from '@/utils/Upload';
+import { stripHtml } from '@/utils/sanitize';
 import Joi from 'joi';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -15,7 +16,14 @@ const storeSchema = Joi.object({
         .messages({
             'string.pattern.base': 'Slug must be lowercase letters, numbers, and hyphens only',
         }),
-    thumbnail: Joi.any().optional(),
+    thumbnail: Joi.any()
+        .optional()
+        .custom((value, helpers) => {
+            if (!(value instanceof File) || value.size === 0) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }),
 });
 
 export const POST = async (req: NextRequest) => {
@@ -40,7 +48,9 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }
 
-        const { name, slug, thumbnail } = value;
+        let { name, slug, thumbnail } = value;
+
+        name = stripHtml(name);
 
         const store = new Store({
             name,
@@ -49,18 +59,26 @@ export const POST = async (req: NextRequest) => {
 
         if (thumbnail instanceof File && thumbnail.size > 0) {
             try {
-                store.thumbnail = await uploadImage({
-                    file: thumbnail,
-                    fileName: `store-${slug}`,
-                    uploadFolder: 'uploads/stores',
-                    errorPrefix: 'STORE_THUMBNAIL',
+                const authenticated = await authUser(req);
+
+                const author = authenticated!.sub;
+
+                const result = await uploadImage(thumbnail, {
+                    width: 300,
+                    height: 300,
+                    folder: 'uploads/stores',
+                    type: 'thumbnail',
+                    uploadedBy: author,
+                    slug,
                 });
+
+                store.thumbnail = result.url;
             } catch (err: any) {
-                if (err.message === 'INVALID_STORE_THUMBNAIL_TYPE') {
+                if (err.message === 'INVALID_IMAGE_TYPE') {
                     return NextResponse.json({ success: false, message: 'Invalid thumbnail type' }, { status: 400 });
                 }
 
-                if (err.message === 'STORE_THUMBNAIL_TOO_LARGE') {
+                if (err.message === 'IMAGE_TOO_LARGE') {
                     return NextResponse.json(
                         { success: false, message: 'Thumbnail size must be less than 0.5MB' },
                         { status: 400 },

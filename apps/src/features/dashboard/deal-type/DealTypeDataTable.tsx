@@ -10,7 +10,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import Loading from '@/shared/components/common/Loading';
 import { DealType } from '@/shared/types';
 import { fetcherWithAuth } from '@/utils/utils';
-import { deleteDealType } from './services';
+import { deleteDealType } from '../services';
 
 export default function DealTypeDataTable() {
     const router = useRouter();
@@ -73,7 +73,7 @@ export default function DealTypeDataTable() {
         {
             name: 'Image',
             cell: (row: DealType) => (
-                <img src={row.thumbnail || 'image.png'} alt="Deal type image" className="py-2 object-cover rounded" />
+                <img src={row.thumbnail || '/image.png'} alt="Deal type image" className="py-2 object-cover rounded" />
             ),
             width: '120px',
         },

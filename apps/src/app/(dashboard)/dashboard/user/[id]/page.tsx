@@ -1,5 +1,5 @@
 import EditUserForm from '@/features/dashboard/user/EditUserForm';
-import { getUserById } from '@/services/admin/user';
+import { getUserById } from '@/services';
 import { notFound } from 'next/navigation';
 
 interface PageProps {

@@ -43,13 +43,13 @@ export type Deal<TDealType = DealType, TStore = Store, TUser = User, TCoupon = C
     purchaseLink: string;
     description: string;
     flashDeal: boolean;
-    flashDealExpireHours?: number;
-    tags?: string[];
+    flashDealExpireHours: number | null;
+    tags: string[];
     hotTrend: boolean;
     holidayDeals: boolean;
     seasonalDeals: boolean;
     coupon: boolean;
-    coupons?: TCoupon[];
+    coupons: TCoupon[];
     clearance: boolean;
     disableExpireAt: boolean;
     author: TUser;

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
 
-    const sort = searchParams.get('sort') || 'popular';
+    const sort = searchParams.get('sort') || 'all';
     const search = searchParams.get('search') || '';
 
     const currentPage = Math.max(parseInt(searchParams.get('page') || '1'), 1);

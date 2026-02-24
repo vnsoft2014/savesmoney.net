@@ -36,7 +36,7 @@ const FilterListbox = ({ value, options, placeholder, onChange }: FilterListboxP
 
     return (
         <Listbox value={value} onChange={onChange}>
-            <div className="relative min-w-35">
+            <div className="min-w-35">
                 <ListboxButton className="w-full px-3 py-2 text-[13px] bg-white border border-gray-400 rounded-full flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-orange-500">
                     <span className="text-gray-900">{selected?.label || placeholder}</span>
                     <ChevronDown className="w-4 h-4 text-gray-400" />
@@ -62,7 +62,7 @@ const FilterListbox = ({ value, options, placeholder, onChange }: FilterListboxP
             max-h-[70vh]
 
             /* desktop */
-            sm:left-0 sm:translate-x-0
+            sm:left-auto sm:right-0 sm:translate-x-0
             sm:w-auto sm:max-w-none
             sm:max-h-80
           "
@@ -176,32 +176,30 @@ const DealsFilters = ({ dealTypes, stores }: DealsFiltersProps) => {
                 </div>
             )}
 
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-4">
-                    {dealTypes.length > 0 && (
-                        <FilterListbox
-                            value={filters.dealType}
-                            placeholder="Deal Type"
-                            onChange={(val) => handleFilterChange('dealType', val)}
-                            options={dealTypes.map((type) => ({
-                                value: type._id,
-                                label: type.name,
-                            }))}
-                        />
-                    )}
+            <div className="relative flex items-center gap-4">
+                {dealTypes.length > 0 && (
+                    <FilterListbox
+                        value={filters.dealType}
+                        placeholder="Deal Type"
+                        onChange={(val) => handleFilterChange('dealType', val)}
+                        options={dealTypes.map((type) => ({
+                            value: type._id,
+                            label: type.name,
+                        }))}
+                    />
+                )}
 
-                    {stores.length > 0 && (
-                        <FilterListbox
-                            value={filters.store}
-                            placeholder="Deal Store"
-                            onChange={(val) => handleFilterChange('store', val)}
-                            options={stores.map((store) => ({
-                                value: store._id,
-                                label: store.name,
-                            }))}
-                        />
-                    )}
-                </div>
+                {stores.length > 0 && (
+                    <FilterListbox
+                        value={filters.store}
+                        placeholder="Deal Store"
+                        onChange={(val) => handleFilterChange('store', val)}
+                        options={stores.map((store) => ({
+                            value: store._id,
+                            label: store.name,
+                        }))}
+                    />
+                )}
             </div>
         </div>
     );

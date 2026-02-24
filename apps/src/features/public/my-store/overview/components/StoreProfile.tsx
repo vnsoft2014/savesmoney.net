@@ -20,7 +20,7 @@ export default function StoreProfile({ store }: Props) {
 
     return (
         <div className="container px-3">
-            <Card className="relative shadow-2xs bg-white">
+            <Card className="relative bg-white border border-gray-100 shadow-xs">
                 <div className="absolute top-5 right-5">
                     <Link href="/my-store/settings" prefetch={false}>
                         <Button size="icon" variant="ghost" className="rounded-xl">

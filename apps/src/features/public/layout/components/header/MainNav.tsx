@@ -1,5 +1,4 @@
-import { getDealTypes } from '@/services';
-import { getSettings } from '@/services/admin/settings';
+import { getDealTypes, getSettings } from '@/services';
 import { MainNavClient } from './components';
 import { headerData } from './data';
 

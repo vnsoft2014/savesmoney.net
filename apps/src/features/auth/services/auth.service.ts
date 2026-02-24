@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@/utils/errorHandler';
 import { fetcher } from '@/utils/utils';
 
 export const registerMe = async (formData: any) => {
@@ -13,7 +14,7 @@ export const registerMe = async (formData: any) => {
     } catch (error) {
         return {
             success: false,
-            message: '000000',
+            message: getErrorMessage(error),
         };
     }
 };

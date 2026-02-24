@@ -26,7 +26,13 @@ export default function CouponCodeBox({ code, comment }: Props) {
                 {comment && <div className="text-xs text-gray-600 truncate max-w-50 md:max-w-xs">{comment}</div>}
             </div>
 
-            <Button size="icon" variant="outline" onClick={handleCopy} className="w-5 h-5 shadow-none border-none">
+            <Button
+                size="icon"
+                variant="outline"
+                onClick={handleCopy}
+                className="w-5 h-5 shadow-none border-none"
+                aria-label="Copy coupon"
+            >
                 {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
             </Button>
         </div>

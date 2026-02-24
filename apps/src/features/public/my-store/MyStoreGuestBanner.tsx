@@ -8,8 +8,8 @@ export default function MyStoreGuestBanner() {
             <h3 className="text-lg sm:text-xl font-semibold mb-2">You haven’t posted any deals yet</h3>
 
             <p className="text-center text-sm sm:text-base max-w-xl">
-                You can earn credits by posting deals and customers buy products through your links. To post deals, you
-                need to create an account by signing up{' '}
+                You can earn a commission by posting deals and customers buy products through your links. To post deals,
+                you need to create an account by signing up{' '}
                 <Link href={'/signup'} className="underline hover:text-blue-600 transition-colors" prefetch={false}>
                     here
                 </Link>

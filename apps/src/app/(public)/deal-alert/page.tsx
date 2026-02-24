@@ -4,6 +4,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `Deal Alert | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/deal-alert`,
+    },
 };
 
 const Page = () => {

@@ -28,6 +28,11 @@ export const MESSAGES = {
         SIZE_EXCEEDED: (maxMB: number) => `File size too large. Maximum ${maxMB}MB allowed.`,
         VALID: 'File is valid.',
     },
+    IMAGE: {
+        INVALID_TYPE: 'Only JPG, PNG, WEBP or GIF allowed',
+        REQUIREMENTS_500: 'JPG, PNG, WEBP or GIF • Max 500KB',
+        REQUIREMENTS_5000: 'JPG, PNG, WEBP or GIF • Max 5MB',
+    },
     AUTH: {
         USER_ALREADY_EXIST: 'User Already Exist.',
         ACCOUNT_CREATED: 'Account created successfully.',

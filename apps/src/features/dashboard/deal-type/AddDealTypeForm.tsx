@@ -4,49 +4,53 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import slugify from 'slugify';
-import { DealTypeForm as DealTypeFormType, dealTypeSchema } from './schemas';
 
+import { AddDealTypeForm as AddDealTypeFormType, addDealTypeSchema } from '../schemas';
+import { addDealType } from '../services';
+
+import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
-import { addDealType } from './services';
 
 export default function AddDealTypeForm() {
     const router = useRouter();
-
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
 
-    const form = useForm<DealTypeFormType>({
-        resolver: zodResolver(dealTypeSchema),
+    const {
+        control,
+        handleSubmit,
+        watch,
+        setValue,
+        formState: { isSubmitting },
+    } = useForm<AddDealTypeFormType>({
+        resolver: zodResolver(addDealTypeSchema),
         defaultValues: {
             name: '',
             slug: '',
-            thumbnail: null,
+            thumbnail: undefined,
         },
+        mode: 'onChange',
     });
 
-    const name = form.watch('name');
+    const name = watch('name');
 
     useEffect(() => {
         if (!name) return;
+        setValue('slug', slugify(name, { lower: true, strict: true }), {
+            shouldValidate: true,
+        });
+    }, [name, setValue]);
 
-        form.setValue('slug', slugify(name, { lower: true, strict: true }));
-    }, [name, form]);
-
-    const {
-        handleSubmit,
-        formState: { isSubmitting },
-    } = form;
-
-    const onSubmit = async (values: DealTypeFormType) => {
+    const onSubmit = async (values: AddDealTypeFormType) => {
         const fd = new FormData();
 
         Object.entries(values).forEach(([key, value]) => {
             if (value instanceof File) fd.append(key, value);
-            else if (value) fd.append(key, value);
+            else if (value) fd.append(key, value as string);
         });
 
         const res = await addDealType(fd);
@@ -69,92 +73,90 @@ export default function AddDealTypeForm() {
                     <h1 className="text-2xl font-bold">Add Deal Type</h1>
                 </div>
 
-                <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 md:grid-cols-3">
-                        <FormField
-                            control={form.control}
-                            name="thumbnail"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Thumbnail</FormLabel>
+                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 md:grid-cols-3">
+                    <Controller
+                        name="thumbnail"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid} className="gap-2">
+                                <FieldLabel className="text-gray-700">Thumbnail</FieldLabel>
 
-                                    <div className="flex items-center gap-4">
-                                        <img
-                                            src={thumbnailPreview || '/image.png'}
-                                            className="w-24 h-24 rounded-full border object-cover"
+                                <div className="flex items-center gap-4">
+                                    <img
+                                        src={thumbnailPreview || '/image.png'}
+                                        className="w-24 h-24 rounded-full border object-cover"
+                                    />
+
+                                    <label className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded cursor-pointer hover:bg-green-700">
+                                        Change
+                                        <input
+                                            type="file"
+                                            hidden
+                                            accept="image/*"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    field.onChange(file);
+
+                                                    const url = URL.createObjectURL(file);
+
+                                                    setThumbnailPreview((prev) => {
+                                                        if (prev?.startsWith('blob:')) {
+                                                            URL.revokeObjectURL(prev);
+                                                        }
+                                                        return url;
+                                                    });
+                                                }
+                                            }}
                                         />
+                                    </label>
+                                </div>
 
-                                        <div>
-                                            <label className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded cursor-pointer hover:bg-green-700">
-                                                Change
-                                                <input
-                                                    type="file"
-                                                    hidden
-                                                    accept="image/*"
-                                                    onChange={(e) => {
-                                                        const file = e.target.files?.[0];
-                                                        if (!file) return;
+                                <p className="text-xs text-muted-foreground">{MESSAGES.IMAGE.REQUIREMENTS_500}</p>
 
-                                                        field.onChange(file);
-                                                        form.clearErrors('thumbnail');
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
 
-                                                        const url = URL.createObjectURL(file);
-                                                        setThumbnailPreview((prev) => {
-                                                            if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
-                                                            return url;
-                                                        });
-                                                    }}
-                                                />
-                                            </label>
-                                        </div>
-                                    </div>
+                    <Controller
+                        name="name"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid} className="gap-2">
+                                <FieldLabel htmlFor="name" className="text-gray-700">
+                                    Name
+                                </FieldLabel>
+                                <Input {...field} id="name" aria-invalid={fieldState.invalid} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
 
-                                    <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, WEBP • Max 500KB</p>
+                    <Controller
+                        name="slug"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid} className="gap-2">
+                                <FieldLabel htmlFor="slug" className="text-gray-700">
+                                    Slug
+                                </FieldLabel>
+                                <Input {...field} id="slug" aria-invalid={fieldState.invalid} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
 
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <div className="col-span-full flex justify-end gap-3 mt-4">
+                        <Button type="button" variant="outline" onClick={() => router.back()}>
+                            Cancel
+                        </Button>
 
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="slug"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Slug</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="col-span-full flex justify-end gap-3 mt-4">
-                            <Button type="button" variant="outline" onClick={() => router.back()}>
-                                Cancel
-                            </Button>
-
-                            <Button type="submit" disabled={isSubmitting}>
-                                Save
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                        <Button type="submit" disabled={isSubmitting}>
+                            Save
+                        </Button>
+                    </div>
+                </form>
             </div>
         </div>
     );

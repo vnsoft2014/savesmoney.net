@@ -1,6 +1,35 @@
-import { FormDescription, FormField, FormItem, FormLabel } from '@/shared/shadecn/ui/form';
+'use client';
+
+import { Field, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Switch } from '@/shared/shadecn/ui/switch';
-import { useFormContext } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
+
+type FlagProps = {
+    name: string;
+    label: string;
+    desc: string;
+    control: any;
+};
+
+function FlagSwitch({ name, label, desc, control }: FlagProps) {
+    const { field, fieldState } = useController({
+        name,
+        control,
+        defaultValue: false,
+    });
+
+    return (
+        <Field data-invalid={fieldState.invalid} className="border rounded-lg p-4 bg-gray-50 gap-2">
+            <div className="flex justify-between items-center">
+                <FieldLabel className="text-gray-700">{label}</FieldLabel>
+
+                <Switch checked={!!field.value} onCheckedChange={field.onChange} aria-invalid={fieldState.invalid} />
+            </div>
+
+            <p className="text-sm text-muted-foreground">{desc}</p>
+        </Field>
+    );
+}
 
 const FLAGS = [
     { name: 'hotTrend', label: 'Hot Trend', desc: 'Trending deal' },
@@ -16,20 +45,7 @@ export default function DealFlags() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {FLAGS.map((f) => (
-                <FormField
-                    key={f.name}
-                    control={control}
-                    name={f.name as any}
-                    render={({ field }) => (
-                        <FormItem className="border rounded-lg p-4 bg-gray-50">
-                            <div className="flex justify-between">
-                                <FormLabel>{f.label}</FormLabel>
-                                <Switch checked={field.value} onCheckedChange={field.onChange} />
-                            </div>
-                            <FormDescription>{f.desc}</FormDescription>
-                        </FormItem>
-                    )}
-                />
+                <FlagSwitch key={f.name} {...f} control={control} />
             ))}
         </div>
     );

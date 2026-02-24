@@ -1,5 +1,5 @@
-import { checkDuplicate } from '@/services/admin/deal';
 import { useRef } from 'react';
+import { checkDuplicate } from '../../services';
 
 type DuplicateCheckParams = {
     shortDescription: string;

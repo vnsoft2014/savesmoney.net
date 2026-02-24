@@ -7,6 +7,9 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `Deals | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/deals`,
+    },
 };
 
 interface Props {
@@ -48,12 +51,7 @@ const Page = async (props: Props) => {
                     <DealsFilters dealTypes={dealTypes} stores={stores} />
                 </div>
 
-                <DealsListing
-                    initDealListResponse={dealListResponse}
-                    dealTypeName="Deals"
-                    dealTypeSlug="deals"
-                    params={{}}
-                />
+                <DealsListing initDealListResponse={dealListResponse} dealTypeName="Deals" dealTypeSlug="deals" />
             </div>
         </div>
     );

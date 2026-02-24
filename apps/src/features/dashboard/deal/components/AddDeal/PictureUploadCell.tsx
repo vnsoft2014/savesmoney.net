@@ -1,4 +1,4 @@
-import { uploadImage } from '@/services/upload';
+import { uploadImage } from '@/services';
 import { DealFormValues } from '@/shared/types';
 import { checkFile } from '@/utils/validators/file-checker';
 import { Clipboard, Upload } from 'lucide-react';

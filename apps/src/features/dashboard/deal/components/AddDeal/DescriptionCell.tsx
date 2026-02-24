@@ -1,5 +1,5 @@
 import { DealFormValues } from '@/shared/types';
-import { stripHtmlTags } from '@/utils/utils';
+import { stripHtml } from '@/utils/sanitize';
 import { Edit } from 'lucide-react';
 import { useDealContext } from '../../contexts';
 
@@ -20,7 +20,7 @@ export default function DescriptionCell({ deal, error }: Props) {
                 }`}
             >
                 <span className={`flex-1 line-clamp-2 ${deal.description ? 'text-gray-700' : 'text-gray-400'}`}>
-                    {deal.description ? stripHtmlTags(deal.description) : 'Click to add description...'}
+                    {deal.description ? stripHtml(deal.description) : 'Click to add description...'}
                 </span>
                 <Edit size={16} className="text-gray-400 ml-2 shrink-0" />
             </div>

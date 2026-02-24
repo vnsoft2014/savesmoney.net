@@ -1,13 +1,9 @@
 import { MESSAGES } from '@/constants/messages';
-import { USER_ROLES } from '@/constants/user';
-import { assertRole, authCheck } from '@/middleware/authCheck';
+import { ADMIN_ROLES } from '@/constants/user';
+import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import { createRateLimiter, enforceRateLimit } from '@/utils/rarelimit';
-import { checkFile } from '@/utils/validators/file-checker';
-import { existsSync } from 'fs';
-import { mkdir, writeFile } from 'fs/promises';
+import { uploadDealImage } from '@/utils/upload';
 import { NextResponse } from 'next/server';
-import path from 'path';
-import sharp from 'sharp';
 
 const uploadImageLimiter = createRateLimiter({
     requests: 3,
@@ -21,7 +17,7 @@ export async function POST(req: Request) {
 
     try {
         const role = await authCheck(req);
-        if (!assertRole(role, USER_ROLES)) {
+        if (!assertRole(role, ADMIN_ROLES)) {
             return NextResponse.json(
                 {
                     success: false,
@@ -36,48 +32,40 @@ export async function POST(req: Request) {
         const formData = await req.formData();
         const file = formData.get('file') as File;
 
-        const fileValid = checkFile(file);
-        if (!fileValid.isValid) {
-            NextResponse.json({ success: false, message: fileValid.message }, { status: 400 });
+        let publicUrl = '';
+
+        if (file instanceof File && file.size > 0) {
+            try {
+                const authenticated = await authUser(req);
+
+                const author = authenticated!.sub;
+
+                publicUrl = await uploadDealImage(file, {
+                    resize: { width: 450, height: 450 },
+                    uploadedBy: author!,
+                });
+            } catch (error: unknown) {
+                const message = error instanceof Error ? error.message : '';
+
+                if (message === 'INVALID_IMAGE_TYPE') {
+                    return NextResponse.json({ success: false, message: 'Invalid thumbnail type' }, { status: 400 });
+                }
+
+                if (message === 'IMAGE_TOO_LARGE') {
+                    return NextResponse.json(
+                        { success: false, message: 'Thumbnail size must be less than 5MB' },
+                        { status: 400 },
+                    );
+                }
+
+                return NextResponse.json({ success: false, message: 'Upload thumbnail failed' }, { status: 500 });
+            }
         }
-
-        const timestamp = Date.now();
-        const originalName = file.name.replace(/\s+/g, '-');
-        const filename = `${timestamp}-${originalName}`;
-
-        const now = new Date();
-        const year = now.getFullYear().toString();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'deals', year, month);
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
-        }
-
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = new Uint8Array(arrayBuffer);
-
-        const originalPath = path.join(uploadDir, filename);
-        await writeFile(originalPath, buffer);
-
-        const ext = path.extname(filename);
-        const nameWithoutExt = path.basename(filename, ext);
-        const resizedFilename = `${nameWithoutExt}_resized${ext}`;
-        const resizedPath = path.join(uploadDir, resizedFilename);
-
-        const resizedBuffer = await sharp(buffer)
-            .resize({ width: 350, height: 350, withoutEnlargement: true })
-            .toBuffer();
-
-        await writeFile(resizedPath, new Uint8Array(resizedBuffer));
-
-        const publicUrlResized = `/uploads/deals/${year}/${month}/${resizedFilename}`;
 
         return NextResponse.json({
             success: true,
             data: {
-                url: publicUrlResized,
-                filename,
+                url: publicUrl,
             },
             message: 'Image uploaded',
         });

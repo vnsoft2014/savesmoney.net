@@ -38,7 +38,7 @@ export default function Page() {
 
     if (loading) {
         return (
-            <div className="flex min-h-[60vh] items-center justify-center">
+            <div className="flex min-h-[90vh] items-center justify-center">
                 <Loading />
             </div>
         );

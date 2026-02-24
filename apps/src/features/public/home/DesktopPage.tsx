@@ -1,7 +1,8 @@
 import { Ads } from '@/shared/components/widgets';
 import { DealListResponse, DealType, Store } from '@/shared/types';
 import { DealsFilters } from '../deals';
-import { DealsListing, DealTypesGrid } from './components';
+import { DealsListing } from './components';
+import DealTypesSlider from './components/DealTypesSlider';
 import StoreSlider from './components/StoresSlider';
 import { HomeSchema } from './seo';
 
@@ -17,8 +18,8 @@ const DesktopPage = async ({ dealListResponse, dealTypes, stores }: Props) => {
             <HomeSchema />
 
             <div className="container min-h-screen">
-                <div className="px-3 pt-6 pb-10 space-y-8">
-                    <DealTypesGrid dealTypes={dealTypes} />
+                <div className="px-3 pt-6 pb-10 space-y-6">
+                    <DealTypesSlider dealTypes={dealTypes} />
 
                     <StoreSlider stores={stores} />
 

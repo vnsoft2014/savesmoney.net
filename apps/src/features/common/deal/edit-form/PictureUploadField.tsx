@@ -1,36 +1,49 @@
 'use client';
 
-import { Clipboard, Loader2, Upload } from 'lucide-react';
+import { ImagePlus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { useController, useFormContext } from 'react-hook-form';
 
-import { uploadImage } from '@/services/upload';
-import { Button } from '@/shared/shadecn/ui/button';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
-import { checkFile } from '@/utils/validators/file-checker';
+import { MESSAGES } from '@/constants/messages';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
+import { Input } from '@/shared/shadecn/ui/input';
+import Image from 'next/image';
 
 type Props = {
-    name: string;
+    thumbnail?: string;
 };
 
-export default function PictureUploadField({ name }: Props) {
-    const { control, setValue, getValues } = useFormContext();
-    const [uploading, setUploading] = useState(false);
+export default function PictureUploadField({ thumbnail }: Props) {
+    const { control } = useFormContext();
+
+    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(thumbnail || null);
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    const { field, fieldState } = useController({
+        name: 'picture',
+        control,
+    });
+
     useEffect(() => {
-        const handlePaste = async (e: ClipboardEvent) => {
+        const handlePaste = (e: ClipboardEvent) => {
             const items = e.clipboardData?.items;
             if (!items) return;
 
             for (const item of items) {
                 if (item.type.startsWith('image')) {
                     e.preventDefault();
+
                     const file = item.getAsFile();
-                    if (file) {
-                        await handleUploadImage(file);
-                    }
+                    if (!file || !fileInputRef.current) return;
+
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+
+                    fileInputRef.current.files = dataTransfer.files;
+
+                    fileInputRef.current.dispatchEvent(new Event('change', { bubbles: true }));
+
                     break;
                 }
             }
@@ -40,91 +53,59 @@ export default function PictureUploadField({ name }: Props) {
         return () => document.removeEventListener('paste', handlePaste);
     }, []);
 
-    const handleUploadImage = async (file: File) => {
-        const fileValid = checkFile(file);
-        if (!fileValid.isValid) {
-            toast.error(fileValid.message);
-        }
-
-        setUploading(true);
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setValue(name, reader.result as string, { shouldDirty: true });
-        };
-        reader.readAsDataURL(file);
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const { success, data, message } = await uploadImage(formData);
-
-        if (success) {
-            setValue(name, data.url, { shouldDirty: true });
-            toast.success(message);
-        } else {
-            toast.error(message);
-        }
-
-        setUploading(false);
-    };
-
     return (
-        <FormField
-            control={control}
-            name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Picture</FormLabel>
+        <Field className="gap-2" data-invalid={fieldState.invalid}>
+            <FieldLabel className="justify-center text-gray-700">
+                Thumbnail <span className="text-red-500">*</span>
+            </FieldLabel>
 
-                    <FormControl>
-                        <div className="flex flex-col items-center gap-2">
-                            {uploading && (
-                                <div className="flex items-center gap-1 text-xs text-blue-600">
-                                    <Loader2 className="w-3 h-3 animate-spin" />
-                                    Uploading...
-                                </div>
-                            )}
-
-                            {field.value ? (
-                                <div className="relative group">
-                                    <img src={field.value} className="w-20 h-20 rounded-lg border object-cover" />
-                                    <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-lg"
-                                    >
-                                        <Upload className="text-white" size={18} />
-                                    </button>
-                                </div>
-                            ) : (
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="h-20 w-full border-dashed"
-                                >
-                                    <Clipboard className="mr-2" size={18} />
-                                    Click or Paste Image
-                                </Button>
-                            )}
-
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                hidden
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) handleUploadImage(file);
-                                }}
+            <div className="flex justify-center">
+                <label className="flex cursor-pointer">
+                    <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
+                        {thumbnailPreview ? (
+                            <Image
+                                src={thumbnailPreview}
+                                alt="LogoPreview"
+                                width={112}
+                                height={112}
+                                className="w-full h-full object-cover rounded-2xl"
                             />
-                        </div>
-                    </FormControl>
+                        ) : (
+                            <ImagePlus className="w-6 h-6 text-gray-400" />
+                        )}
+                    </div>
 
-                    <FormMessage />
-                </FormItem>
-            )}
-        />
+                    <Input
+                        type="file"
+                        accept="image/*"
+                        ref={(el) => {
+                            field.ref(el);
+                            fileInputRef.current = el;
+                        }}
+                        className="w-0 p-0 opacity-0"
+                        onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                                field.onChange(file);
+
+                                const url = URL.createObjectURL(file);
+
+                                setThumbnailPreview((prev) => {
+                                    if (prev?.startsWith('blob:')) {
+                                        URL.revokeObjectURL(prev);
+                                    }
+                                    return url;
+                                });
+                            }
+                        }}
+                    />
+                </label>
+            </div>
+
+            <div className="text-center text-xs italic text-muted-foreground">(Click or Paste)</div>
+            <div className="text-center text-xs text-muted-foreground">{MESSAGES.IMAGE.REQUIREMENTS_5000}</div>
+
+            {fieldState.invalid && <FieldError className="text-center" errors={[fieldState.error]} />}
+        </Field>
     );
 }

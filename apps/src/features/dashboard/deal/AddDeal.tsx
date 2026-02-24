@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
 import { getDealTypes, getStores } from '@/services';
-import { addNewDeals } from '@/services/admin/deal';
 import { DealFormValues, DealType, Store } from '@/shared/types';
-import { stripHtmlTags } from '@/utils/utils';
+import { stripHtml } from '@/utils/sanitize';
 import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { TailSpin } from 'react-loader-spinner';
 import { toast } from 'react-toastify';
+import { addNewDeals } from '../services';
 import { DealTable, QuillEditorModal } from './components/AddDeal';
 import { DealProvider } from './contexts';
 import { CheckingDuplicateState } from './types';
@@ -282,7 +282,7 @@ export default function AddDeal() {
                 }
             }
 
-            if (!deal.description.trim() || stripHtmlTags(deal.description).trim().length === 0) {
+            if (!deal.description.trim() || stripHtml(deal.description).trim().length === 0) {
                 dealErrors.description = 'Description is required';
                 hasError = true;
             }
@@ -293,8 +293,6 @@ export default function AddDeal() {
         });
 
         setErrors(newErrors);
-
-        console.log(newErrors);
 
         if (hasError) {
             toast.error('Please fix all errors before saving!');

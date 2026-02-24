@@ -7,6 +7,9 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `Expiring Soon | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/expiring-soon`,
+    },
 };
 
 interface Props {

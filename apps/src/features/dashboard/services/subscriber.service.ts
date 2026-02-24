@@ -1,12 +1,20 @@
+import { getErrorMessage } from '@/utils/errorHandler';
 import { fetcherWithAuth } from '@/utils/utils';
 import { getSession } from 'next-auth/react';
 
 export const deleteSubscriber = async (id: string) => {
-    const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/subscriber/${id}`, {
-        method: 'DELETE',
-    });
+    try {
+        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/subscriber/${id}`, {
+            method: 'DELETE',
+        });
 
-    return data;
+        return data;
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
+    }
 };
 
 export const exportSubscriber = async (query: string) => {

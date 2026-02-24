@@ -4,13 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Loader2, Lock, Mail, User } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
 import { Checkbox } from '@/shared/shadecn/ui/checkbox';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -75,7 +75,7 @@ const SignUpForm = () => {
 
     return (
         <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
-            <Card className="w-full max-w-150 p-4 md:p-8 inset-shadow-2xs">
+            <Card className="w-full max-w-150 p-4 md:p-8 border border-gray-100 shadow-xs">
                 <CardHeader className="space-y-4 text-center mb-6">
                     <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">
                         <Lock className="w-8 h-8 text-indigo-600" />
@@ -86,127 +86,169 @@ const SignUpForm = () => {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <Form {...form}>
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                            <FormField
-                                control={form.control}
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FieldGroup>
+                            <Controller
                                 name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-gray-700">Full Name</FormLabel>
-                                        <FormControl>
-                                            <div className="relative">
-                                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input placeholder="John Doe" className="pl-10 h-12" {...field} />
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
                                 control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-gray-700">Email</FormLabel>
-                                        <FormControl>
-                                            <div className="relative">
-                                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input placeholder="your@email.com" className="pl-10 h-12" {...field} />
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                render={({ field, fieldState }) => (
+                                    <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="signup-name" className="text-gray-700">
+                                            Full Name
+                                        </FieldLabel>
 
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-gray-700">Password</FormLabel>
-                                        <FormControl>
-                                            <div className="relative">
-                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input
-                                                    type={showPassword ? 'text' : 'password'}
-                                                    className="pl-10 pr-10 h-12"
-                                                    placeholder="*********"
-                                                    {...field}
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                                                    onClick={() => setShowPassword(!showPassword)}
-                                                >
-                                                    {showPassword ? (
-                                                        <EyeOff className="h-4 w-4" />
-                                                    ) : (
-                                                        <Eye className="h-4 w-4" />
-                                                    )}
-                                                </Button>
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="confirmPassword"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel className="text-gray-700">Confirm Password</FormLabel>
-                                        <FormControl>
-                                            <div className="relative">
-                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                                <Input
-                                                    type={showConfirmPassword ? 'text' : 'password'}
-                                                    className="pl-10 pr-10 h-12"
-                                                    placeholder="*********"
-                                                    {...field}
-                                                />
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                >
-                                                    {showConfirmPassword ? (
-                                                        <EyeOff className="h-4 w-4" />
-                                                    ) : (
-                                                        <Eye className="h-4 w-4" />
-                                                    )}
-                                                </Button>
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="agreeTerms"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <div className="flex flex-row items-center space-x-2 space-y-0">
-                                            <FormControl>
-                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                                            </FormControl>
-                                            <FormLabel className="mb-0 text-sm font-normal text-gray-600 cursor-pointer">
-                                                I agree to the Terms and Conditions
-                                            </FormLabel>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                            <Input
+                                                {...field}
+                                                id="signup-name"
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder="John Doe"
+                                                className="pl-10 h-12"
+                                                autoComplete="name"
+                                            />
                                         </div>
-                                        <FormMessage />
-                                    </FormItem>
+
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="email"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="signup-email" className="text-gray-700">
+                                            Email
+                                        </FieldLabel>
+
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                            <Input
+                                                {...field}
+                                                id="signup-email"
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder="your@email.com"
+                                                className="pl-10 h-12"
+                                                autoComplete="email"
+                                            />
+                                        </div>
+
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="password"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="signup-password" className="text-gray-700">
+                                            Password
+                                        </FieldLabel>
+
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                                            <Input
+                                                {...field}
+                                                id="signup-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder="*********"
+                                                className="pl-10 pr-10 h-12"
+                                                autoComplete="new-password"
+                                            />
+
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </Button>
+                                        </div>
+
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="confirmPassword"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="signup-confirm-password" className="text-gray-700">
+                                            Confirm Password
+                                        </FieldLabel>
+
+                                        <div className="relative">
+                                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+                                            <Input
+                                                {...field}
+                                                id="signup-confirm-password"
+                                                type={showConfirmPassword ? 'text' : 'password'}
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder="*********"
+                                                className="pl-10 pr-10 h-12"
+                                                autoComplete="new-password"
+                                            />
+
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="sm"
+                                                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            >
+                                                {showConfirmPassword ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </Button>
+                                        </div>
+
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
+
+                            <Controller
+                                name="agreeTerms"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <>
+                                        <Field
+                                            className="gap-2"
+                                            data-invalid={fieldState.invalid}
+                                            orientation="horizontal"
+                                        >
+                                            <Checkbox
+                                                id="signup-agree"
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                            />
+
+                                            <FieldLabel
+                                                htmlFor="signup-agree"
+                                                className="mb-0 text-sm font-normal text-gray-600 cursor-pointer"
+                                            >
+                                                I agree to the Terms and Conditions
+                                            </FieldLabel>
+                                        </Field>
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </>
                                 )}
                             />
 
@@ -227,10 +269,10 @@ const SignUpForm = () => {
                                     Sign In
                                 </Link>
                             </div>
-                        </form>
+                        </FieldGroup>
+                    </form>
 
-                        <SocialAuthButtons />
-                    </Form>
+                    <SocialAuthButtons />
                 </CardContent>
             </Card>
         </div>

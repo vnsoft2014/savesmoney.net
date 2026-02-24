@@ -1,10 +1,10 @@
 import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ONLY, ADMIN_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
-import { assertRole, authCheck } from '@/middleware/authCheck';
-import { Coupon } from '@/models/Coupon';
+import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
-import { validateRequest } from '@/utils/validators/validate';
+import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
+import { uploadDealImage } from '@/utils/upload';
 import Joi from 'joi';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
@@ -17,10 +17,8 @@ type Props = {
     }>;
 };
 
-const UpdateDealSchema = Joi.object({
-    _id: Joi.string().required(),
-
-    picture: Joi.string().optional(),
+const updateDealSchema = Joi.object({
+    picture: Joi.any().optional(),
 
     dealType: Joi.array().items(Joi.string()).optional(),
 
@@ -73,17 +71,17 @@ const UpdateDealSchema = Joi.object({
     shortDescription: Joi.string().required(),
 
     originalPrice: Joi.number().min(0).required(),
-    discountPrice: Joi.number().min(0).required(),
+    discountPrice: Joi.number().min(0).default(0),
     percentageOff: Joi.string().allow('').optional(),
 
     purchaseLink: Joi.string().uri().optional(),
     description: Joi.string().optional(),
     flashDeal: Joi.boolean().optional(),
-    flashDealExpireHours: Joi.number().min(1).allow(null).optional(),
+    flashDealExpireHours: Joi.number().default(0),
 
-    tags: Joi.array().items(Joi.string().trim().min(1)).optional().default([]),
+    tags: Joi.array().items(Joi.string().trim().min(1)).allow(null).optional().default([]),
 
-    hotTrend: Joi.boolean().optional(),
+    hotTrend: Joi.boolean().allow(null).optional(),
     holidayDeals: Joi.boolean().optional(),
     seasonalDeals: Joi.boolean().optional(),
 
@@ -92,14 +90,14 @@ const UpdateDealSchema = Joi.object({
         .items(
             Joi.object({
                 code: Joi.string().trim().min(1).required(),
-                comment: Joi.string().trim().min(1).required(),
+                comment: Joi.string().trim().allow(null, '').optional(),
             }),
         )
         .optional()
         .default([]),
 
     clearance: Joi.boolean().default(false),
-    disableExpireAt: Joi.boolean().optional(),
+    disableExpireAt: Joi.boolean().allow(null).optional(),
 })
     .min(2)
     .custom((value, helpers) => {
@@ -126,9 +124,6 @@ const UpdateDealSchema = Joi.object({
     });
 
 export async function PATCH(req: Request, { params }: Props) {
-    const { isValid, value, response } = await validateRequest(req, UpdateDealSchema);
-    if (!isValid) return response;
-
     try {
         await connectDB();
 
@@ -141,6 +136,57 @@ export async function PATCH(req: Request, { params }: Props) {
         }
 
         const { id: dealId } = await params;
+
+        const formData = await req.formData();
+
+        const rawCoupons = formData.getAll('coupons');
+
+        const parsedCoupons = rawCoupons.map((c) => {
+            if (typeof c === 'string') {
+                return JSON.parse(c);
+            }
+            return c;
+        });
+
+        const body = {
+            picture: formData.get('picture'),
+            dealType: formData.getAll('dealType'),
+            store: formData.get('store'),
+            expiredDate: formData.get('expiredDate'),
+
+            shortDescription: formData.get('shortDescription'),
+
+            originalPrice: formData.get('originalPrice'),
+            discountPrice: formData.get('discountPrice'),
+            percentageOff: formData.get('percentageOff'),
+
+            purchaseLink: formData.get('purchaseLink'),
+            description: formData.get('description'),
+
+            flashDeal: formData.get('flashDeal'),
+            flashDealExpireHours: formData.get('flashDealExpireHours'),
+
+            tags: formData.getAll('tags'),
+
+            hotTrend: formData.get('hotTrend'),
+            holidayDeals: formData.get('holidayDeals'),
+            seasonalDeals: formData.get('seasonalDeals'),
+
+            coupon: formData.get('coupon'),
+            coupons: parsedCoupons,
+
+            clearance: formData.get('clearance'),
+            disableExpireAt: formData.get('disableExpireAt'),
+        };
+
+        const { error, value } = updateDealSchema.validate(body, {
+            abortEarly: false,
+            stripUnknown: true,
+        });
+
+        if (error) {
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
+        }
 
         const {
             picture,
@@ -199,7 +245,34 @@ export async function PATCH(req: Request, { params }: Props) {
 
         const updateData: any = {};
 
-        if (picture !== undefined) updateData.image = picture;
+        if (picture instanceof File && picture.size > 0) {
+            try {
+                const authenticated = await authUser(req);
+
+                const author = authenticated!.sub;
+
+                updateData.image = await uploadDealImage(picture, {
+                    resize: { width: 450, height: 450 },
+                    uploadedBy: author!,
+                });
+            } catch (error: unknown) {
+                const message = error instanceof Error ? error.message : '';
+
+                if (message === 'INVALID_IMAGE_TYPE') {
+                    return NextResponse.json({ success: false, message: 'Invalid thumbnail type' }, { status: 400 });
+                }
+
+                if (message === 'IMAGE_TOO_LARGE') {
+                    return NextResponse.json(
+                        { success: false, message: 'Thumbnail size must be less than 5MB' },
+                        { status: 400 },
+                    );
+                }
+
+                return NextResponse.json({ success: false, message: 'Upload thumbnail failed' }, { status: 500 });
+            }
+        }
+
         if (dealType !== undefined) updateData.dealType = dealType;
         if (store !== undefined) updateData.store = store;
 
@@ -213,7 +286,7 @@ export async function PATCH(req: Request, { params }: Props) {
             updateData.disableExpireAt = false;
 
             const hasExpireHoursChanged =
-                flashDealExpireHours !== undefined && flashDealExpireHours !== existingDeal?.flashDealExpireHours;
+                flashDealExpireHours && flashDealExpireHours !== existingDeal?.flashDealExpireHours;
 
             if (hasExpireHoursChanged) {
                 updateData.flashDealExpireHours = flashDealExpireHours;
@@ -237,14 +310,14 @@ export async function PATCH(req: Request, { params }: Props) {
             }
         }
 
-        if (shortDescription !== undefined) updateData.shortDescription = shortDescription;
+        if (shortDescription !== undefined) updateData.shortDescription = stripHtml(shortDescription);
         if (originalPrice !== undefined) updateData.originalPrice = originalPrice;
         if (discountPrice !== undefined) updateData.discountPrice = discountPrice;
-        if (percentageOff !== undefined) updateData.percentageOff = percentageOff;
-        if (purchaseLink !== undefined) updateData.purchaseLink = purchaseLink;
-        if (description !== undefined) updateData.description = description;
+        if (percentageOff !== undefined) updateData.percentageOff = stripHtml(percentageOff);
+        if (purchaseLink !== undefined) updateData.purchaseLink = sanitizeUrl(purchaseLink);
+        if (description !== undefined) updateData.description = sanitizeDescription(description);
 
-        if (tags !== undefined) updateData.tags = tags;
+        if (tags !== undefined) updateData.tags = stripHtml(tags);
 
         if (hotTrend !== undefined) updateData.hotTrend = hotTrend;
         if (holidayDeals !== undefined) updateData.holidayDeals = holidayDeals;
@@ -252,9 +325,11 @@ export async function PATCH(req: Request, { params }: Props) {
 
         if (coupon !== undefined) updateData.coupon = coupon;
         if (coupons !== undefined) {
-            if (coupons.length > 0) {
-                const createdCoupons = await Coupon.insertMany(coupons);
-                updateData.coupons = createdCoupons.map((c) => c._id);
+            if (Array.isArray(coupons) && coupons.length > 0) {
+                updateData.coupons = coupons.map((c) => ({
+                    code: stripHtml(c.code),
+                    comment: stripHtml(c.comment),
+                }));
             } else {
                 updateData.coupons = [];
             }
@@ -323,8 +398,6 @@ export async function GET(req: Request, { params }: Props) {
             query = query.populate('dealType').populate('store').populate('author');
         }
 
-        query = query.populate('coupons');
-
         const deal = await query.lean();
 
         if (deal) {
@@ -342,7 +415,8 @@ export async function DELETE(req: Request, { params }: Props) {
         await connectDB();
 
         const role = await authCheck(req);
-        if (!assertRole(role, ADMIN_ONLY)) {
+
+        if (assertRole(role, ADMIN_ONLY)) {
             const { id } = await params;
 
             await Deal.findByIdAndDelete(id);

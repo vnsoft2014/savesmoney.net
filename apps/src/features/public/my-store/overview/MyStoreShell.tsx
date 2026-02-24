@@ -7,13 +7,13 @@ import { useEffect, useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { getUserStore } from '@/services/user-store';
 import { Loading } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { ScrollArea } from '@/shared/shadecn/ui/scroll-area';
 import { Separator } from '@/shared/shadecn/ui/separator';
 import { Sheet, SheetContent, SheetTrigger } from '@/shared/shadecn/ui/sheet';
 import MyStoreGuestBanner from '../MyStoreGuestBanner';
+import { checkUserStore } from '../services';
 import { CreateStoreForm } from './components';
 
 type MyStoreShellProps = {
@@ -32,13 +32,10 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
         if (!isSignin) return;
 
         const fetchStore = async () => {
-            try {
-                setLoadingStore(true);
-                const data = await getUserStore();
-                setStoreRes(data);
-            } finally {
-                setLoadingStore(false);
-            }
+            setLoadingStore(true);
+            const data = await checkUserStore();
+            setStoreRes(data);
+            setLoadingStore(false);
         };
 
         fetchStore();
@@ -64,7 +61,7 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
         );
     }
 
-    if (!storeRes?.success) {
+    if (!storeRes?.exists) {
         return (
             <div className="min-h-full py-6">
                 <CreateStoreForm />
@@ -131,7 +128,7 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
             </aside>
 
             <div className="flex flex-1 flex-col">
-                <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
+                <div className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:px-6">
                     <Sheet>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon" className="lg:hidden">
@@ -145,9 +142,9 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
                     </Sheet>
 
                     <h1 className="text-sm font-semibold">{title}</h1>
-                </header>
+                </div>
 
-                <main className="flex-1 space-y-4 p-4 lg:p-6">{children}</main>
+                {children}
             </div>
         </div>
     );

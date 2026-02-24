@@ -4,3 +4,4 @@ export { default as DealPurchaseLink } from './DealPurchaseLink';
 
 export { default as NoDeals } from './NoDeals';
 export { default as PopularDeals } from './PopularDealsItem';
+export { default as PopularDealsSkeleton } from './PopularDealsSkeleton';

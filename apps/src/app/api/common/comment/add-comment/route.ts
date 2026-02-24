@@ -4,7 +4,7 @@ import Comment from '@/models/Comment';
 import Subscriber from '@/models/Subscriber';
 import User from '@/models/User';
 import { createRateLimiter, enforceRateLimit } from '@/utils/rarelimit';
-import { cleanHtml } from '@/utils/sanitize';
+import { stripHtml } from '@/utils/sanitize';
 import { validateRequest } from '@/utils/validators/validate';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -61,8 +61,8 @@ export async function POST(req: Request) {
             }
         }
 
-        const sanitizedContent = cleanHtml(validatedBody.content);
-        const sanitizedUsername = cleanHtml(validatedBody.username);
+        const sanitizedContent = stripHtml(validatedBody.content);
+        const sanitizedUsername = stripHtml(validatedBody.username);
 
         if (!sanitizedContent) {
             return NextResponse.json({ success: false, message: 'Invalid content' }, { status: 400 });

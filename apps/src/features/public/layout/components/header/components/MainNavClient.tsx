@@ -2,7 +2,6 @@
 
 import { SettingsForm } from '@/types/settings';
 import { setLinks, setSettings } from '@/utils/FrontendNavSlice';
-import { setUserData } from '@/utils/UserDataSlice';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
@@ -25,11 +24,6 @@ const MainNavClient = ({ links, settings }: MainNavClientProps) => {
     useEffect(() => {
         dispatch(setLinks(links));
         dispatch(setSettings(settings));
-
-        const userData = localStorage.getItem('user');
-        if (!userData) return;
-
-        dispatch(setUserData(JSON.parse(userData)));
     }, [dispatch, links]);
 
     return (

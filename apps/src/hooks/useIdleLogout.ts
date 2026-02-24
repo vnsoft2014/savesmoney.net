@@ -33,8 +33,6 @@ export function useIdleLogout(onLogout: () => void, enabled: boolean = true) {
             const lastActive = localStorage.getItem(LAST_ACTIVE_KEY);
             const now = Date.now();
 
-            console.log('=============DIFF=============');
-
             if (!lastActive) return;
 
             const diff = now - Number(lastActive);
@@ -42,7 +40,6 @@ export function useIdleLogout(onLogout: () => void, enabled: boolean = true) {
             console.log(diff);
 
             if (diff < IDLE_TIME) {
-                console.log('⛔ Not really idle, skip');
                 startIdleTimer();
                 return;
             }
@@ -70,9 +67,6 @@ export function useIdleLogout(onLogout: () => void, enabled: boolean = true) {
 
     const resetTimer = () => {
         setShowPopup(false);
-
-        // console.log('=========RESET=========');
-        // console.log(Date.now().toString());
 
         localStorage.setItem(LAST_ACTIVE_KEY, Date.now().toString());
 

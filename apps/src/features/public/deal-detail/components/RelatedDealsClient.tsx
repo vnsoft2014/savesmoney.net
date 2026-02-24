@@ -37,6 +37,8 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
 
                     <button
                         ref={(node) => setPrevEl(node)}
+                        type="button"
+                        aria-label="Previous slide"
                         disabled={isBeginning}
                         className={`flex justify-center items-center w-7 h-7 md:w-9 md:h-9 rounded-full border transition
                             ${
@@ -50,6 +52,8 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
 
                     <button
                         ref={(node) => setNextEl(node)}
+                        type="button"
+                        aria-label="Next slide"
                         disabled={isEnd}
                         className={`flex justify-center items-center w-7 h-7 md:w-9 md:h-9 rounded-full border transition
                             ${isEnd ? 'border-border text-muted-foreground cursor-not-allowed' : 'hover:bg-muted'}`}

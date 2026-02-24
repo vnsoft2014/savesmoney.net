@@ -164,19 +164,19 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                                 {child.href ? (
                                     <Link
                                         href={child.href}
-                                        className="flex items-center w-full text-sm rounded-lg hover:bg-blue-50 transition-colors"
+                                        className="flex items-center w-full py-3 px-2 text-sm rounded-lg hover:bg-blue-50 transition-colors"
                                     >
                                         {childContent}
                                     </Link>
                                 ) : child.activeKey ? (
                                     <button
                                         onClick={() => onClick(child.activeKey!)}
-                                        className="flex items-center w-full text-sm rounded-lg hover:bg-blue-50 transition-colors"
+                                        className="flex items-center w-full py-3 px-2 text-sm rounded-lg hover:bg-blue-50 transition-colors"
                                     >
                                         {childContent}
                                     </button>
                                 ) : (
-                                    <div className="flex items-center w-full text-sm">{childContent}</div>
+                                    <div className="flex items-center w-full py-3 px-2 text-sm">{childContent}</div>
                                 )}
                             </li>
                         );

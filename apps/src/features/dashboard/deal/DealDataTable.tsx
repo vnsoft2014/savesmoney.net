@@ -1,6 +1,5 @@
 'use client';
 
-import { deleteDeal } from '@/services/admin/deal';
 import { formatPrice } from '@/utils/deal';
 import { fetcher, formatDate } from '@/utils/utils';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -9,6 +8,7 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
+import { deleteDeal } from '../services';
 
 import { useDebounce } from '@/hooks/useDebounce';
 import { Loading } from '@/shared/components/common';

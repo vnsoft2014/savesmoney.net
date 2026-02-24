@@ -1,7 +1,7 @@
 import Providers from '@/store/Providers';
 
 import { cn } from '@/lib/utils';
-import { getSettings } from '@/services/admin/settings';
+import { getSettings } from '@/services';
 import { SettingsForm } from '@/types/settings';
 import { buildSeoMetadata } from '@/utils/seo';
 import { SITE } from '@/utils/site';
@@ -45,12 +45,6 @@ export default function RootLayout({ children }: LayoutProps) {
                         gtag('config', 'G-HQ4LQHEHWC');
                     `}
                 </Script>
-
-                <script
-                    async
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7598560907189118"
-                    crossOrigin="anonymous"
-                />
             </head>
             <body className="tracking-tight antialiased bg-gray-50 text-gray-900">
                 <Providers>

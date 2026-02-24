@@ -1,24 +1,25 @@
 'use client';
 
-import { createUserStore } from '@/services/user-store';
+import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent } from '@/shared/shadecn/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { Textarea } from '@/shared/shadecn/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImagePlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { UserStoreForm as UserStoreFormType, userStoreSchema } from '../../schemas/StoreForm.schema';
+import { AddUserStoreForm as AddUserStoreFormType, addUserStoreSchema } from '../../schemas/StoreForm.schema';
+import { createUserStore } from '../../services';
 
 export default function CreateStoreForm() {
-    const [preview, setPreview] = useState<string | null>(null);
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
-    const form = useForm<UserStoreFormType>({
-        resolver: zodResolver(userStoreSchema),
+    const form = useForm<AddUserStoreFormType>({
+        resolver: zodResolver(addUserStoreSchema),
         defaultValues: {
             name: '',
             website: '',
@@ -32,22 +33,15 @@ export default function CreateStoreForm() {
         formState: { isSubmitting },
     } = form;
 
-    const onSubmit = async (values: UserStoreFormType) => {
-        if (!preview) {
-            toast.error('Store logo is required');
-            return;
-        }
+    const onSubmit = async (values: AddUserStoreFormType) => {
+        const fd = new FormData();
 
-        const formData = new FormData();
-        formData.append('name', values.name);
-        formData.append('website', values.website || '');
-        formData.append('description', values.description || '');
+        Object.entries(values).forEach(([key, value]) => {
+            if (value instanceof File) fd.append(key, value);
+            else if (value) fd.append(key, value as string);
+        });
 
-        if (values.logo?.[0]) {
-            formData.append('logo', values.logo[0]);
-        }
-
-        const res = await createUserStore(formData);
+        const res = await createUserStore(fd);
 
         if (res.success) {
             toast.success('Store created successfully');
@@ -70,113 +64,139 @@ export default function CreateStoreForm() {
                             <p className="text-sm text-gray-500">Set up your store profile to get started.</p>
                         </div>
 
-                        <Form {...form}>
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                                <FormField
-                                    control={form.control}
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                            <FieldGroup>
+                                <Controller
                                     name="logo"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col items-center space-y-4">
-                                            <FormLabel>
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                            <FieldLabel className="justify-center text-gray-700">
                                                 Store Logo <span className="text-red-500">*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <label className="cursor-pointer">
-                                                    <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
-                                                        {preview ? (
-                                                            <Image
-                                                                src={preview}
-                                                                alt="Preview"
-                                                                width={112}
-                                                                height={112}
-                                                                className="w-full h-full object-cover rounded-2xl"
-                                                            />
-                                                        ) : (
-                                                            <ImagePlus className="w-6 h-6 text-gray-400" />
-                                                        )}
-                                                    </div>
-                                                    <Input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            field.onChange(e.target.files);
-                                                            if (file) {
-                                                                setPreview(URL.createObjectURL(file));
-                                                            }
-                                                        }}
-                                                    />
-                                                </label>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                            </FieldLabel>
+
+                                            <label className="flex justify-center cursor-pointer">
+                                                <div className="w-28 h-28 rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-indigo-500 transition">
+                                                    {logoPreview ? (
+                                                        <Image
+                                                            src={logoPreview}
+                                                            alt="LogoPreview"
+                                                            width={112}
+                                                            height={112}
+                                                            className="w-full h-full object-cover rounded-2xl"
+                                                        />
+                                                    ) : (
+                                                        <ImagePlus className="w-6 h-6 text-gray-400" />
+                                                    )}
+                                                </div>
+
+                                                <Input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="w-0 p-0 opacity-0"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            field.onChange(file);
+
+                                                            const url = URL.createObjectURL(file);
+
+                                                            setLogoPreview((prev) => {
+                                                                if (prev?.startsWith('blob:')) {
+                                                                    URL.revokeObjectURL(prev);
+                                                                }
+                                                                return url;
+                                                            });
+                                                        }
+                                                    }}
+                                                />
+                                            </label>
+
+                                            <div className="text-center text-xs text-muted-foreground">
+                                                {MESSAGES.IMAGE.REQUIREMENTS_500}
+                                            </div>
+
+                                            {fieldState.invalid && (
+                                                <FieldError className="text-center" errors={[fieldState.error]} />
+                                            )}
+                                        </Field>
                                     )}
                                 />
 
-                                <FormField
-                                    control={form.control}
+                                <Controller
                                     name="name"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                            <FieldLabel htmlFor="store-name" className="text-gray-700">
                                                 Store Name <span className="text-red-500">*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="Enter your store name"
-                                                    className="rounded-xl"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <div className="text-xs text-gray-400 text-right">
-                                                {field.value?.length || 0}/60
+                                            </FieldLabel>
+
+                                            <Input
+                                                {...field}
+                                                id="store-name"
+                                                aria-invalid={fieldState.invalid}
+                                                className="h-12"
+                                                placeholder="Enter your store name"
+                                            />
+
+                                            <div className="flex justify-between items-center">
+                                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+
+                                                <div className="ml-auto py-1 text-xs text-gray-400 text-right">
+                                                    {field.value?.length || 0}/60
+                                                </div>
                                             </div>
-                                            <FormMessage />
-                                        </FormItem>
+                                        </Field>
                                     )}
                                 />
 
-                                <FormField
-                                    control={form.control}
+                                <Controller
                                     name="website"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                            <FieldLabel htmlFor="store-website" className="text-gray-700">
                                                 Website <span className="text-gray-400 text-sm">(Optional)</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    className="rounded-xl"
-                                                    placeholder="https://example.com"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                            </FieldLabel>
+
+                                            <Input
+                                                {...field}
+                                                id="store-website"
+                                                aria-invalid={fieldState.invalid}
+                                                className="h-12"
+                                                placeholder="https://example.com"
+                                            />
+
+                                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                        </Field>
                                     )}
                                 />
 
-                                <FormField
-                                    control={form.control}
+                                <Controller
                                     name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field className="gap-2" data-invalid={fieldState.invalid}>
+                                            <FieldLabel htmlFor="store-description" className="text-gray-700">
                                                 Description <span className="text-red-500">*</span>
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Tell customers about your store..."
-                                                    className="min-h-25"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <div className="text-xs text-gray-400 text-right">
-                                                {field.value?.length || 0}/300
+                                            </FieldLabel>
+
+                                            <Textarea
+                                                {...field}
+                                                id="store-description"
+                                                placeholder="Tell customers about your store..."
+                                                className="min-h-25 resize-none"
+                                                aria-invalid={fieldState.invalid}
+                                            />
+                                            <div className="flex justify-between items-center">
+                                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+
+                                                <div className="ml-auto py-1 text-xs text-gray-400 text-right">
+                                                    {field.value?.length || 0}/300
+                                                </div>
                                             </div>
-                                            <FormMessage />
-                                        </FormItem>
+                                        </Field>
                                     )}
                                 />
 
@@ -188,8 +208,8 @@ export default function CreateStoreForm() {
                                     {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                     Create Store
                                 </Button>
-                            </form>
-                        </Form>
+                            </FieldGroup>
+                        </form>
                     </CardContent>
                 </Card>
             </div>

@@ -1,16 +1,17 @@
 'use client';
 
-import { forgotPassword } from '@/services/common/user';
+import { forgotPassword } from '@/services';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft, Loader2, Lock, Mail } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import * as z from 'zod';
 
 import { Button } from '@/shared/shadecn/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 
 const forgotPasswordSchema = z.object({
@@ -26,13 +27,13 @@ const ForgotPasswordForm = () => {
 
     const form = useForm<ForgotPasswordValues>({
         resolver: zodResolver(forgotPasswordSchema),
-        defaultValues: {
-            email: '',
-        },
+        defaultValues: { email: '' },
+        mode: 'onChange',
     });
 
     const {
         handleSubmit,
+        control,
         formState: { isSubmitting },
     } = form;
 
@@ -52,98 +53,112 @@ const ForgotPasswordForm = () => {
         }
     };
 
-    if (!isEmailSent) {
+    if (isEmailSent) {
         return (
-            <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-                <div className="bg-white rounded-2xl shadow-xl w-150 p-8">
-                    <div className="text-center">
-                        <div className="inline-block p-3 bg-green-100 rounded-full mb-4">
+            <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
+                <Card className="w-full max-w-150 p-4 md:p-8 border border-gray-100 shadow-xs">
+                    <CardHeader className="text-center space-y-4">
+                        <div className="mx-auto p-3 bg-green-100 rounded-full w-fit">
                             <Mail className="w-8 h-8 text-green-600" />
                         </div>
 
-                        <h1 className="font-bold text-gray-800 mb-2">Check Your Email</h1>
+                        <CardTitle>Check Your Email</CardTitle>
 
-                        <p className="mb-2! text-sm md:text-base text-gray-600">
+                        <CardDescription>
                             We've sent a password reset link to{' '}
-                            <span className="font-semibold text-gray-800">{sentEmail}</span>
-                        </p>
+                            <span className="font-semibold text-foreground">{sentEmail}</span>
+                        </CardDescription>
 
-                        <p className="text-sm md:text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                             Didn't receive the email? Check your spam folder or try again.
                         </p>
+                    </CardHeader>
 
-                        <div className="flex items-center justify-between gap-4 mt-8">
-                            <Button onClick={() => setIsEmailSent(false)} className="w-full">
-                                Resend Email
-                            </Button>
+                    <CardContent className="flex gap-4">
+                        <Button onClick={() => setIsEmailSent(false)} className="w-full">
+                            Resend Email
+                        </Button>
 
-                            <Button
-                                variant="outline"
-                                onClick={() => router.push('/signin')}
-                                className="w-full text-gray-600 flex items-center gap-2"
-                            >
-                                <ArrowLeft className="w-4 h-4" />
-                                Back to Sign In
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                        <Button
+                            variant="outline"
+                            onClick={() => router.push('/signin')}
+                            className="w-full flex items-center gap-2"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Back to Sign In
+                        </Button>
+                    </CardContent>
+                </Card>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-150 p-8">
-                <div className="text-center mb-8">
-                    <div className="inline-block p-3 bg-indigo-100 rounded-full mb-4">
+        <div className="min-h-[90vh] flex items-center justify-center px-3 py-6">
+            <Card className="w-full max-w-150 p-4 md:p-8 border border-gray-100 shadow-xs">
+                <CardHeader className="space-y-4 text-center mb-6">
+                    <div className="mx-auto p-3 bg-indigo-100 rounded-full w-fit">
                         <Lock className="w-8 h-8 text-indigo-600" />
                     </div>
+                    <div className="space-y-1">
+                        <CardTitle className="text-2xl md:text-3xl font-bold text-gray-800">Forgot Password?</CardTitle>
 
-                    <h1 className="font-bold text-gray-800 mb-2">Forgot Password?</h1>
-                    <p className="text-sm md:text-base text-gray-600">No worries, we'll send you reset instructions</p>
-                </div>
+                        <CardDescription className="text-gray-600">
+                            No worries, we'll send you reset instructions
+                        </CardDescription>
+                    </div>
+                </CardHeader>
 
-                <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
+                <CardContent>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <FieldGroup>
+                            <Controller
+                                name="email"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid} className="gap-2">
+                                        <FieldLabel htmlFor="email" className="text-gray-700">
+                                            Email
+                                        </FieldLabel>
+
                                         <div className="relative">
                                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                             <Input
                                                 {...field}
+                                                id="email"
                                                 type="email"
                                                 placeholder="your@email.com"
-                                                className="pl-10 text-sm"
+                                                className="pl-10 h-12"
+                                                aria-invalid={fieldState.invalid}
                                             />
                                         </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
 
-                        <Button type="submit" disabled={isSubmitting} className="w-full font-semibold">
-                            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Send Reset Link'}
-                        </Button>
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </Field>
+                                )}
+                            />
 
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => router.push('/signin')}
-                            className="w-full flex items-center gap-2 text-gray-600"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Back to Sign In
-                        </Button>
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="w-full h-12 font-semibold shadow-lg"
+                            >
+                                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Send Reset Link'}
+                            </Button>
+
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => router.push('/signin')}
+                                className="w-full flex items-center gap-2"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                Back to Sign In
+                            </Button>
+                        </FieldGroup>
                     </form>
-                </Form>
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 };

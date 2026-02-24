@@ -22,7 +22,7 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
     return (
         <article className="flex font-sans-condensed bg-white border border-gray-100 shadow-xs">
             {deal.image && (
-                <div className="relative w-29 bg-gray-100">
+                <Link href={dealUrl} className="block relative w-29 aspect-square bg-gray-100">
                     <Image src={deal.image} alt={deal.shortDescription} fill className="object-cover" loading="lazy" />
                     <DealLabel
                         flashDeal={deal.flashDeal}
@@ -30,7 +30,7 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
                         clearance={deal.clearance}
                         daysRemaining={daysRemaining}
                     />
-                </div>
+                </Link>
             )}
 
             <div className="flex-1 p-2">

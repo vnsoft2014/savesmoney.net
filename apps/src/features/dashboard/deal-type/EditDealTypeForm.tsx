@@ -4,40 +4,42 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/shared/shadecn/ui/form';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { DealType } from '@/shared/types';
-import { DealTypeForm as DealTypeFormType, dealTypeSchema } from './schemas/dealType.schema';
-import { updateDealType } from './services';
+import { EditDealTypeForm as EditDealTypeFormType, editDealTypeSchema } from '../schemas/dealType.schema';
+import { updateDealType } from '../services';
 
 export default function EditDealTypeForm({ dealType }: { dealType: DealType }) {
     const router = useRouter();
     const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(dealType.thumbnail || null);
 
-    const form = useForm<DealTypeFormType>({
-        resolver: zodResolver(dealTypeSchema),
+    const {
+        control,
+        handleSubmit,
+        clearErrors,
+        formState: { isSubmitting },
+    } = useForm<EditDealTypeFormType>({
+        resolver: zodResolver(editDealTypeSchema),
         defaultValues: {
             name: dealType.name,
             slug: dealType.slug,
-            thumbnail: null,
+            thumbnail: undefined,
         },
+        mode: 'onChange',
     });
 
-    const {
-        handleSubmit,
-        formState: { isSubmitting },
-    } = form;
-
-    const onSubmit = async (values: DealTypeFormType) => {
+    const onSubmit = async (values: EditDealTypeFormType) => {
         const fd = new FormData();
 
         Object.entries(values).forEach(([key, value]) => {
             if (value instanceof File) fd.append(key, value);
-            else if (value) fd.append(key, value);
+            else if (value) fd.append(key, value as string);
         });
 
         const res = await updateDealType(dealType._id, fd);
@@ -60,90 +62,90 @@ export default function EditDealTypeForm({ dealType }: { dealType: DealType }) {
                     <h1 className="text-2xl font-bold">Edit Deal Type</h1>
                 </div>
 
-                <Form {...form}>
-                    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 md:grid-cols-3">
-                        <FormField
-                            control={form.control}
-                            name="thumbnail"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Thumbnail</FormLabel>
+                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 md:grid-cols-3">
+                    <Controller
+                        name="thumbnail"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid} className="gap-2">
+                                <FieldLabel className="text-gray-700">Thumbnail</FieldLabel>
 
-                                    <div className="flex items-center gap-4">
-                                        <img
-                                            src={thumbnailPreview || '/image.png'}
-                                            className="w-24 h-24 rounded-full border object-cover"
-                                        />
+                                <div className="flex items-center gap-4">
+                                    <img
+                                        src={thumbnailPreview || '/image.png'}
+                                        className="w-24 h-24 rounded-full border object-cover"
+                                    />
 
-                                        <label className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded cursor-pointer hover:bg-green-700">
-                                            Change
-                                            <input
-                                                type="file"
-                                                hidden
-                                                accept="image/*"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (!file) return;
-
+                                    <label className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded cursor-pointer hover:bg-green-700">
+                                        Change
+                                        <input
+                                            type="file"
+                                            hidden
+                                            accept="image/*"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
                                                     field.onChange(file);
-                                                    form.clearErrors('thumbnail');
 
                                                     const url = URL.createObjectURL(file);
+
                                                     setThumbnailPreview((prev) => {
-                                                        if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+                                                        if (prev?.startsWith('blob:')) {
+                                                            URL.revokeObjectURL(prev);
+                                                        }
                                                         return url;
                                                     });
-                                                }}
-                                            />
-                                        </label>
-                                    </div>
+                                                }
+                                            }}
+                                        />
+                                    </label>
+                                </div>
 
-                                    <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, WEBP • Max 500KB</p>
+                                <p className="text-xs text-muted-foreground">{MESSAGES.IMAGE.REQUIREMENTS_500}</p>
 
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
 
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <Controller
+                        name="name"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid} className="gap-2">
+                                <FieldLabel htmlFor="name" className="text-gray-700">
+                                    Name
+                                </FieldLabel>
+                                <Input {...field} id="name" aria-invalid={fieldState.invalid} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
 
-                        <FormField
-                            control={form.control}
-                            name="slug"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Slug</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                    <Controller
+                        name="slug"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid} className="gap-2">
+                                <FieldLabel htmlFor="slug" className="text-gray-700">
+                                    Slug
+                                </FieldLabel>
+                                <Input {...field} id="slug" aria-invalid={fieldState.invalid} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
 
-                        <div className="col-span-full flex justify-end gap-3 mt-4">
-                            <Button type="button" variant="outline" onClick={() => router.back()}>
-                                Cancel
-                            </Button>
+                    <div className="col-span-full flex justify-end gap-3 mt-4">
+                        <Button type="button" variant="outline" onClick={() => router.back()}>
+                            Cancel
+                        </Button>
 
-                            <Button type="submit" disabled={isSubmitting}>
-                                Save
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                        <Button type="submit" disabled={isSubmitting}>
+                            Save
+                        </Button>
+                    </div>
+                </form>
             </div>
         </div>
     );

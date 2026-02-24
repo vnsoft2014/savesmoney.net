@@ -23,9 +23,6 @@ const UserStoreSchema: Schema<IUserStore> = new Schema(
         slug: {
             type: String,
             required: true,
-            unique: true,
-            lowercase: true,
-            trim: true,
         },
         logo: {
             type: String,

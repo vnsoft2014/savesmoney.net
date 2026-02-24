@@ -9,8 +9,8 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import Loading from '@/shared/components/common/Loading';
 import { Store } from '@/shared/types';
-import { fetcherWithAuth } from '@/utils/utils';
-import { deleteStore } from './services';
+import { fetcher } from '@/utils/utils';
+import { deleteStore } from '../services';
 
 export default function StoreDataTable() {
     const router = useRouter();
@@ -47,7 +47,7 @@ export default function StoreDataTable() {
 
     const apiUrl = buildApiUrl();
 
-    const { data, isLoading } = useSWR(apiUrl, fetcherWithAuth, {
+    const { data, isLoading } = useSWR(apiUrl, fetcher, {
         revalidateOnFocus: false,
     });
 

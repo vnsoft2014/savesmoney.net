@@ -7,6 +7,9 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: `Holiday Deals | ${SITE.name}`,
+    alternates: {
+        canonical: `${SITE.url}/holiday-deals`,
+    },
 };
 
 interface PageProps {
@@ -50,9 +53,6 @@ const Page = async ({ searchParams }: PageProps) => {
 
                 <DealsListing
                     initDealListResponse={dealListResponse}
-                    params={{
-                        holidayDeals: true,
-                    }}
                     dealTypeName="Holiday Deals"
                     dealTypeSlug="holiday-deals"
                 />

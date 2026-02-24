@@ -16,10 +16,6 @@ export const getDealById = async (id: string, populate = false) => {
             cache: 'no-cache',
         });
 
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
         return data.data;
     } catch (error) {
         return null;
@@ -30,15 +26,8 @@ export const addDeal = async (formData: any) => {
     try {
         const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/deal`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
+            body: formData,
         });
-
-        if (!data.success) {
-            throw new Error(data.message);
-        }
 
         return data;
     } catch (error: unknown) {
@@ -53,15 +42,8 @@ export const updateDeal = async (id: string, formData: any) => {
     try {
         const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/deal/${id}`, {
             method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
+            body: formData,
         });
-
-        if (!data.success) {
-            throw new Error(data.message);
-        }
 
         return data;
     } catch (error: unknown) {
@@ -107,10 +89,6 @@ export const getDeals = async (
                 cache: 'no-store',
             },
         );
-
-        if (!data.success) {
-            throw new Error();
-        }
 
         return data;
     } catch (_: unknown) {

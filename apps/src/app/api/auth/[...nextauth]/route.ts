@@ -165,7 +165,7 @@ const handler = NextAuth({
 
             return true;
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
             if (user) {
                 token.id = user.id;
                 token.role = user.role || 'user';
@@ -178,6 +178,11 @@ const handler = NextAuth({
                     token.accessToken = user.accessToken;
                     token.accessTokenExpires = user.accessTokenExpires;
                 }
+            }
+
+            if (trigger === 'update' && session) {
+                token.name = session.name ?? token.name;
+                token.avatar = session.avatar ?? token.avatar;
             }
 
             if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
