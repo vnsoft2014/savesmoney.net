@@ -58,6 +58,11 @@ export default function CreateStoreForm() {
                 <Card className="shadow-xs bg-white">
                     <CardContent className="p-4 lg:p-10 space-y-8">
                         <div className="text-center space-y-2">
+                            <p className="text-sm max-w-md mx-auto leading-relaxed">
+                                You can post your deals and earn commission by creating your store. Creating a store
+                                with us is simple and fast!
+                            </p>
+
                             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">
                                 Create Your Store
                             </h1>

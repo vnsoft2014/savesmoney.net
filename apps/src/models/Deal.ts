@@ -1,7 +1,6 @@
 import mongoose, { Document, Types } from 'mongoose';
 
 import { generateUniqueSlug } from '@/utils/sanitize';
-import './Coupon';
 import './DealType';
 import './Store';
 import './User';
@@ -37,7 +36,7 @@ export interface DealDocument extends Document {
     seasonalDeals?: boolean;
 
     coupon?: boolean;
-    coupons?: Types.ObjectId[];
+    coupons?: [];
 
     clearance?: boolean;
 

@@ -61,10 +61,7 @@ export const getDeals = async (
     options?: GetActiveDealsParams,
 ): Promise<DealListResponse> => {
     try {
-        const today = new Date().toISOString();
-
         const params = new URLSearchParams({
-            expireAtFrom: today,
             sortField: options?.sortField || 'createdAt',
             sortOrder: options?.sortOrder || 'desc',
             limit: String(options?.limit ?? 30),
@@ -78,8 +75,6 @@ export const getDeals = async (
 
         if (options?.expireAt) {
             params.append('expireAt', options.expireAt);
-        } else {
-            params.append('expireAt', 'null');
         }
 
         const data = await fetcherWithAuth(

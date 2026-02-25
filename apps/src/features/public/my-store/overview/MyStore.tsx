@@ -40,7 +40,7 @@ export default function MyStore() {
     }
 
     return (
-        <div className="space-y-6 pt-6 pb-10">
+        <div className="space-y-6 md:space-y-10 pt-6 pb-10">
             <StoreProfile store={storeRes.data} />
             <OverView />
         </div>

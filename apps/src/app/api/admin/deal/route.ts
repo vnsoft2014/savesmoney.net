@@ -2,7 +2,6 @@ import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck } from '@/middleware/authCheck';
-import { Coupon } from '@/models/Coupon';
 import Deal from '@/models/Deal';
 import { DealFormValues } from '@/shared/types';
 import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
@@ -78,11 +77,12 @@ const ClientDealSchema = Joi.object({
         .items(
             Joi.object({
                 code: Joi.string().trim().min(1).required(),
-                comment: Joi.string().trim().min(1).required(),
+                comment: Joi.string().trim().allow(null, '').optional(),
             }),
         )
         .optional()
         .default([]),
+
     clearance: Joi.boolean().default(false),
     disableExpireAt: Joi.boolean().default(false),
     author: Joi.string().required(),
@@ -202,17 +202,16 @@ export async function POST(req: Request) {
                 }
             }
 
-            let couponIds: any[] = [];
-
-            if (coupons.length > 0) {
-                const createdCoupons = await Coupon.insertMany(
-                    coupons.map((c) => ({
-                        code: c.code,
-                        comment: c.comment,
-                    })),
-                );
-
-                couponIds = createdCoupons.map((c) => c._id);
+            let couponsCleaned;
+            if (coupons !== undefined) {
+                if (Array.isArray(coupons) && coupons.length > 0) {
+                    couponsCleaned = coupons.map((c) => ({
+                        code: stripHtml(c.code),
+                        comment: stripHtml(c.comment),
+                    }));
+                } else {
+                    couponsCleaned = [];
+                }
             }
 
             dealsToSave.push({
@@ -230,7 +229,7 @@ export async function POST(req: Request) {
                 description: sanitizeDescription(deal.description),
                 flashDeal,
                 flashDealExpireHours: deal.flashDealExpireHours,
-                coupons: couponIds,
+                coupons: couponsCleaned,
                 tags: stripHtml(deal.tags) ?? [],
 
                 hotTrend: deal.hotTrend ?? false,

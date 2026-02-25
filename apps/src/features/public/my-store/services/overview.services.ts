@@ -2,7 +2,7 @@ import { fetcherWithAuth } from '@/utils/utils';
 
 export async function getOverviewStats() {
     try {
-        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/overview/stats/`, {
+        const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/overview/stats`, {
             method: 'GET',
             cache: 'no-store',
         });

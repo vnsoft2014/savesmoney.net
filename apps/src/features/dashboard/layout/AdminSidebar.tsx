@@ -134,23 +134,23 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
             {item.href ? (
                 <Link
                     href={item.href}
-                    className="flex items-center py-3 px-2 rounded-lg hover:bg-blue-50 transition-colors"
+                    className="flex items-center py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
                 >
                     {content}
                 </Link>
             ) : item.activeKey ? (
                 <button
                     onClick={() => onClick(item.activeKey!)}
-                    className="flex items-center py-3 px-2 w-full text-left rounded-lg hover:bg-blue-50 transition-colors"
+                    className="flex items-center py-3 px-2 w-full text-sm md:text-base text-left rounded-lg hover:bg-blue-50 transition-colors"
                 >
                     {content}
                 </button>
             ) : (
-                <div className="flex items-center py-3 px-2 font-semibold">{content}</div>
+                <div className="flex items-center text-sm md:text-base py-3 px-2">{content}</div>
             )}
 
             {item.children && (
-                <ul className="ml-6 border-l border-gray-200 pl-3">
+                <ul className="ml-6 space-y-2 border-l border-gray-200 pl-3">
                     {item.children.map((child) => {
                         const childContent = (
                             <>
@@ -160,23 +160,25 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                         );
 
                         return (
-                            <li key={child.key} className="py-2">
+                            <li key={child.key}>
                                 {child.href ? (
                                     <Link
                                         href={child.href}
-                                        className="flex items-center w-full py-3 px-2 text-sm rounded-lg hover:bg-blue-50 transition-colors"
+                                        className="flex items-center w-full py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
                                     >
                                         {childContent}
                                     </Link>
                                 ) : child.activeKey ? (
                                     <button
                                         onClick={() => onClick(child.activeKey!)}
-                                        className="flex items-center w-full py-3 px-2 text-sm rounded-lg hover:bg-blue-50 transition-colors"
+                                        className="flex items-center w-full py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
                                     >
                                         {childContent}
                                     </button>
                                 ) : (
-                                    <div className="flex items-center w-full py-3 px-2 text-sm">{childContent}</div>
+                                    <div className="flex items-center w-full py-3 px-2 text-sm md:text-base">
+                                        {childContent}
+                                    </div>
                                 )}
                             </li>
                         );
@@ -211,20 +213,22 @@ export default function AdminSidebar() {
                 </Link>
             </div>
 
-            <ul className="flex-1 px-4 py-4 flex flex-col overflow-y-auto">
-                {NAV_ITEMS.filter((item) => !item.role || item.role === user?.role).map((item) => (
-                    <MenuItem key={item.key} item={item} onClick={handleSetActive} />
-                ))}
-            </ul>
+            <div className="h-[calc(100%-80px)] overflow-y-auto">
+                <ul className="flex-1 px-4 py-4 flex flex-col">
+                    {NAV_ITEMS.filter((item) => !item.role || item.role === user?.role).map((item) => (
+                        <MenuItem key={item.key} item={item} onClick={handleSetActive} />
+                    ))}
+                </ul>
 
-            <div className="px-4 pb-6 pt-4 border-t">
-                <button
-                    onClick={handleSignOut}
-                    className="flex items-center w-full py-2 px-3 text-red-600 hover:bg-red-50 rounded-lg transition"
-                >
-                    <LogOut size={18} className="mr-2" />
-                    Logout
-                </button>
+                <div className="px-4 pb-6 pt-4 border-t">
+                    <button
+                        onClick={handleSignOut}
+                        className="flex items-center w-full py-2 px-3 text-red-600 hover:bg-red-50 rounded-lg transition"
+                    >
+                        <LogOut size={18} className="mr-2" />
+                        Logout
+                    </button>
+                </div>
             </div>
         </aside>
     );

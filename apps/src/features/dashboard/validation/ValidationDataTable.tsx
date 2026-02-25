@@ -116,20 +116,49 @@ export default function ValidationDataTable() {
         },
 
         {
-            name: 'Store',
+            name: 'Deal Link',
             cell: (row: ValidationData) => (
-                <div className="flex items-center gap-2">
-                    <a
-                        href={row.deal.purchaseLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline text-sm hover:text-blue-800"
-                    >
-                        Open
-                    </a>
-                </div>
+                <a
+                    href={`/deals/deal-detail/${row.deal.slug}-${row.deal._id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline text-sm hover:text-blue-800"
+                >
+                    Open
+                </a>
             ),
             grow: 1,
+        },
+        {
+            name: 'Expired',
+            center: true,
+            cell: (row: ValidationData) => {
+                const isUpdating = updatingDealId === row.deal._id;
+                return (
+                    <div className="flex items-center gap-2">
+                        {isUpdating ? (
+                            <Loader2 size={18} className="animate-spin" />
+                        ) : (
+                            <>
+                                <button
+                                    title="Mark as invalid"
+                                    onClick={() => handleUpdateValidationStatus(row.deal._id, true)}
+                                    className="px-2 py-2 border rounded transition border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    title="Mark as valid"
+                                    onClick={() => handleUpdateValidationStatus(row.deal._id, false)}
+                                    className="px-2 py-2 border rounded transition border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
+                                >
+                                    No
+                                </button>
+                            </>
+                        )}
+                    </div>
+                );
+            },
         },
         {
             name: 'Marked',
@@ -149,31 +178,8 @@ export default function ValidationDataTable() {
             name: 'Action',
             center: true,
             cell: (row: ValidationData) => {
-                const isUpdating = updatingDealId === row.deal._id;
                 return (
                     <div className="flex items-center gap-2">
-                        {isUpdating ? (
-                            <Loader2 size={18} className="animate-spin" />
-                        ) : (
-                            <>
-                                <button
-                                    title="Mark as valid"
-                                    onClick={() => handleUpdateValidationStatus(row.deal._id, false)}
-                                    className="px-2 py-2 border rounded transition border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
-                                >
-                                    <Check size={16} />
-                                </button>
-
-                                <button
-                                    title="Mark as invalid"
-                                    onClick={() => handleUpdateValidationStatus(row.deal._id, true)}
-                                    className="px-2 py-2 border rounded transition border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
-                                >
-                                    <X size={16} />
-                                </button>
-                            </>
-                        )}
-
                         <button
                             onClick={() => router.push(`/dashboard/deal/${row.deal._id}`)}
                             className="px-2 py-2 border border-green-600 text-green-600 hover:bg-green-600 hover:text-white rounded transition"

@@ -1,59 +1,61 @@
 'use client';
 
+import { DealsFilters } from '@/features/public/deals';
 import { DealPrice } from '@/features/public/deals/components';
+import { getDealTypes, getStores } from '@/services';
 import { Loading } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/shadecn/ui/table';
-import { DealFull } from '@/shared/types';
-import { fetcherWithAuth } from '@/utils/utils';
+import { DealFull, DealListResponse } from '@/shared/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import useSWR from 'swr';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { DealStatusBadge, DealStatusDialog } from '../../deals/components';
+import { getDeals } from '../../services';
 
 export default function DealsTab() {
+    const searchParams = useSearchParams();
+
     const router = useRouter();
 
     const [selectedDeal, setSelectedDeal] = useState<DealFull | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
-
     const [page, setPage] = useState(1);
 
-    const fetcher = async ([, page]: [string, number]) => {
-        try {
-            const data = await fetcherWithAuth(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/deal/list/?page=${page}`,
-                {
-                    credentials: 'include',
-                },
-            );
+    const [loading, setLoading] = useState(true);
+    const [dealListResponse, setDealListResponse] = useState<DealListResponse>();
+    const [dealTypes, setDealTypes] = useState<any[]>([]);
+    const [stores, setStores] = useState<any[]>([]);
 
-            if (!data.success) {
-                throw new Error();
+    const dealType = searchParams.get('dealType') || '';
+    const store = searchParams.get('store') || '';
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+
+            try {
+                const [dealsRes, dealTypesRes, storesRes] = await Promise.all([
+                    getDeals(dealType, store, page, {
+                        limit: 10,
+                    }),
+                    getDealTypes(),
+                    getStores(),
+                ]);
+
+                setDealListResponse(dealsRes);
+                setDealTypes(dealTypesRes);
+                setStores(storesRes);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
             }
+        };
 
-            return data;
-        } catch (_: unknown) {
-            return {
-                data: [],
-                pagination: {
-                    currentPage: page,
-                    totalPages: 0,
-                    totalCount: 0,
-                    limit: 20,
-                    hasNextPage: false,
-                    hasPrevPage: false,
-                },
-            };
-        }
-    };
-
-    const { data, error, isLoading } = useSWR(['user-deals', page], fetcher);
-
-    const dealList = data?.data as DealFull[];
-    const pagination = data?.pagination;
+        fetchData();
+    }, [dealType, store, page]);
 
     const handleDealClick = (deal: DealFull) => {
         if (deal.status === 'pending' || deal.status === 'rejected') {
@@ -65,7 +67,7 @@ export default function DealsTab() {
         router.push(`/deals/deal-detail/${deal.slug}-${deal._id}`);
     };
 
-    if (isLoading) {
+    if (loading) {
         return (
             <div className="min-h-[90vh] flex items-center justify-center">
                 <Loading />
@@ -73,17 +75,9 @@ export default function DealsTab() {
         );
     }
 
-    if (error) {
-        return (
-            <div className="min-h-[90vh] flex items-center justify-center">
-                <p className="text-red-500">Failed to load deals</p>
-            </div>
-        );
-    }
-
     return (
         <>
-            <div className="mb-4 flex items-center justify-end">
+            <div className="flex items-center justify-between mb-4">
                 <Link
                     href="/my-store/deal/add"
                     prefetch={false}
@@ -91,6 +85,8 @@ export default function DealsTab() {
                 >
                     + Add Deal
                 </Link>
+
+                <DealsFilters dealTypes={dealTypes} stores={stores} />
             </div>
 
             <div className="bg-white border border-gray-100 shadow-xs overflow-x-auto">
@@ -107,7 +103,7 @@ export default function DealsTab() {
                     </TableHeader>
 
                     <TableBody>
-                        {dealList?.map((deal) => (
+                        {dealListResponse?.data.map((deal) => (
                             <TableRow key={deal._id}>
                                 <TableCell className="flex items-center gap-3">
                                     <Image
@@ -162,10 +158,10 @@ export default function DealsTab() {
                 </Table>
             </div>
 
-            {pagination && (
+            {dealListResponse?.pagination && (
                 <div className="flex justify-between items-center mt-4 p-4 border-t">
                     <button
-                        disabled={!pagination.hasPrevPage}
+                        disabled={!dealListResponse?.pagination.hasPrevPage}
                         onClick={() => setPage((prev) => prev - 1)}
                         className="px-4 py-2 text-sm border rounded disabled:opacity-50"
                     >
@@ -173,11 +169,12 @@ export default function DealsTab() {
                     </button>
 
                     <span className="text-sm">
-                        Page {pagination.currentPage} /<span className="font-bold ml-1">{pagination.totalPages}</span>
+                        Page {dealListResponse?.pagination.currentPage} /
+                        <span className="font-bold ml-1">{dealListResponse?.pagination.totalPages}</span>
                     </span>
 
                     <button
-                        disabled={!pagination.hasNextPage}
+                        disabled={!dealListResponse?.pagination.hasNextPage}
                         onClick={() => setPage((prev) => prev + 1)}
                         className="px-4 py-2 text-sm border rounded disabled:opacity-50"
                     >

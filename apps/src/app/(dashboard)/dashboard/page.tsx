@@ -1,8 +1,6 @@
 'use client';
 
-import AdminNavbar from '@/features/dashboard/layout/AdminNavbar';
-import AdminSidebar from '@/features/dashboard/layout/AdminSidebar';
-import SuperComponent from '@/features/dashboard/layout/SuperComponent';
+import { AdminNavbar, AdminSidebar, SuperComponent } from '@/features/dashboard/layout';
 import { useState } from 'react';
 
 const Page = () => {

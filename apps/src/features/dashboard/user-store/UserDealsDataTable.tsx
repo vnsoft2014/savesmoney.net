@@ -2,7 +2,7 @@
 
 import { formatPrice } from '@/utils/deal';
 import { fetcherWithAuth, formatDate } from '@/utils/utils';
-import { Flame, Gift, Pencil, Scale, Sun, Tag, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
@@ -230,58 +230,16 @@ export default function UserDealsDataTable() {
         },
 
         {
-            name: 'Purchase Link',
+            name: 'Deal Link',
             cell: (row: Deal) => (
-                <div className="flex items-center gap-2">
-                    <a
-                        href={row.purchaseLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline text-sm hover:text-blue-800"
-                    >
-                        Open
-                    </a>
-
-                    {row.hotTrend && (
-                        <IconWithTooltip tooltip="Hot Trend">
-                            <span className="text-red-600">
-                                <Flame size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.holidayDeals && (
-                        <IconWithTooltip tooltip="Holiday Deal">
-                            <span className="text-green-600">
-                                <Gift size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.seasonalDeals && (
-                        <IconWithTooltip tooltip="Seasonal Deal">
-                            <span className="text-orange-500">
-                                <Sun size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.coupon && (
-                        <IconWithTooltip tooltip="Coupon Available">
-                            <span className="text-yellow-600">
-                                <Tag size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-
-                    {row.clearance && (
-                        <IconWithTooltip tooltip="Clearance Sale">
-                            <span className="text-purple-600">
-                                <Scale size={16} />
-                            </span>
-                        </IconWithTooltip>
-                    )}
-                </div>
+                <a
+                    href={`/deals/deal-detail/${row.slug}-${row._id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline text-sm hover:text-blue-800"
+                >
+                    Open
+                </a>
             ),
             grow: 1,
         },

@@ -31,7 +31,7 @@ export const subscribeDeal = async (
 };
 
 export const checkDealSubscriber = async (email: string) => {
-    const res = await fetcher('/api/deal-subscribers/check', {
+    const res = await fetcher('/api/subscribers/check', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

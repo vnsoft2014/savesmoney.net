@@ -3,8 +3,6 @@
 import { LogOut, Menu, User } from 'lucide-react';
 
 import { useAuth } from '@/hooks/useAuth';
-import { useIdleLogout } from '@/hooks/useIdleLogout';
-import { AutoLogoutWarning } from '@/shared/components/widgets';
 
 import { Button } from '@/shared/shadecn/ui/button';
 import {
@@ -26,26 +24,18 @@ export default function AdminNavbar({ onToggleSidebar }: AdminNavbarProps) {
         logout();
     };
 
-    const { showPopup, stayLoggedIn, logoutNow } = useIdleLogout(() => {
-        handleSignOut();
-    }, true);
-
     return (
         <>
-            {showPopup && <AutoLogoutWarning onStayActive={stayLoggedIn} onLogout={logoutNow} />}
-
             <header className="sticky top-0 z-40 w-full border-b bg-white dark:bg-gray-900">
-                <div className="flex h-16 items-center justify-between px-4">
-                    {/* Left side */}
+                <div className="flex h-16 items-center justify-start gap-6 px-4">
                     <div className="flex items-center gap-3">
                         <Button variant="ghost" size="icon" onClick={onToggleSidebar} className="lg:hidden">
                             <Menu className="h-5 w-5" />
                         </Button>
 
-                        <h1 className="text-lg font-semibold hidden sm:block">Dashboard</h1>
+                        <h1 className="mb-0! text-lg font-semibold hidden sm:block">Dashboard</h1>
                     </div>
 
-                    {/* Right side */}
                     <div className="flex items-center gap-3">
                         {/* Avatar Dropdown */}
                         <DropdownMenu>

@@ -7,6 +7,7 @@ export type ValidationData = {
         _id: string;
         image: string;
         shortDescription: string;
+        slug: string;
         expireAt: string | null;
         purchaseLink: string;
         status: string;

@@ -47,25 +47,34 @@ export default function StatsSection() {
     ];
 
     return (
-        <div className="grid gap-4 grid-cols-1 lg:grid-cols-4">
+        <div className="grid gap-2 lg:gap-4 grid-cols-2 lg:grid-cols-4">
             {statsItems.map((item) => (
                 <Card
                     key={item.label}
-                    className="p-5 flex items-center justify-between border border-gray-100 shadow-xs"
+                    className="p-3 md:p-5 flex items-center justify-between border border-gray-100 shadow-xs"
                 >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 md:gap-4">
                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
                             <item.icon className="h-5 w-5" />
                         </div>
 
                         <div>
-                            <p className="text-sm text-muted-foreground">{item.label}</p>
-                            <h2 className="text-xl font-semibold">{item.value.toLocaleString()}</h2>
+                            <p className="mb-2! md:mb-4! text-sm text-muted-foreground">{item.label}</p>
+                            <div className="flex items-center justify-between">
+                                <h3 className="mb-0! text-xl font-semibold">{item.value.toLocaleString()}</h3>
+
+                                {item.trend && (
+                                    <div className="flex md:hidden items-center text-sm font-medium text-emerald-600">
+                                        <ArrowUpRight className="h-4 w-4 mr-1" />
+                                        {item.trend}%
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
                     {item.trend && (
-                        <div className="flex items-center text-sm font-medium text-emerald-600">
+                        <div className="hidden md:flex items-center text-sm font-medium text-emerald-600">
                             <ArrowUpRight className="h-4 w-4 mr-1" />
                             {item.trend}%
                         </div>

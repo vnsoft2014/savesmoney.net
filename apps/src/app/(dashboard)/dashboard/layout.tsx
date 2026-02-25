@@ -1,3 +1,4 @@
+import { DashboardLayoutClient } from '@/features/dashboard/layout';
 import { SITE } from '@/utils/site';
 import { Metadata } from 'next';
 
@@ -6,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    return <main className="min-h-screen bg-gray-100">{children}</main>;
+    return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
 }

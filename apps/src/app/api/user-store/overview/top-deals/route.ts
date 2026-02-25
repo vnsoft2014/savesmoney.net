@@ -1,5 +1,5 @@
 import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ONLY } from '@/constants/user';
+import { USER_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import DealStats from '@/models/DealStats';
@@ -19,7 +19,8 @@ export async function GET(req: NextRequest) {
         await connectDB();
 
         const role = await authCheck(req);
-        if (!assertRole(role, ADMIN_ONLY)) {
+
+        if (!assertRole(role, USER_ROLES)) {
             return NextResponse.json(
                 {
                     success: false,

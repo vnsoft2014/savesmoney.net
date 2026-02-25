@@ -144,7 +144,7 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
                     <h1 className="text-sm font-semibold">{title}</h1>
                 </div>
 
-                {children}
+                <div className="container mx-auto px-3">{children}</div>
             </div>
         </div>
     );
