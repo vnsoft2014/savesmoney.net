@@ -30,7 +30,7 @@ export async function GET(_: Request, { params }: PropsWithPage) {
             {
                 $match: {
                     userStore: { $in: storeIds },
-                    status: 'published',
+                    status: { $in: ['published', 'invalid'] },
                 },
             },
             {

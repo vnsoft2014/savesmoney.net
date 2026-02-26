@@ -18,7 +18,7 @@ const Contact2 = () => {
     const socials = settings?.socialLinks;
 
     return (
-        <>
+        <div className="flex min-h-[90vh] justify-center items-center">
             <ContactSchema />
             <section className="relative not-prose scroll-mt-12.5">
                 <div className="relative mx-auto max-w-6xl px-4 md:px-6 py-6 md:py-8 lg:py-10 text-default">
@@ -62,7 +62,8 @@ const Contact2 = () => {
                                 </div>
 
                                 {socials && (
-                                    <div className="flex items-center gap-4 mt-3">
+                                    <div className="flex items-center gap-4 mt-5">
+                                        <p className="font-semibold mb-0!">Follow us:</p>
                                         {socials.facebookPage && (
                                             <a
                                                 href={socials.facebookPage}
@@ -125,7 +126,7 @@ const Contact2 = () => {
                     </div>
                 </div>
             </section>
-        </>
+        </div>
     );
 };
 

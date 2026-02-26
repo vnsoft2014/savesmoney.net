@@ -11,6 +11,7 @@ import Loading from '@/shared/components/common/Loading';
 import { SubscriberData } from '@/types';
 import { fetcherWithAuth, formatDate } from '@/utils/utils';
 
+import { dataTableStyles } from '@/constants/layout';
 import { exportWithProgress } from '@/features/dashboard/export/utils/exportWithProgress';
 import { ExportProgressModal } from '../export/components';
 import { ExportFormat } from '../export/types';
@@ -154,6 +155,7 @@ export default function SubscriberDataTable() {
             ) : (
                 <>
                     <DataTable
+                        customStyles={dataTableStyles}
                         title="Subscribers"
                         columns={columns}
                         data={subscribers}
@@ -222,7 +224,7 @@ export default function SubscriberDataTable() {
                         className="bg-white px-4 rounded-lg shadow"
                     />
 
-                    <div className="mt-4 text-sm text-center text-gray-600">
+                    <div className="mt-4 pb-6 text-sm text-center text-gray-600">
                         Showing {subscribers.length > 0 ? (page - 1) * perPage + 1 : 0} –{' '}
                         {Math.min(page * perPage, pagination.total)} of {pagination.total}
                     </div>

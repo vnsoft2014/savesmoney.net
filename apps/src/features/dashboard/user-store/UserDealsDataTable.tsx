@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 import { deleteDeal } from '../services';
 
+import { dataTableStyles } from '@/constants/layout';
 import { Loading } from '@/shared/components/common';
 import { Deal } from '@/shared/types/deal';
 import React from 'react';
@@ -316,6 +317,7 @@ export default function UserDealsDataTable() {
             ) : (
                 <>
                     <DataTable
+                        customStyles={dataTableStyles}
                         columns={columns}
                         data={dealData}
                         pagination
@@ -346,7 +348,7 @@ export default function UserDealsDataTable() {
                         className="bg-white px-4 rounded-lg shadow"
                     />
 
-                    <div className="mt-4 text-sm text-gray-600 text-center">
+                    <div className="mt-4 pb-6 text-sm text-gray-600 text-center">
                         Showing {dealData.length > 0 ? (page - 1) * perPage + 1 : 0} to{' '}
                         {Math.min(page * perPage, pagination.totalCount)} of {pagination.totalCount} deals
                     </div>

@@ -15,7 +15,7 @@ export async function GET() {
         const latestDeals = await Deal.aggregate([
             {
                 $match: {
-                    status: 'published',
+                    status: { $in: ['published', 'invalid'] },
                     $or: [{ disableExpireAt: true }, { expireAt: null }, { expireAt: { $gt: now } }],
                 },
             },

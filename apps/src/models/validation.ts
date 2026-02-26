@@ -1,28 +1,48 @@
-import mongoose from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 
-const ValidationSchema = new mongoose.Schema({
-    deal: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Deals',
-        required: true,
-        unique: true,
-    },
+export interface ValidationDocument extends Document {
+    deal: Types.ObjectId;
 
     valid: {
-        type: Number,
-        default: 0,
-    },
+        type: Number;
+        default: 0;
+    };
 
-    invalid: {
-        type: Number,
-        default: 0,
-    },
+    invalid: number;
 
-    marked: {
-        type: Boolean,
-        default: false,
-        index: true,
-    },
-});
+    marked: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
-export default mongoose.models.Validation || mongoose.model('Validation', ValidationSchema);
+const ValidationSchema = new mongoose.Schema(
+    {
+        deal: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Deals',
+            required: true,
+            unique: true,
+        },
+
+        valid: {
+            type: Number,
+            default: 0,
+        },
+
+        invalid: {
+            type: Number,
+            default: 0,
+        },
+
+        marked: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
+    },
+    {
+        timestamps: true,
+    },
+);
+
+export default mongoose.models.Validation || mongoose.model<ValidationDocument>('Validation', ValidationSchema);

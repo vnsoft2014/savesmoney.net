@@ -1,11 +1,15 @@
 'use client';
 
 import {
+    AlarmClockOff,
     Atom,
     BarChart3,
     Bell,
     BrickWall,
+    Clock,
+    Grid,
     Home,
+    Loader,
     LogOut,
     MessageCircle,
     Package,
@@ -76,7 +80,32 @@ const NAV_ITEMS: NavItem[] = [
         key: 'deal-verification',
         label: 'Deal Validations',
         icon: <Atom size={20} className="mx-2 text-blue-500" />,
-        activeKey: 'activeDealVerification',
+        children: [
+            {
+                key: 'all-deals',
+                label: 'All',
+                icon: <Grid size={18} className="mx-2 text-blue-500" />,
+                activeKey: 'activeAllDealsVerification',
+            },
+            {
+                key: 'valid-deals',
+                label: 'Pending deals',
+                icon: <Loader size={18} className="mx-2 text-blue-500" />,
+                activeKey: 'activePendingDealsVerification',
+            },
+            {
+                key: 'valid-deals',
+                label: 'Valid deals',
+                icon: <Clock size={18} className="mx-2 text-blue-500" />,
+                activeKey: 'activeValidDealsVerification',
+            },
+            {
+                key: 'expired-deals',
+                label: 'Expired deals',
+                icon: <AlarmClockOff size={18} className="mx-2 text-blue-500" />,
+                activeKey: 'activeExpiredDealsVerification',
+            },
+        ],
     },
     {
         key: 'deal-types',

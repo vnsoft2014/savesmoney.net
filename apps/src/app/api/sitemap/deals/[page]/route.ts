@@ -16,7 +16,9 @@ export async function GET(_: Request, { params }: PropsWithPage) {
         const pageIndex = Number(page) || 1;
         const skip = (pageIndex - 1) * pageSize;
 
-        const deals = await Deal.find()
+        const deals = await Deal.find({
+            status: { $in: ['invalid', 'published'] },
+        })
             .select('slug updatedAt')
             .sort({ updatedAt: 1 })
             .skip(skip)

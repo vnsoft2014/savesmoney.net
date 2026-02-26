@@ -183,7 +183,6 @@ export async function PATCH(req: Request, { params }: Props) {
         });
 
         if (error) {
-            console.log(error);
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }
 

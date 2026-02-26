@@ -9,10 +9,9 @@ import OverviewData from '../overview/OverviewData';
 import { Settings } from '../settings';
 import StoreDataTable from '../store/StoreDataTable';
 import SubscriberDataTable from '../subscriber/SubscriberDataTable';
-import UserDealDataTable from '../user-store/UserDealsDataTable';
-import UserStoreDataTable from '../user-store/UserStoreDataTable';
+import { UserDealsDataTable, UserStoreDataTable } from '../user-store';
 import UserDataTable from '../user/UserDataTable';
-import ValidationDataTable from '../validation/ValidationDataTable';
+import { ExpiredDealsDataTable, PendingDealsDataTable, ValidationDataTable, ValidDealsDataTable } from '../validation';
 
 export default function SuperComponent() {
     const navActive = useSelector((state: RootState) => state.adminNav.ActiveNav);
@@ -22,8 +21,14 @@ export default function SuperComponent() {
             return <OverviewData />;
         case 'activeDealTypes':
             return <DealTypeDataTable />;
-        case 'activeDealVerification':
+        case 'activeAllDealsVerification':
             return <ValidationDataTable />;
+        case 'activePendingDealsVerification':
+            return <PendingDealsDataTable />;
+        case 'activeValidDealsVerification':
+            return <ValidDealsDataTable />;
+        case 'activeExpiredDealsVerification':
+            return <ExpiredDealsDataTable />;
         case 'activeStores':
             return <StoreDataTable />;
         case 'activeComments':
@@ -35,7 +40,7 @@ export default function SuperComponent() {
         case 'activeSettings':
             return <Settings />;
         case 'activeUserDeals':
-            return <UserDealDataTable />;
+            return <UserDealsDataTable />;
         case 'activeUserStores':
             return <UserStoreDataTable />;
         case 'activeDeals':

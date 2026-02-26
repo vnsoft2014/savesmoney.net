@@ -3,7 +3,7 @@
 import { MESSAGES } from '@/constants/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent } from '@/shared/shadecn/ui/card';
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';
+import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { Textarea } from '@/shared/shadecn/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -58,9 +58,13 @@ export default function CreateStoreForm() {
                 <Card className="shadow-xs bg-white">
                     <CardContent className="p-4 lg:p-10 space-y-8">
                         <div className="text-center space-y-2">
-                            <p className="text-sm max-w-md mx-auto leading-relaxed">
-                                You can post your deals and earn commission by creating your store. Creating a store
-                                with us is simple and fast!
+                            <p className="text-left text-sm md:text-[15px] leading-relaxed">
+                                <span className="inline md:block">
+                                    You can post your deals and earn commission by creating your store.
+                                </span>
+                                <span className="inline md:block ml-1 md:ml-0">
+                                    Creating a store with us is simple and fast!
+                                </span>
                             </p>
 
                             <h1 className="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900">
@@ -69,8 +73,8 @@ export default function CreateStoreForm() {
                             <p className="text-sm text-gray-500">Set up your store profile to get started.</p>
                         </div>
 
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                            <FieldGroup>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className="mb-2 space-y-6">
                                 <Controller
                                     name="logo"
                                     control={form.control}
@@ -155,8 +159,10 @@ export default function CreateStoreForm() {
                                         </Field>
                                     )}
                                 />
+                            </div>
 
-                                <Controller
+                            <div className="space-y-6">
+                                {/* <Controller
                                     name="website"
                                     control={form.control}
                                     render={({ field, fieldState }) => (
@@ -176,7 +182,7 @@ export default function CreateStoreForm() {
                                             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                         </Field>
                                     )}
-                                />
+                                /> */}
 
                                 <Controller
                                     name="description"
@@ -190,7 +196,7 @@ export default function CreateStoreForm() {
                                             <Textarea
                                                 {...field}
                                                 id="store-description"
-                                                placeholder="Tell customers about your store..."
+                                                placeholder="Short description about your store, what kind of items does it focus?"
                                                 className="min-h-25 resize-none"
                                                 aria-invalid={fieldState.invalid}
                                             />
@@ -213,7 +219,7 @@ export default function CreateStoreForm() {
                                     {isSubmitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                     Create Store
                                 </Button>
-                            </FieldGroup>
+                            </div>
                         </form>
                     </CardContent>
                 </Card>

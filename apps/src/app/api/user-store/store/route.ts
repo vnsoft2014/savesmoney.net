@@ -8,7 +8,7 @@ import { generateUniqueSlug, sanitizeDescription, sanitizeUrl, stripHtml } from 
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
-export const CreateStoreSchema = Joi.object({
+export const createStoreSchema = Joi.object({
     name: Joi.string().trim().min(3).max(60).required().messages({
         'string.empty': 'Store name is required',
         'string.min': 'Store name must be at least 3 characters',
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
             logo: formData.get('logo'),
         };
 
-        const { error, value } = CreateStoreSchema.validate(body, { abortEarly: false });
+        const { error, value } = createStoreSchema.validate(body, { abortEarly: false });
         if (error) {
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }
@@ -151,7 +151,7 @@ export async function POST(req: Request) {
     }
 }
 
-export const UpdateStoreSchema = Joi.object({
+export const updateStoreSchema = Joi.object({
     name: Joi.string().trim().min(3).max(60).required().messages({
         'string.empty': 'Store name is required',
         'string.min': 'Store name must be at least 3 characters',
@@ -219,7 +219,7 @@ export async function PATCH(req: Request) {
             logo: formData.get('logo'),
         };
 
-        const { error, value } = UpdateStoreSchema.validate(body, { abortEarly: false });
+        const { error, value } = updateStoreSchema.validate(body, { abortEarly: false });
 
         if (error) {
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });

@@ -1,5 +1,6 @@
 'use client';
 
+import { dataTableStyles } from '@/constants/layout';
 import { exportWithProgress } from '@/features/dashboard/export/utils/exportWithProgress';
 import { Loading } from '@/shared/components/common';
 import { User } from '@/types';
@@ -218,6 +219,7 @@ export default function UserDataTable() {
             ) : (
                 <>
                     <DataTable
+                        customStyles={dataTableStyles}
                         columns={columns}
                         data={users}
                         pagination
@@ -324,7 +326,7 @@ export default function UserDataTable() {
                         className="bg-white px-4 rounded-lg shadow"
                     />
 
-                    <div className="mt-4 text-sm text-gray-600 text-center">
+                    <div className="mt-4 pb-6 text-sm text-gray-600 text-center">
                         Showing {users.length > 0 ? (page - 1) * perPage + 1 : 0} to{' '}
                         {Math.min(page * perPage, pagination.total)} of {pagination.total} users
                     </div>

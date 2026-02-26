@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, CheckCircle, Clock, Loader2, Pencil, X } from 'lucide-react';
+import { Check, Loader2, Pencil, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import DataTable from 'react-data-table-component';
@@ -14,15 +14,12 @@ import { fetcherWithAuth, formatDate } from '@/utils/utils';
 import { toast } from 'react-toastify';
 import { updateValidationStatus } from '../services';
 
-export default function ValidationDataTable() {
+export default function PendingDealsDataTable() {
     const { mutate } = useSWRConfig();
     const router = useRouter();
 
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
-
-    const [status, setStatus] = useState<'all' | 'valid' | 'invalid'>('all');
-    const [marked, setMarked] = useState<'all' | 'true' | 'false'>('all');
 
     const [updatingDealId, setUpdatingDealId] = useState<string | null>(null);
 
@@ -30,15 +27,8 @@ export default function ValidationDataTable() {
         const params = new URLSearchParams({
             page: page.toString(),
             limit: perPage.toString(),
+            marked: 'false',
         });
-
-        if (status !== 'all') {
-            params.set('status', status);
-        }
-
-        if (marked !== 'all') {
-            params.set('marked', marked);
-        }
 
         return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/validation/list?${params.toString()}`;
     };
@@ -106,7 +96,7 @@ export default function ValidationDataTable() {
         {
             name: 'Valid',
             cell: (row: ValidationData) => {
-                const invalid = row.deal.status !== 'published';
+                const invalid = row.deal.status === 'invalid';
                 const expireAt = row.deal.expireAt ? new Date(row.deal.expireAt) : null;
 
                 const now = new Date();
@@ -176,19 +166,6 @@ export default function ValidationDataTable() {
             width: '120px',
         },
         {
-            name: 'Reviewed',
-            center: true,
-            cell: (row: ValidationData) => {
-                const marked = row.marked;
-
-                if (marked === true) {
-                    return <CheckCircle size={18} className="text-blue-600" />;
-                }
-
-                return <Clock size={18} className="text-gray-400" />;
-            },
-        },
-        {
             name: 'Action',
             center: true,
             cell: (row: ValidationData) => {
@@ -220,41 +197,6 @@ export default function ValidationDataTable() {
                         pagination
                         paginationServer
                         subHeader
-                        subHeaderComponent={
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium text-gray-600">Status:</label>
-                                    <select
-                                        value={status}
-                                        onChange={(e) => {
-                                            setStatus(e.target.value as 'all' | 'valid' | 'invalid');
-                                            setPage(1);
-                                        }}
-                                        className="border rounded-md px-3 py-1.5 text-sm"
-                                    >
-                                        <option value="all">All</option>
-                                        <option value="valid">Valid</option>
-                                        <option value="invalid">Invalid</option>
-                                    </select>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium text-gray-600">Marked:</label>
-                                    <select
-                                        value={marked}
-                                        onChange={(e) => {
-                                            setMarked(e.target.value as 'all' | 'true' | 'false');
-                                            setPage(1);
-                                        }}
-                                        className="border rounded-md px-3 py-1.5 text-sm"
-                                    >
-                                        <option value="all">All</option>
-                                        <option value="true">Marked</option>
-                                        <option value="false">Unmarked</option>
-                                    </select>
-                                </div>
-                            </div>
-                        }
                         paginationTotalRows={pagination.total}
                         paginationDefaultPage={page}
                         onChangePage={setPage}

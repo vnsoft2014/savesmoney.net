@@ -69,10 +69,10 @@ export const addDealSchema = z
             });
         }
 
-        if (flashDeal && !flashDealExpireHours) {
+        if (flashDeal && (flashDealExpireHours == null || flashDealExpireHours === 0)) {
             ctx.addIssue({
                 path: ['flashDealExpireHours'],
-                message: 'Expiration hours is required for flash deal',
+                message: 'Expiration hours must be greater than 0 for flash deal',
                 code: z.ZodIssueCode.custom,
             });
         }
@@ -159,10 +159,10 @@ export const editDealSchema = z
             });
         }
 
-        if (flashDeal && !flashDealExpireHours) {
+        if (flashDeal && (flashDealExpireHours == null || flashDealExpireHours === 0)) {
             ctx.addIssue({
                 path: ['flashDealExpireHours'],
-                message: 'Expiration hours is required for flash deal',
+                message: 'Expiration hours must be greater than 0 for flash deal',
                 code: z.ZodIssueCode.custom,
             });
         }

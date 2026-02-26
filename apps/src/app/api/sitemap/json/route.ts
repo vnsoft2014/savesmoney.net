@@ -13,7 +13,11 @@ export async function GET() {
 
         const sitemapJson: SitemapItem[] = [];
 
-        const latestDeal = await Deal.findOne().sort({ createdAt: -1 }).select('createdAt');
+        const dealStatusFilter = {
+            status: { $in: ['published', 'invalid'] },
+        };
+
+        const latestDeal = await Deal.findOne(dealStatusFilter).sort({ createdAt: -1 }).select('createdAt');
 
         pushJson(sitemapJson, '/', latestDeal?.createdAt);
         pushJson(sitemapJson, '/contact');
@@ -27,6 +31,7 @@ export async function GET() {
         const dateRange = getDateRangeFromToday(3);
 
         const latestDealExpiringSoon = await Deal.findOne({
+            ...dealStatusFilter,
             $or: [
                 { expireAt: null },
                 {
@@ -42,17 +47,17 @@ export async function GET() {
 
         pushJson(sitemapJson, '/expiring-soon', latestDealExpiringSoon?.createdAt);
 
-        const latestDealTrendingDeals = await Deal.findOne({ hotTrend: true })
+        const latestDealTrendingDeals = await Deal.findOne({ ...dealStatusFilter, hotTrend: true })
             .sort({ createdAt: -1 })
             .select('createdAt');
         pushJson(sitemapJson, '/trending-deals', latestDealTrendingDeals?.createdAt);
 
-        const latestDealHolidayDeals = await Deal.findOne({ holidayDeals: true })
+        const latestDealHolidayDeals = await Deal.findOne({ ...dealStatusFilter, holidayDeals: true })
             .sort({ createdAt: -1 })
             .select('createdAt');
         pushJson(sitemapJson, '/holiday-deals', latestDealHolidayDeals?.createdAt);
 
-        const latestDealSeasonalDeals = await Deal.findOne({ seasonalDeals: true })
+        const latestDealSeasonalDeals = await Deal.findOne({ ...dealStatusFilter, seasonalDeals: true })
             .sort({ createdAt: -1 })
             .select('createdAt');
         pushJson(sitemapJson, '/seasonal-deals', latestDealSeasonalDeals?.createdAt);
@@ -65,7 +70,7 @@ export async function GET() {
         const userStoreCount = await UserStore.countDocuments();
         allTasks.push(...createUserStoreSitemapTasks(userStoreCount, 'sm-stores'));
 
-        const dealCount = await Deal.countDocuments();
+        const dealCount = await Deal.countDocuments(dealStatusFilter);
         allTasks.push(...createDealSitemapTasks(dealCount, 'deals'));
 
         const results = await Promise.all(allTasks);

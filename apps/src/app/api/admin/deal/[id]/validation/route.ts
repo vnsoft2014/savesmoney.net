@@ -3,7 +3,7 @@ import { ADMIN_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
-import Validation from '@/models/validation';
+import Validation from '@/models/Validation';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 

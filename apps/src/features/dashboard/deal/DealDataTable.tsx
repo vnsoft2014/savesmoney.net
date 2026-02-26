@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 import { deleteDeal } from '../services';
 
+import { dataTableStyles } from '@/constants/layout';
 import { useDebounce } from '@/hooks/useDebounce';
 import { Loading } from '@/shared/components/common';
 import { Deal } from '@/shared/types/deal';
@@ -247,8 +248,9 @@ export default function DealDataTable() {
     };
 
     return (
-        <div className="w-full h-full data-table">
+        <div className="w-full h-full">
             <DataTable
+                customStyles={dataTableStyles}
                 columns={columns}
                 data={dealData}
                 pagination
@@ -264,8 +266,6 @@ export default function DealDataTable() {
                 defaultSortAsc={false}
                 onSort={handleSort}
                 title="Deals list"
-                responsive
-                fixedHeader={false}
                 selectableRows
                 selectableRowsHighlight
                 highlightOnHover
@@ -302,7 +302,7 @@ export default function DealDataTable() {
                 className="bg-white px-4 rounded-lg shadow"
             />
 
-            <div className="mt-4 text-sm text-gray-600 text-center">
+            <div className="mt-4 pb-6 text-sm text-gray-600 text-center">
                 Showing {dealData.length > 0 ? (page - 1) * perPage + 1 : 0} to{' '}
                 {Math.min(page * perPage, pagination.totalCount)} of {pagination.totalCount} deals
             </div>

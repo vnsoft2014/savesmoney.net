@@ -14,9 +14,11 @@ const Footer = () => {
         <footer className="bg-blue-900 text-gray-300">
             <div className="container flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 lg:gap-20 xl:gap-30 py-6">
                 <div className="px-3 text-center md:text-left max-w-lg">
-                    <div className="mx-auto container text-center">
+                    <div className="mx-auto container text-left">
                         {socials && (
-                            <div className="flex justify-center items-center gap-4 mb-4">
+                            <div className="flex justify-start items-center gap-4 mb-4">
+                                <p className="text-white font-semibold mb-0!">Follow us:</p>
+
                                 {socials.facebookPage && (
                                     <a
                                         href={socials.facebookPage}

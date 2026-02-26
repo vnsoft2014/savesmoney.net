@@ -1,9 +1,10 @@
 import { DealsFilters, DealsListing } from '@/features/public/deals';
+import StoreHeader from '@/features/public/sm-stores/StoreHeader';
 import { getActiveDeals, getDealTypes, getStores, getUserStoreById } from '@/services';
 import { Breadcrumb } from '@/shared/components/common';
 import { SITE } from '@/utils/site';
 import { getIdFromSlug } from '@/utils/utils';
-import { Home, Store } from 'lucide-react';
+import { Gem, Home, Store } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 type Props = {
@@ -69,6 +70,11 @@ const Page = async ({ params, searchParams }: Props) => {
             icon: <Home className="w-4 h-4 mr-2" />,
         },
         {
+            label: 'SM Stores',
+            href: '/sm-stores',
+            icon: <Gem className="w-4 h-4 mr-2" />,
+        },
+        {
             label: userStore?.name ?? 'Deals',
             icon: <Store className="w-4 h-4 mr-2" />,
             active: true,
@@ -83,6 +89,8 @@ const Page = async ({ params, searchParams }: Props) => {
 
                     <DealsFilters dealTypes={dealTypes} stores={stores} />
                 </div>
+
+                <StoreHeader logo={userStore.logo} name={userStore.name} description={userStore.description} />
 
                 <DealsListing
                     initDealListResponse={dealListResponse}

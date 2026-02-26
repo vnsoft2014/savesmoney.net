@@ -11,11 +11,7 @@ export const metadata: Metadata = {
 };
 
 const Page = () => {
-    return (
-        <>
-            <Contact2 />
-        </>
-    );
+    return <Contact2 />;
 };
 
 export default Page;

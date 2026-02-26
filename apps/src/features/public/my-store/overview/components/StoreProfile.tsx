@@ -81,7 +81,7 @@ export default function StoreProfile({ store }: Props) {
                                 {store.description || 'No description provided for this store.'}
                             </p>
 
-                            {store.website && (
+                            {/* {store.website && (
                                 <div className="mt-3">
                                     <a
                                         href={store.website}
@@ -93,7 +93,7 @@ export default function StoreProfile({ store }: Props) {
                                         <span className="line-clamp-1">{store.website}</span>
                                     </a>
                                 </div>
-                            )}
+                            )} */}
                         </div>
 
                         <div className="flex items-center justify-center md:justify-start gap-4 bg-muted/50 rounded-2xl p-4 w-fit mx-auto md:mx-0">

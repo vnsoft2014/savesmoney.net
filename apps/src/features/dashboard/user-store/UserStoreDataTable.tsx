@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import useSWR, { useSWRConfig } from 'swr';
 
+import { dataTableStyles } from '@/constants/layout';
 import Loading from '@/shared/components/common/Loading';
 import { UserStore } from '@/shared/types';
 import { fetcherWithAuth } from '@/utils/utils';
@@ -135,6 +136,7 @@ export default function UserStoreDataTable() {
             ) : (
                 <>
                     <DataTable
+                        customStyles={dataTableStyles}
                         title="Stores"
                         columns={columns}
                         data={stores}
@@ -182,7 +184,7 @@ export default function UserStoreDataTable() {
                         className="bg-white px-4 rounded-lg shadow"
                     />
 
-                    <div className="mt-4 text-sm text-center text-gray-600">
+                    <div className="mt-4 pb-6 text-sm text-center text-gray-600">
                         Showing {stores.length > 0 ? (page - 1) * perPage + 1 : 0} –{' '}
                         {Math.min(page * perPage, pagination.total)} of {pagination.total}
                     </div>

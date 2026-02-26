@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, CheckCircle, Clock, Loader2, Pencil, X } from 'lucide-react';
+import { Loader2, Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import DataTable from 'react-data-table-component';
@@ -14,15 +14,12 @@ import { fetcherWithAuth, formatDate } from '@/utils/utils';
 import { toast } from 'react-toastify';
 import { updateValidationStatus } from '../services';
 
-export default function ValidationDataTable() {
+export default function ValidDealsDataTable() {
     const { mutate } = useSWRConfig();
     const router = useRouter();
 
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
-
-    const [status, setStatus] = useState<'all' | 'valid' | 'invalid'>('all');
-    const [marked, setMarked] = useState<'all' | 'true' | 'false'>('all');
 
     const [updatingDealId, setUpdatingDealId] = useState<string | null>(null);
 
@@ -30,15 +27,9 @@ export default function ValidationDataTable() {
         const params = new URLSearchParams({
             page: page.toString(),
             limit: perPage.toString(),
+            status: 'invalid',
+            marked: 'true',
         });
-
-        if (status !== 'all') {
-            params.set('status', status);
-        }
-
-        if (marked !== 'all') {
-            params.set('marked', marked);
-        }
 
         return `${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/validation/list?${params.toString()}`;
     };
@@ -96,30 +87,6 @@ export default function ValidationDataTable() {
             grow: 1,
         },
         {
-            name: 'Valid Count',
-            selector: (row: ValidationData) => row.valid,
-        },
-        {
-            name: 'Invalid Count',
-            selector: (row: ValidationData) => row.invalid,
-        },
-        {
-            name: 'Valid',
-            cell: (row: ValidationData) => {
-                const invalid = row.deal.status !== 'published';
-                const expireAt = row.deal.expireAt ? new Date(row.deal.expireAt) : null;
-
-                const now = new Date();
-
-                if (invalid === true || (expireAt && expireAt < now)) {
-                    return <X size={18} className="text-red-500" />;
-                }
-
-                return <Check size={18} className="text-green-500" />;
-            },
-        },
-
-        {
             name: 'Deal Link',
             cell: (row: ValidationData) => (
                 <a
@@ -143,50 +110,21 @@ export default function ValidationDataTable() {
                         {isUpdating ? (
                             <Loader2 size={18} className="animate-spin" />
                         ) : (
-                            <>
-                                <button
-                                    title="Mark as invalid"
-                                    onClick={() => handleUpdateValidationStatus(row.deal._id, true)}
-                                    className={cn(
-                                        'px-2 py-2 border rounded border-orange-600 transition-colors',
-                                        row.deal.status === 'invalid'
-                                            ? 'bg-orange-600 text-white hover:bg-white hover:text-orange-600'
-                                            : 'bg-white text-orange-600 hover:bg-orange-600 hover:text-white',
-                                    )}
-                                >
-                                    Yes
-                                </button>
-                                <button
-                                    title="Mark as valid"
-                                    onClick={() => handleUpdateValidationStatus(row.deal._id, false)}
-                                    className={cn(
-                                        'px-2 py-2 border rounded border-green-600 transition-colors',
-                                        row.deal.status === 'published'
-                                            ? 'bg-green-600 text-white hover:bg-white hover:text-green-600'
-                                            : 'bg-white text-green-600 hover:bg-green-600 hover:text-white',
-                                    )}
-                                >
-                                    No
-                                </button>
-                            </>
+                            <button
+                                title="Mark as valid"
+                                onClick={() => handleUpdateValidationStatus(row.deal._id, false)}
+                                className={cn(
+                                    'px-2 py-2 border rounded border-green-600 transition-colors',
+                                    'bg-white text-green-600 hover:bg-green-600 hover:text-white',
+                                )}
+                            >
+                                No
+                            </button>
                         )}
                     </div>
                 );
             },
             width: '120px',
-        },
-        {
-            name: 'Reviewed',
-            center: true,
-            cell: (row: ValidationData) => {
-                const marked = row.marked;
-
-                if (marked === true) {
-                    return <CheckCircle size={18} className="text-blue-600" />;
-                }
-
-                return <Clock size={18} className="text-gray-400" />;
-            },
         },
         {
             name: 'Action',
@@ -214,47 +152,12 @@ export default function ValidationDataTable() {
                 <>
                     <DataTable
                         customStyles={dataTableStyles}
-                        title="Deal Validations"
+                        title="Expired Deals"
                         columns={columns}
                         data={validations}
                         pagination
                         paginationServer
                         subHeader
-                        subHeaderComponent={
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium text-gray-600">Status:</label>
-                                    <select
-                                        value={status}
-                                        onChange={(e) => {
-                                            setStatus(e.target.value as 'all' | 'valid' | 'invalid');
-                                            setPage(1);
-                                        }}
-                                        className="border rounded-md px-3 py-1.5 text-sm"
-                                    >
-                                        <option value="all">All</option>
-                                        <option value="valid">Valid</option>
-                                        <option value="invalid">Invalid</option>
-                                    </select>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm font-medium text-gray-600">Marked:</label>
-                                    <select
-                                        value={marked}
-                                        onChange={(e) => {
-                                            setMarked(e.target.value as 'all' | 'true' | 'false');
-                                            setPage(1);
-                                        }}
-                                        className="border rounded-md px-3 py-1.5 text-sm"
-                                    >
-                                        <option value="all">All</option>
-                                        <option value="true">Marked</option>
-                                        <option value="false">Unmarked</option>
-                                    </select>
-                                </div>
-                            </div>
-                        }
                         paginationTotalRows={pagination.total}
                         paginationDefaultPage={page}
                         onChangePage={setPage}

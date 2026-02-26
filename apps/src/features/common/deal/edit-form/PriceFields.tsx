@@ -55,7 +55,7 @@ export default function PriceFields() {
                     min={0}
                     step={0.01}
                     value={originalField.value || ''}
-                    onChange={(e) => originalField.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                    onChange={(e) => originalField.onChange(e.target.value === '' ? 0 : Number(e.target.value))}
                     aria-invalid={originalState.invalid}
                 />
 
@@ -66,12 +66,13 @@ export default function PriceFields() {
                 <FieldLabel className="text-gray-700">Discount Price</FieldLabel>
 
                 <Input
+                    {...discountField}
                     type="number"
                     placeholder="269"
                     min={0}
                     step={0.01}
-                    value={discountField.value || null}
-                    onChange={(e) => discountField.onChange(e.target.value === '' ? null : Number(e.target.value))}
+                    value={discountField.value || ''}
+                    onChange={(e) => discountField.onChange(e.target.value === '' ? 0 : Number(e.target.value))}
                     aria-invalid={discountState.invalid}
                 />
 

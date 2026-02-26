@@ -2,7 +2,7 @@ import { MESSAGES } from '@/constants/messages';
 import { ADMIN_ROLES } from '@/constants/user';
 import connectDB from '@/DB/connectDB';
 import { assertRole, authCheck } from '@/middleware/authCheck';
-import Validation from '@/models/validation';
+import Validation from '@/models/Validation';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
@@ -53,11 +53,11 @@ export async function GET(req: Request) {
         const validationMatch: Record<string, any> = {};
 
         if (status === 'valid') {
-            dealMatch.invalid = { $ne: true };
+            dealMatch.status = 'published';
         }
 
         if (status === 'invalid') {
-            dealMatch.invalid = true;
+            dealMatch.status = 'invalid';
         }
 
         if (marked === 'true') {
@@ -75,7 +75,7 @@ export async function GET(req: Request) {
                     select: 'image shortDescription slug expireAt purchaseLink status',
                     match: dealMatch,
                 })
-                .sort({ marked: 1 })
+                .sort({ updatedAt: -1 })
                 .skip(skip)
                 .limit(limit)
                 .lean(),

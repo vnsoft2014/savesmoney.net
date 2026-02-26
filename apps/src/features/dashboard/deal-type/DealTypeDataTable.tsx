@@ -163,7 +163,7 @@ export default function DealTypeDataTable() {
                         className="bg-white px-4 rounded-lg shadow"
                     />
 
-                    <div className="mt-4 text-sm text-center text-gray-600">
+                    <div className="mt-4 pb-6 text-sm text-center text-gray-600">
                         Showing {dealTypes.length > 0 ? (page - 1) * perPage + 1 : 0} –{' '}
                         {Math.min(page * perPage, pagination.total)} of {pagination.total}
                     </div>

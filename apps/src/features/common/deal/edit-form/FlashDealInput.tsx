@@ -45,6 +45,7 @@ export default function FlashDealInput() {
                     aria-invalid={flashState.invalid}
                 />
                 <FieldLabel className="text-gray-700">Flash Deal</FieldLabel>
+
                 {flashState.invalid && <FieldError errors={[flashState.error]} />}
             </Field>
 
@@ -52,12 +53,13 @@ export default function FlashDealInput() {
                 <FieldLabel className="text-gray-700">Time (hours)</FieldLabel>
 
                 <Input
+                    {...expireField}
                     type="number"
                     min={1}
                     step={1}
                     disabled={!isFlashDeal}
-                    value={expireField.value ?? ''}
-                    onChange={(e) => expireField.onChange(e.target.value ? Number(e.target.value) : null)}
+                    value={expireField.value || ''}
+                    onChange={(e) => expireField.onChange(e.target.value === '' ? 0 : Number(e.target.value))}
                     placeholder="24"
                     aria-invalid={expireState.invalid}
                 />
