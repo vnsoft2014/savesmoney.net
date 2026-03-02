@@ -110,6 +110,7 @@ export default function MyStoreShell({ children, title = 'My Store' }: MyStoreSh
                                         ? 'bg-muted text-foreground'
                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                                 )}
+                                prefetch={false}
                             >
                                 <item.icon className="h-4 w-4" />
                                 {item.name}

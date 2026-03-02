@@ -4,6 +4,7 @@ import { generateUniqueSlug } from '@/utils/sanitize';
 import './DealType';
 import './Store';
 import './User';
+import './UserStore';
 
 export interface DealDocument extends Document {
     image?: string;

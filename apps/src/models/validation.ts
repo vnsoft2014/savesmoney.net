@@ -1,4 +1,5 @@
 import mongoose, { Document, Types } from 'mongoose';
+import './Deal';
 
 export interface ValidationDocument extends Document {
     deal: Types.ObjectId;

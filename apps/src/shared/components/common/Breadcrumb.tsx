@@ -27,6 +27,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
                             <Link
                                 href={item.href}
                                 className="flex items-center gap-1 hover:text-orange-600 font-bold transition-colors"
+                            prefetch={false}
                             >
                                 {item.icon}
                                 {item.label}

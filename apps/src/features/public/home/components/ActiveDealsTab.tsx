@@ -30,6 +30,7 @@ export default function ActiveDealsTab({ deals }: Props) {
                     <Link
                         href="/deals"
                         className="inline-flex items-center gap-1 text-sm font-medium text-orange-500 hover:gap-2 transition-all"
+                    prefetch={false}
                     >
                         See all
                         <ArrowRight className="w-4 h-4" />

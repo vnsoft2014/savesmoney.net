@@ -34,7 +34,7 @@ export async function GET(req: Request, { params }: Props) {
         if (deal) {
             return NextResponse.json({ success: true, data: deal });
         } else {
-            return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 204 });
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 404 });
         }
     } catch (error) {
         console.log(error);

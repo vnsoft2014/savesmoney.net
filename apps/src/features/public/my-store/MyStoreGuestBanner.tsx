@@ -27,6 +27,7 @@ export default function MyStoreGuestBanner() {
                                    transition-colors
                                    hover:bg-indigo-700
                                    active:scale-95"
+                                   prefetch={false}
                 >
                     Create Account
                 </Link>

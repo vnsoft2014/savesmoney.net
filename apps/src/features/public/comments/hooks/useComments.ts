@@ -15,7 +15,9 @@ export function useComments(dealId: string, sortBy: string) {
         return `${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/comments?page=${pageIndex + 1}&limit=5&sort=${sortBy}`;
     };
 
-    const { data, error, size, setSize, isLoading, isValidating, mutate } = useSWRInfinite(getKey, fetcher);
+    const { data, error, size, setSize, isLoading, isValidating, mutate } = useSWRInfinite(getKey, fetcher, {
+        revalidateOnFocus: false,
+    });
 
     const comments = data?.flatMap((page) => page.data) ?? [];
     const total = data?.[data.length - 1].total ?? 0;

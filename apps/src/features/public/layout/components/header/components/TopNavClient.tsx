@@ -21,6 +21,7 @@ export default function TopNav() {
                             <Link
                                 href="/my-store/deal/add"
                                 className="group flex items-center gap-3 rounded-xl text-sm text-white hover:text-gray-200 transition-colors whitespace-nowrap"
+                            prefetch={false}
                             >
                                 <div className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 group-hover:bg-white/30 transition">
                                     <svg

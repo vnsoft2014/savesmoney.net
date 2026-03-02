@@ -108,7 +108,7 @@ export default function CommentTable() {
             name: 'Deal',
             cell: (row: Comment) =>
                 row.deal && typeof row.deal === 'object' ? (
-                    <Link className="truncate" href={`/deals/deal-detail/${row.deal._id}`}>
+                    <Link className="truncate" href={`/deals/deal-detail/${row.deal._id}`} prefetch={false}>
                         {row.deal.shortDescription}
                     </Link>
                 ) : (

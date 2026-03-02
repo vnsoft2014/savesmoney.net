@@ -1,5 +1,5 @@
-import { MetadataRoute } from 'next';
 import { SITE } from '@/utils/site';
+import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
     return {
@@ -7,7 +7,18 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/dashboard', '/api'],
+                disallow: [
+                    '/signin',
+                    '/signup',
+                    '/forgot-password',
+                    '/reset-password',
+                    '/my-store',
+                    '/my-store/*',
+                    '/dashboard',
+                    '/dashboard/*',
+                    '/api',
+                    '/api/*',
+                ],
             },
         ],
         sitemap: `${SITE.url}/sitemap/sitemap.xml`,

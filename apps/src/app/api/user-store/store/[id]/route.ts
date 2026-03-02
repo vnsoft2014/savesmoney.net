@@ -22,7 +22,7 @@ export async function GET(_: Request, { params }: Props) {
         if (userStore) {
             return NextResponse.json({ success: true, data: userStore });
         } else {
-            return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 204 });
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.NOT_FOUND }, { status: 404 });
         }
     } catch (error) {
         console.log(error);

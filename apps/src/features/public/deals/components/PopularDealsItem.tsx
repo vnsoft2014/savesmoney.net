@@ -22,7 +22,7 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
     return (
         <article className="flex font-sans-condensed bg-white border border-gray-100 shadow-xs">
             {deal.image && (
-                <Link href={dealUrl} className="block relative w-29 aspect-square bg-gray-100">
+                <Link href={dealUrl} className="block relative w-29 aspect-square bg-gray-100" prefetch={false}>
                     <Image src={deal.image} alt={deal.shortDescription} fill className="object-cover" loading="lazy" />
                     <DealLabel
                         flashDeal={deal.flashDeal}
@@ -37,6 +37,7 @@ const PopularDealsItem = ({ deal }: PopularDealsItemProps) => {
                 <Link
                     href={dealUrl}
                     className="min-h-10 mb-1 text-gray-800 line-clamp-2 text-base font-semibold hover:text-orange-600 transition-colors"
+                    prefetch={false}
                 >
                     {deal.shortDescription}
                 </Link>

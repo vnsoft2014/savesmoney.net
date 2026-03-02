@@ -12,7 +12,7 @@ interface Props {
 
 const StoreCard = memo(({ store }: Props) => {
     return (
-        <Link key={store._id} href={`/sm-stores/${store.slug}-${store._id}`} className="group">
+        <Link key={store._id} href={`/sm-stores/${store.slug}-${store._id}`} className="group" prefetch={false}>
             <Card className="h-full p-4 transition-all duration-300 shadow-2xs hover:shadow-sm border-muted">
                 <CardHeader className="flex flex-col items-center text-center">
                     <Image

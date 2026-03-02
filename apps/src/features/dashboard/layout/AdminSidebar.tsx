@@ -164,6 +164,7 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                 <Link
                     href={item.href}
                     className="flex items-center py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
+                prefetch={false}
                 >
                     {content}
                 </Link>
@@ -194,6 +195,7 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                                     <Link
                                         href={child.href}
                                         className="flex items-center w-full py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
+                                    prefetch={false}
                                     >
                                         {childContent}
                                     </Link>
@@ -236,7 +238,7 @@ export default function AdminSidebar() {
     return (
         <aside className="md:w-64 bg-white border-r border-gray-200 min-h-screen">
             <div className="flex items-center h-20 px-4 border-b">
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/" className="flex items-center gap-2" prefetch={false}>
                     <Home size={24} className="text-blue-500" />
                     <span className="font-semibold text-lg">Dashboard</span>
                 </Link>

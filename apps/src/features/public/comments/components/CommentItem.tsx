@@ -72,7 +72,7 @@ export default function CommentItem({ comment, dealId, level = 0, onMutate }: Pr
         <div className={cn('group', level > 0 ? 'ml-4 md:ml-12 border-l-2 pl-4 mt-4' : 'pb-3 md:pb-6')}>
             <div className="flex gap-4">
                 <Avatar className="hidden md:block h-10 w-10 border">
-                    <AvatarImage src={comment.user?.avatar} />
+                    <AvatarImage src={comment.user?.avatar} alt={comment.user?.name || comment.username} />
                     <AvatarFallback>{getInitials(comment.user?.name || comment.username)}</AvatarFallback>
                 </Avatar>
 

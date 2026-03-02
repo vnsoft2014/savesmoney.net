@@ -115,8 +115,6 @@ const Page = async ({ params }: Props) => {
     const daysRemaining = getDaysRemaining(deal.expireAt);
     const coupons = deal.coupons ?? [];
 
-    console.log(deal.percentageOff);
-
     return (
         <>
             <DealDetailSchema deal={deal} />

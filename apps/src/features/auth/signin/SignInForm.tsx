@@ -169,6 +169,7 @@ const SignInForm = () => {
                                 <Link
                                     href="/forgot-password"
                                     className="shrink-0 text-sm text-indigo-600 hover:underline font-semibold"
+                                prefetch={false}
                                 >
                                     Forgot Password?
                                 </Link>
@@ -183,6 +184,7 @@ const SignInForm = () => {
                                 <Link
                                     href={`/signup?redirect=${encodeURIComponent(redirectTo)}`}
                                     className="text-indigo-600 hover:underline font-semibold"
+                                    prefetch={false}
                                 >
                                     Sign Up
                                 </Link>

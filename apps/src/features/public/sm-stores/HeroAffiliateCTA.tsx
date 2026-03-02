@@ -59,6 +59,7 @@ export default function HeroAffiliateCTA() {
                                        transition-all duration-300
                                        hover:-translate-y-1 hover:shadow-2xl
                                        active:scale-95 text-center"
+                                       prefetch={false}
                         >
                             <span className="relative z-10 flex items-center justify-center gap-3">
                                 Post a Deal

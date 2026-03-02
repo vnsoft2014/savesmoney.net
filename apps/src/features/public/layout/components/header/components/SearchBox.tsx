@@ -160,6 +160,7 @@ const SearchBox = () => {
                                             key={idx}
                                             href={`/deals/deal-detail/${deal.slug}-${deal._id}`}
                                             onClick={() => setIsOpen(false)}
+                                        prefetch={false}
                                         >
                                             <div className="flex items-center gap-3 px-2 py-1 md:p-3 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0">
                                                 <div className="relative w-10 h-10 md:w-16 md:h-16 shrink-0">
@@ -203,6 +204,7 @@ const SearchBox = () => {
                                         href={`/search?q=${encodeURIComponent(query)}`}
                                         onClick={() => setIsOpen(false)}
                                         className="block w-full p-3 text-center text-xs md:text-sm font-medium text-orange-600 hover:text-orange-700 hover:bg-gray-100 transition-colors"
+                                    prefetch={false}
                                     >
                                         View all results →
                                     </Link>

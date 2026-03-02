@@ -14,6 +14,7 @@ export default function NotFound() {
                     <Link
                         href="/"
                         className="px-6 py-2 md:py-3 text-sm md:text-base bg-orange-500 text-white rounded-full hover:bg-orange-600 transition"
+                        prefetch={false}
                     >
                         Go back home
                     </Link>

@@ -36,7 +36,7 @@ export default function TopDealsTable({ deals }: { deals: Deal[] }) {
                                 {item.deal.image && (
                                     <Image src={item.deal.image} alt="" width={40} height={40} className="rounded-md" />
                                 )}
-                                <Link href={`/deals/deal-detail/${item.deal.slug}-${item.deal._id}`} target="_blank">
+                                <Link href={`/deals/deal-detail/${item.deal.slug}-${item.deal._id}`} prefetch={false} target="_blank">
                                     <span className="line-clamp-1">{item.deal.shortDescription}</span>
                                 </Link>
                             </TableCell>

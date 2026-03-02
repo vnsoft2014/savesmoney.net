@@ -313,6 +313,7 @@ export default function UserDataTable() {
                                         <Link
                                             href={`/dashboard/user/add`}
                                             className="flex items-center gap-2 px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+                                        prefetch={false}
                                         >
                                             <Plus size={16} />
                                             Add {activeTab.toLowerCase()}

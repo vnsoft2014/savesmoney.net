@@ -31,7 +31,7 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
                 <h3 className="mb-0! text-base md:text-lg font-bold">More Deals From {storeName}</h3>
 
                 <div className="flex items-center gap-1 md:gap-3">
-                    <Link href={`/store/${storeSlug}-${storeId}`} className="mr-2 text-xs md:text-base">
+                    <Link href={`/store/${storeSlug}-${storeId}`} className="mr-2 text-xs md:text-base" prefetch={false}>
                         See all
                     </Link>
 
