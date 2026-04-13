@@ -4,8 +4,8 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from './storage';
 
-import { adminNavReducer } from '@/utils/AdminNavSlice';
-import { FrontendNavReducer } from '@/utils/FrontendNavSlice';
+import { adminNavReducer } from '@/lib/adminNavSlice';
+import { FrontendNavReducer } from '@/lib/frontendNavSlice';
 
 const rootReducer = combineReducers({
     adminNav: adminNavReducer,

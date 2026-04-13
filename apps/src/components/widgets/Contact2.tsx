@@ -1,14 +1,14 @@
 'use client';
 
+import Headline from '@/features/common/Headline';
+import Form from '@/features/public/contact/Form';
 import { contact2Contact } from '@/shared/data/pages/contact.data';
+import ContactSchema from '@/shared/seo/ContactSchema';
 import { RootState } from '@/store/store';
 import { SettingsForm } from '@/types/settings';
 import { Globe, Mail } from 'lucide-react';
 import { FaFacebookF, FaFacebookMessenger, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
-import Headline from '../../../features/common/Headline';
-import Form from '../../../features/public/contact/Form';
-import ContactSchema from '../../seo/ContactSchema';
 
 const Contact2 = () => {
     const { header, form } = contact2Contact;

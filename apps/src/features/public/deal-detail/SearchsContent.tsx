@@ -1,8 +1,8 @@
 'use client';
 
+import { Loading } from '@/components/common';
 import { Pagination } from '@/features/common';
 import { searchDeals } from '@/services';
-import { Loading } from '@/shared/components/common';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { NoDeals } from '../deals';

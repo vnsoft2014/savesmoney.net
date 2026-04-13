@@ -3,8 +3,8 @@ import crypto from 'crypto';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import User from '@/models/User';
 
 const resetPasswordSchema = Joi.object({

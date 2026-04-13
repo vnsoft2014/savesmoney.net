@@ -21,10 +21,10 @@ import {
     StoreSelect,
     TagsInput,
 } from '@/features/common/deal/edit-form';
+import { buildFormData } from '@/lib/buildFormData';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form } from '@/shared/shadecn/ui/form';
-import { DealRaw } from '@/shared/types';
-import { buildFormData } from '@/utils/buildFormData';
+import { DealRaw } from '@/types';
 import { toast } from 'react-toastify';
 import { EditDealForm as EditDealFormType, editDealSchema } from '../../common/schemas/Deal.schema';
 import { updateDeal } from '../services';

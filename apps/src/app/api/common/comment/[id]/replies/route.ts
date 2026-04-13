@@ -1,8 +1,8 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
+import { validateRequest } from '@/lib/validators/validate';
 import { withObjectId } from '@/middleware/withObjectId';
 import Comment from '@/models/Comment';
-import { validateRequest } from '@/utils/validators/validate';
 import Joi from 'joi';
 import mongoose, { PipelineStage } from 'mongoose';
 import { NextResponse } from 'next/server';

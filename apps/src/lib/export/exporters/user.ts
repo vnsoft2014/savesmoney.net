@@ -1,4 +1,4 @@
-import { Exporter } from '@/shared/types';
+import { Exporter } from '@/types';
 
 export const userExporter: Exporter<any> = {
     headers: ['No', 'Name', 'Email'],

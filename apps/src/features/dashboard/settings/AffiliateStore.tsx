@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 type AffiliateStore = {
     name: string;
@@ -41,13 +42,22 @@ export default function AffiliateSettings() {
     };
 
     const save = async () => {
-        await fetch('/api/settings/affiliate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ affiliateStores: stores }),
-        });
+        try {
+            const res = await fetch('/api/settings/affiliate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ affiliateStores: stores }),
+            });
 
-        alert('Saved!');
+            if (!res.ok) {
+                alert('Save failed!');
+                return;
+            }
+
+            toast.success('Saved!');
+        } catch (error) {
+            toast.error('Network error!');
+        }
     };
 
     if (loading) return <div>Loading affiliate settings...</div>;

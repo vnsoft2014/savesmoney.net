@@ -1,4 +1,4 @@
-import { DealType, Store } from '@/shared/types';
+import { DealType, Store } from '@/types';
 import { createContext, useContext } from 'react';
 import { CheckingDuplicateState, UpdateDealFn } from '../types';
 

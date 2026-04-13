@@ -33,27 +33,27 @@ const SubscribeBox = () => {
 
     const onSubmit = async (values: FormValues) => {
         setLoading(true);
-        try {
-            const data = await subscribeDeal(
-                {
-                    name: 'Guest',
-                    ...values,
-                },
-                user?._id,
-                isSignin,
-                'subscribe-box',
-            );
 
-            if (data.subscribed) {
-                toast.success("You're on the list!");
-            }
+        const data = await subscribeDeal(
+            {
+                name: 'Guest',
+                ...values,
+            },
+            user?._id,
+            isSignin,
+            'subscribe-box',
+        );
 
-            reset();
-        } catch (err: any) {
-            toast.error(err.message || 'Subscribe failed!');
-        } finally {
-            setLoading(false);
+        
+        if (data.success) {
+            toast.success("You're on the list!");
+        } else {
+            toast.error(data.message || 'Subscribe failed!')
         }
+
+        reset();
+        
+        setLoading(false);
     };
 
     return (

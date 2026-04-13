@@ -1,6 +1,6 @@
 import mongoose, { Document, Types } from 'mongoose';
 
-import { generateUniqueSlug } from '@/utils/sanitize';
+import { generateUniqueSlug } from '@/lib/sanitize';
 import './DealType';
 import './Store';
 import './User';

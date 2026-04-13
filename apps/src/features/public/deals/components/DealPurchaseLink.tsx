@@ -1,6 +1,6 @@
 'use client';
 
-import { fetcher } from '@/utils/utils';
+import { fetcher } from '@/lib/utils';
 import { MouseEvent, ReactNode } from 'react';
 
 type DealPurchaseLinkProps = {
@@ -12,10 +12,12 @@ type DealPurchaseLinkProps = {
 
 const DealPurchaseLink = ({ dealId, href, children, className }: DealPurchaseLinkProps) => {
     const handleClick = (_e: MouseEvent<HTMLAnchorElement>) => {
-        fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/purchase-click`, {
-            method: 'POST',
-            keepalive: true,
-        });
+        try {
+            fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/purchase-click`, {
+                method: 'POST',
+                keepalive: true,
+            });
+        } catch (_: unknown) {}
     };
 
     return (

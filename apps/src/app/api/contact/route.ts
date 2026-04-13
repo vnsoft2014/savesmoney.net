@@ -1,6 +1,6 @@
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
+import { sendMail } from '@/lib/sendMail';
 import Settings from '@/models/Settings';
-import { sendMail } from '@/utils/sendMail';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
 
         await sendMail({
             to: settings.adminEmail,
-            subject: 'New Contact Form Submission',
+            subject: 'New Contact Form Submission - SavesMoney.Net',
             html: `
         <h2>New Contact Message</h2>
         <p><strong>Name:</strong> ${value.name} ${value.lastName}</p>

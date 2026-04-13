@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 
-import { getDaysRemaining } from '@/utils/deal';
+import { getDaysRemaining } from '@/lib/deal';
 
 import { DealLabel } from '@/features/common/deal/components';
-import { DealFull } from '@/shared/types';
+import { DealFull } from '@/types';
 import Image from 'next/image';
 import { FlashDealCountdown } from '../../deal-detail';
 import DealPrice from './DealPrice';

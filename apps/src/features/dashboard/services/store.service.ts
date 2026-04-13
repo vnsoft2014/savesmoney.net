@@ -1,5 +1,5 @@
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcherWithAuth } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcherWithAuth } from '@/lib/utils';
 
 export const addStore = async (formData: any) => {
     try {

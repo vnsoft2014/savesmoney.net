@@ -1,6 +1,6 @@
 'use client';
 
-import { Loading } from '@/shared/components/common';
+import { Loading } from '@/components/common';
 import { useEffect, useState } from 'react';
 import { getUserStore } from '../services';
 import { CreateStoreForm, OverView, StoreProfile } from './components';

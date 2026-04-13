@@ -1,6 +1,6 @@
-import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ONLY, CONTRIBUTOR_ONLY } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { ADMIN_ONLY, CONTRIBUTOR_ONLY } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
 import { uploadImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import User from '@/models/User';

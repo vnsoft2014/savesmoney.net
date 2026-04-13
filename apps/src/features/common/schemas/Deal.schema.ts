@@ -1,6 +1,6 @@
-import { MESSAGES } from '@/constants/messages';
-import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/constants/upload';
-import { stripHtml } from '@/utils/sanitize';
+import { MESSAGES } from '@/config/messages';
+import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/config/upload';
+import { stripHtml } from '@/lib/sanitize';
 import * as z from 'zod';
 
 export const addDealSchema = z

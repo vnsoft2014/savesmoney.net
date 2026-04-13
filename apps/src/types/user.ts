@@ -1,4 +1,4 @@
-import { USER_ROLES } from '@/constants/user';
+import { USER_ROLES } from '@/config/user';
 
 export type UserRole = (typeof USER_ROLES)[number];
 

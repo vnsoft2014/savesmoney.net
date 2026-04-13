@@ -1,7 +1,7 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
+import { sendMail } from '@/lib/sendMail';
 import User from '@/models/User';
-import { sendMail } from '@/utils/sendMail';
 import crypto from 'crypto';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
 
         await sendMail({
             to: user.email,
-            subject: 'Reset your password',
+            subject: 'Reset your password - SavesMoney.Net',
             html: `
         <p>You requested a password reset.</p>
         <p>Click the link below to reset your password (valid for 15 minutes):</p>

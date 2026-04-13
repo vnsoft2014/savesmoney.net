@@ -20,11 +20,11 @@ import {
     User,
 } from 'lucide-react';
 import Link from 'next/link';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useAuth } from '@/hooks/useAuth';
-import { setNavActive } from '@/utils/AdminNavSlice';
+import { setNavActive } from '@/lib/adminNavSlice';
 
 type NavItem = {
     key: string;
@@ -34,6 +34,7 @@ type NavItem = {
     href?: string;
     role?: 'admin';
     children?: NavItem[];
+    badge?: number;
 };
 
 const NAV_ITEMS: NavItem[] = [
@@ -154,7 +155,11 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
     const content = (
         <>
             {item.icon}
-            {item.label}
+            <span className="flex-1">{item.label}</span>
+
+            {item.badge !== undefined && item.badge > 0 && (
+                <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{item.badge}</span>
+            )}
         </>
     );
 
@@ -164,7 +169,7 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                 <Link
                     href={item.href}
                     className="flex items-center py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
-                prefetch={false}
+                    prefetch={false}
                 >
                     {content}
                 </Link>
@@ -185,7 +190,13 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                         const childContent = (
                             <>
                                 {child.icon}
-                                {child.label}
+                                <span className="flex-1">{child.label}</span>
+
+                                {child.badge !== undefined && child.badge > 0 && (
+                                    <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                        {child.badge}
+                                    </span>
+                                )}
                             </>
                         );
 
@@ -195,7 +206,7 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
                                     <Link
                                         href={child.href}
                                         className="flex items-center w-full py-3 px-2 text-sm md:text-base rounded-lg hover:bg-blue-50 transition-colors"
-                                    prefetch={false}
+                                        prefetch={false}
                                     >
                                         {childContent}
                                     </Link>
@@ -221,8 +232,48 @@ const MenuItem = memo(function MenuItem({ item, onClick }: { item: NavItem; onCl
 });
 
 export default function AdminSidebar() {
+    const [pendingDealsCount, setPendingDealsCount] = useState(0);
+
     const dispatch = useDispatch();
     const { user, logout } = useAuth();
+
+    const navItemsComputed = NAV_ITEMS.map((item) => {
+        if (item.key === 'user-store') {
+            return {
+                ...item,
+                children: item.children?.map((child) =>
+                    child.key === 'user-deals'
+                        ? {
+                              ...child,
+                              badge: pendingDealsCount,
+                          }
+                        : child,
+                ),
+            };
+        }
+
+        return item;
+    });
+
+    useEffect(() => {
+        const fetchPendingDeals = async () => {
+            try {
+                const res = await fetch('/api/admin/user-store/deal/pending-count');
+
+                if (!res.ok) return;
+
+                const { success, count } = await res.json();
+
+                if (success) {
+                    setPendingDealsCount(count);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchPendingDeals();
+    }, []);
 
     const handleSetActive = useCallback(
         (key: string) => {
@@ -246,9 +297,11 @@ export default function AdminSidebar() {
 
             <div className="h-[calc(100%-80px)] overflow-y-auto">
                 <ul className="flex-1 px-4 py-4 flex flex-col">
-                    {NAV_ITEMS.filter((item) => !item.role || item.role === user?.role).map((item) => (
-                        <MenuItem key={item.key} item={item} onClick={handleSetActive} />
-                    ))}
+                    {navItemsComputed
+                        .filter((item) => !item.role || item.role === user?.role)
+                        .map((item) => (
+                            <MenuItem key={item.key} item={item} onClick={handleSetActive} />
+                        ))}
                 </ul>
 
                 <div className="px-4 pb-6 pt-4 border-t">

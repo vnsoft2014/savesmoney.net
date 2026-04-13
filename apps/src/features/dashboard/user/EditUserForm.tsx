@@ -1,7 +1,7 @@
 'use client';
 
-import { MESSAGES } from '@/constants/messages';
-import { ALLOWED_IMAGE_TYPES } from '@/constants/upload';
+import { MESSAGES } from '@/config/messages';
+import { ALLOWED_IMAGE_TYPES } from '@/config/upload';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Checkbox } from '@/shared/shadecn/ui/checkbox';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';

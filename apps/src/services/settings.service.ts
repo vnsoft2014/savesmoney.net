@@ -1,5 +1,5 @@
-import { SITE } from '@/utils/site';
-import { fetcher } from '@/utils/utils';
+import { SITE } from '@/config/site';
+import { fetcher } from '@/lib/utils';
 
 export const getSettings = async () => {
     try {
@@ -8,12 +8,8 @@ export const getSettings = async () => {
             cache: 'no-store',
         });
 
-        if (!data.success) {
-            throw new Error(data.message!);
-        }
-
         return data.data;
-    } catch (error: unknown) {
+    } catch (_: unknown) {
         return {
             websiteTitle: SITE.title,
             websiteDescription: SITE.description,

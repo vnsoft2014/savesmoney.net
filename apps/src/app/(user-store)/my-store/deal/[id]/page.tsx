@@ -3,10 +3,10 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { Loading } from '@/components/common';
 import { EditDeal } from '@/features/public/my-store/deal';
 import { MyStoreShell } from '@/features/public/my-store/overview';
 import { getDealById } from '@/features/public/my-store/services';
-import { Loading } from '@/shared/components/common';
 
 export default function Page() {
     const { id } = useParams();
@@ -19,18 +19,16 @@ export default function Page() {
         if (!id) return;
 
         const fetchDeal = async () => {
-            try {
-                const data = await getDealById(id as string);
+            const { success, data } = await getDealById(id as string);
 
-                if (!data) {
-                    router.replace('/404');
-                    return;
-                }
-
-                setDeal(data);
-            } finally {
-                setLoading(false);
+            if (!success) {
+                router.replace('/404');
+                return;
             }
+
+            setDeal(data!);
+
+            setLoading(false);
         };
 
         fetchDeal();

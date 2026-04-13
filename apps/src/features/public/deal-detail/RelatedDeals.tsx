@@ -1,7 +1,7 @@
 'use client';
 
 import { getRelatedDeals } from '@/services';
-import { DealFull } from '@/shared/types';
+import { DealFull } from '@/types';
 import { useEffect, useState } from 'react';
 import { RelatedDealsSkeleton } from './components';
 import RelatedDealsClient from './components/RelatedDealsClient';

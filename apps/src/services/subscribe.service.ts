@@ -1,4 +1,5 @@
-import { fetcher } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher } from '@/lib/utils';
 
 type SubscribePayload = {
     [key: string]: any;
@@ -10,34 +11,44 @@ export const subscribeDeal = async (
     isRegisteredUser?: boolean,
     source: string = 'popup',
 ) => {
-    const data = await fetcher('/api/subscriber/subscribe', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            ...values,
-            userId,
-            isRegisteredUser,
-            source,
-        }),
-    });
+    try {
+        const data = await fetcher('/api/subscriber/subscribe', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ...values,
+                userId,
+                isRegisteredUser,
+                source,
+            }),
+        });
 
-    if (!data.subscribed) {
-        throw new Error(data.message);
+        return data;
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
     }
-
-    return data;
 };
 
 export const checkDealSubscriber = async (email: string) => {
-    const res = await fetcher('/api/subscribers/check', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-    });
+    try {
+        const data = await fetcher('/api/subscribers/check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+        });
 
-    return res;
+        return data;
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
+    }
 };

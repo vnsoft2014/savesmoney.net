@@ -1,9 +1,9 @@
+import { Breadcrumb } from '@/components/common';
+import { SITE } from '@/config/site';
 import { DealsFilters, DealsListing } from '@/features/public/deals';
+import { getIdFromSlug } from '@/lib/utils';
 import { getActiveDeals, getDealTypeById, getDealTypes, getStores } from '@/services';
-import { Breadcrumb } from '@/shared/components/common';
-import { DealType } from '@/shared/types';
-import { SITE } from '@/utils/site';
-import { getIdFromSlug } from '@/utils/utils';
+import { DealType } from '@/types';
 import { FileText, Home } from 'lucide-react';
 import { notFound } from 'next/navigation';
 

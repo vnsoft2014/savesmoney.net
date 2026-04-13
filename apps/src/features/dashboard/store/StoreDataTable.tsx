@@ -7,10 +7,10 @@ import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 
-import { dataTableStyles } from '@/constants/layout';
-import Loading from '@/shared/components/common/Loading';
-import { Store } from '@/shared/types';
-import { fetcher } from '@/utils/utils';
+import Loading from '@/components/common/Loading';
+import { dataTableStyles } from '@/config/layout';
+import { fetcher } from '@/lib/utils';
+import { Store } from '@/types';
 import { deleteStore } from '../services';
 
 export default function StoreDataTable() {

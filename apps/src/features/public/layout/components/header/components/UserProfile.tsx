@@ -1,6 +1,6 @@
+import { getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
 import { User } from '@/types';
-import { getInitials } from '@/utils/utils';
 import { Mail } from 'lucide-react';
 import { memo } from 'react';
 

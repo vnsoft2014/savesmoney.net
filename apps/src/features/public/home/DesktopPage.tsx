@@ -1,5 +1,5 @@
-import { Ads } from '@/shared/components/widgets';
-import { DealListResponse, DealType, Store } from '@/shared/types';
+import { Ads } from '@/components/widgets';
+import { DealListResponse, DealType, Store } from '@/types';
 import { DealsFilters } from '../deals';
 import { DealsListing } from './components';
 import DealTypesSlider from './components/DealTypesSlider';

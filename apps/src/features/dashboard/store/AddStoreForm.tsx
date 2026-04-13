@@ -11,7 +11,7 @@ import slugify from 'slugify';
 import { AddStoreForm as AddStoreFormType, addStoreSchema } from '../schemas';
 import { addStore } from '../services';
 
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';

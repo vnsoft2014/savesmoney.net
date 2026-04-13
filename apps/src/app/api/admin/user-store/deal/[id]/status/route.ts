@@ -1,9 +1,9 @@
-import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { ADMIN_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
+import { validateRequest } from '@/lib/validators/validate';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
-import { validateRequest } from '@/utils/validators/validate';
 import Joi from 'joi';
 import { NextRequest, NextResponse } from 'next/server';
 

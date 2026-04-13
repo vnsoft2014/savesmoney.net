@@ -1,5 +1,5 @@
-import { Exporter } from '@/shared/types';
-import { formatDate } from '@/utils/utils';
+import { formatDate } from '@/lib/utils';
+import { Exporter } from '@/types';
 
 export const subscriberExporter: Exporter<any> = {
     headers: ['No', 'Name', 'Email', 'Subscribed At'],

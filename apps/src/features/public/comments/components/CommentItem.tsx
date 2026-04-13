@@ -1,10 +1,9 @@
 import { useAuth } from '@/hooks/useAuth';
-import { cn } from '@/lib/utils';
+import { cn, getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Separator } from '@/shared/shadecn/ui/separator';
-import { Comment } from '@/shared/types';
-import { getInitials } from '@/utils/utils';
+import { Comment } from '@/types';
 import { ChevronDown, Loader2, ThumbsUp } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useCommentReplies } from '../hooks/useCommentReplies';

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { DealRaw, Store } from '@/shared/types';
+import { DealRaw, Store } from '@/types';
 import DealsTab from './DealsTab';
 import StatsSection from './StatsSection';
 import StoresTab from './StoresTab';

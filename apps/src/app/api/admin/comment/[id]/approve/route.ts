@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';
 
-import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { ADMIN_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import { withObjectId } from '@/middleware/withObjectId';
 import Comment from '@/models/Comment';

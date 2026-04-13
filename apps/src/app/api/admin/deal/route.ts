@@ -1,11 +1,11 @@
-import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { ADMIN_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
+import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/lib/sanitize';
+import { validateRequest } from '@/lib/validators/validate';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
-import { DealFormValues } from '@/shared/types';
-import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
-import { validateRequest } from '@/utils/validators/validate';
+import { DealFormValues } from '@/types';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 

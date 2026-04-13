@@ -1,5 +1,5 @@
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcherWithAuth } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcherWithAuth } from '@/lib/utils';
 
 export async function uploadImage(formData: FormData) {
     try {
@@ -7,9 +7,6 @@ export async function uploadImage(formData: FormData) {
             method: 'POST',
             body: formData,
         });
-        if (!data.success) {
-            throw new Error(data.message);
-        }
 
         return data;
     } catch (error: unknown) {

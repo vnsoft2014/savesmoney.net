@@ -1,4 +1,4 @@
-import { Ads } from '@/shared/components/widgets';
+import { Ads } from '@/components/widgets';
 import { PopularDeals } from '../deals';
 
 const Sidebar = () => {

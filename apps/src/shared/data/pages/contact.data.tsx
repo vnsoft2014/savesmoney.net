@@ -1,4 +1,4 @@
-import { ContactProps } from '@/shared/types';
+import { ContactProps } from '@/types';
 
 export const contact2Contact: ContactProps = {
     id: 'contactTwo-on-contact',

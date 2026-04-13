@@ -4,7 +4,7 @@ import { ImagePlus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import Image from 'next/image';

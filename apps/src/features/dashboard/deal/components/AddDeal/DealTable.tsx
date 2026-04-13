@@ -1,4 +1,4 @@
-import { DealFormValues } from '@/shared/types';
+import { DealFormValues } from '@/types';
 import DealRow from './DealRow';
 
 type Props = {

@@ -1,10 +1,10 @@
 'use client';
 
-import { dataTableStyles } from '@/constants/layout';
+import { Loading } from '@/components/common';
+import { dataTableStyles } from '@/config/layout';
 import { exportWithProgress } from '@/features/dashboard/export/utils/exportWithProgress';
-import { Loading } from '@/shared/components/common';
+import { fetcherWithAuth } from '@/lib/utils';
 import { User } from '@/types';
-import { fetcherWithAuth } from '@/utils/utils';
 import { Download, Pencil, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

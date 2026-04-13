@@ -1,6 +1,8 @@
-import { DealFull, DealListResponse, GetActiveDealsParams } from '@/shared/types';
-import { getDateRangeFromToday } from '@/utils/deal';
-import { fetcher } from '@/utils/utils';
+import { getDateRangeFromToday } from '@/lib/deal';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { getEmptySearchResult } from '@/lib/search';
+import { fetcher } from '@/lib/utils';
+import { ApiResponse, DealFull, DealListResponse, GetActiveDealsParams } from '@/types';
 
 export const getActiveDeals = async (
     dealType?: string,
@@ -51,10 +53,6 @@ export const getActiveDeals = async (
             cache: 'no-store',
         });
 
-        if (!data.success) {
-            throw new Error();
-        }
-
         return data;
     } catch (_: unknown) {
         return {
@@ -103,10 +101,6 @@ export const getExpiringSoon = async (
             cache: 'no-store',
         });
 
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
         return data;
     } catch (_: unknown) {
         return {
@@ -131,23 +125,24 @@ export const getDealById = async (id: string, populate = false) => {
             url.searchParams.append('populate', 'true');
         }
 
-        const data = await fetcher(url.toString(), {
+        const data: ApiResponse<DealFull> = await fetcher(url.toString(), {
             method: 'GET',
             cache: 'no-cache',
         });
 
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
-        return data.data;
-    } catch (error) {
-        return null;
+        return data;
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
     }
 };
 
 export const countView = async (dealId: string) => {
-    await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/view`, { method: 'POST' });
+    try {
+        await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/deal/${dealId}/view`, { method: 'POST' });
+    } catch (_: unknown) {}
 };
 
 export const getDealStats = async (dealId: string) => {
@@ -175,10 +170,6 @@ export const getTopViewedDeals = async () => {
             cache: 'no-store',
         });
 
-        if (!data.success) {
-            throw new Error(data?.message || 'Failed to fetch top viewed deals');
-        }
-
         return data.data;
     } catch (_: unknown) {
         return [];
@@ -193,36 +184,38 @@ export const searchDeals = async (
     dealStore?: string,
     signal?: AbortSignal,
 ) => {
-    const params = new URLSearchParams();
-    params.append('query', query);
-    params.append('limit', limit.toString());
-    params.append('page', page.toString());
+    try {
+        const params = new URLSearchParams({
+            query,
+            page: page.toString(),
+            limit: limit.toString(),
+        });
 
-    if (dealType) params.append('dealType', dealType);
-    if (dealStore) params.append('dealStore', dealStore);
+        if (dealType) params.append('dealType', dealType);
+        if (dealStore) params.append('dealStore', dealStore);
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/search?${params.toString()}`, {
-        signal,
-    });
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/search?${params.toString()}`, { signal });
 
-    const data = await res.json();
+        if (!res.ok) {
+            throw new Error('Search API failed');
+        }
 
-    if (!data.success) {
-        return {
-            success: false,
-            data: [],
-            pagination: {
-                currentPage: 1,
-                totalPages: 0,
-                totalCount: 0,
-                limit: 30,
-                hasNextPage: false,
-                hasPrevPage: false,
-            },
-        };
+        const data = await res.json();
+
+        if (!data?.success) {
+            return getEmptySearchResult(page, limit);
+        }
+
+        return data;
+    } catch (error: any) {
+        if (error.name === 'AbortError') {
+            return getEmptySearchResult(page, limit);
+        }
+
+        console.error('searchDeals error:', error);
+
+        return getEmptySearchResult(page, limit);
     }
-
-    return data;
 };
 
 type RelatedDealsResponse = {
@@ -231,18 +224,25 @@ type RelatedDealsResponse = {
 };
 
 export const getRelatedDeals = async (dealId: string, storeId: string, limit = 10): Promise<DealFull[]> => {
-    const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SITE_URL}/api/common/deal/related?dealId=${dealId}&store=${storeId || ''}&limit=${limit}`,
-        {
-            cache: 'force-cache',
-        },
-    );
+    try {
+        const params = new URLSearchParams({
+            dealId,
+            store: storeId,
+            limit: limit.toString(),
+        });
 
-    if (!res.ok) {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/common/deal/related?${params}`, {
+            cache: 'force-cache',
+        });
+
+        if (!res.ok) return [];
+
+        const data: RelatedDealsResponse = await res.json();
+
+        return data?.success ? data.data : [];
+    } catch (error) {
+        console.error('getRelatedDeals error', error);
+
         return [];
     }
-
-    const data: RelatedDealsResponse = await res.json();
-
-    return data.success ? data.data : [];
 };

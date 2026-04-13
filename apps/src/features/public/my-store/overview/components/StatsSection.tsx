@@ -1,6 +1,6 @@
 'use client';
 
-import { Loading } from '@/shared/components/common';
+import { Loading } from '@/components/common';
 import { Card } from '@/shared/shadecn/ui/card';
 import { ArrowUpRight, Eye, Flame, Heart, MousePointerClick } from 'lucide-react';
 import { useEffect, useState } from 'react';

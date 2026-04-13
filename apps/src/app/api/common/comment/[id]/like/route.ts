@@ -1,11 +1,11 @@
-import { MESSAGES } from '@/constants/messages';
-import { USER_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { USER_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
+import { createRateLimiter, enforceRateLimit } from '@/lib/rarelimit';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import { withObjectId } from '@/middleware/withObjectId';
 import Comment from '@/models/Comment';
 import User from '@/models/User';
-import { createRateLimiter, enforceRateLimit } from '@/utils/rarelimit';
 import { NextResponse } from 'next/server';
 
 type Props = {

@@ -1,8 +1,8 @@
-import { PaginatedResponse } from '../../types/common';
-import { User } from '../../types/user';
+import { PaginatedResponse } from './common';
 import { Coupon } from './coupon';
 import { DealType } from './dealType';
 import { Store } from './store';
+import { User } from './user';
 
 export type DealFormValues = {
     id: number;
@@ -68,7 +68,7 @@ export type GetActiveDealsParams = {
     page?: number;
     limit?: number;
     search?: string;
-    sortField?: 'createdAt' | 'expiredAt' | 'originalPrice' | 'discountPrice';
+    sortField?: 'updatedAt' | 'createdAt' | 'expiredAt' | 'originalPrice' | 'discountPrice';
     sortOrder?: 'asc' | 'desc';
     hotTrend?: boolean;
     holidayDeals?: boolean;

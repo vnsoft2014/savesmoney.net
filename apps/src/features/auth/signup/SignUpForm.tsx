@@ -25,7 +25,7 @@ const SignUpForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const redirectTo = searchParams.get('redirect') || '/';
+    const redirectTo = searchParams.get('callbackUrl') || '/';
 
     const form = useForm<SignUpFormType>({
         resolver: zodResolver(signUpSchema),

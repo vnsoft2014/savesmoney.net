@@ -1,5 +1,5 @@
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcher, fetcherWithAuth } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher, fetcherWithAuth } from '@/lib/utils';
 
 type AddCommentPayload = {
     dealId: string;
@@ -31,10 +31,6 @@ export async function addComment({ dealId, content, parentId = null, user, guest
             }),
         });
 
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
         return data;
     } catch (error: unknown) {
         return {
@@ -54,10 +50,6 @@ export async function likeAsGuest(commentId: string) {
             body: JSON.stringify({}),
         });
 
-        if (!data.success) {
-            throw new Error(data.message);
-        }
-
         return data;
     } catch (error: unknown) {
         return {
@@ -72,10 +64,6 @@ export async function likeAsUser(commentId: string) {
         const data = await fetcherWithAuth(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/comment/${commentId}/like`, {
             method: 'PATCH',
         });
-
-        if (!data.success) {
-            throw new Error(data.message);
-        }
 
         return data;
     } catch (error: unknown) {

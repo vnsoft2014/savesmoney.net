@@ -1,6 +1,6 @@
+import { checkFile } from '@/lib/validators/file-checker';
 import { uploadImage } from '@/services';
-import { DealFormValues } from '@/shared/types';
-import { checkFile } from '@/utils/validators/file-checker';
+import { DealFormValues } from '@/types';
 import { Clipboard, Upload } from 'lucide-react';
 import { memo, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';

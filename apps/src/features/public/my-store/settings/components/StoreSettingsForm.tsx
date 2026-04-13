@@ -1,7 +1,7 @@
 'use client';
 
-import { MESSAGES } from '@/constants/messages';
-import { Loading } from '@/shared/components/common';
+import { Loading } from '@/components/common';
+import { MESSAGES } from '@/config/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent } from '@/shared/shadecn/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/shared/shadecn/ui/field';

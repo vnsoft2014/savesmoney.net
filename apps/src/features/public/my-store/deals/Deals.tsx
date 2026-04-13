@@ -1,8 +1,8 @@
 'use client';
 
+import { Loading } from '@/components/common';
 import { Pagination } from '@/features/common';
-import { Loading } from '@/shared/components/common';
-import { DealFull, DealListResponse } from '@/shared/types';
+import { DealFull, DealListResponse } from '@/types';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { NoDeals } from '../../deals';

@@ -1,4 +1,4 @@
-import { HeadlineProps } from '@/shared/types';
+import { HeadlineProps } from '@/types';
 import { twMerge } from 'tailwind-merge';
 
 const Headline = ({ header, containerClass, titleClass, subtitleClass }: HeadlineProps) => {

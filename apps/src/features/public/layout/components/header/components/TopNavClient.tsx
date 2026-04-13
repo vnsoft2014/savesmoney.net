@@ -1,6 +1,6 @@
 'use client';
 
-import SubscribeBox from '@/shared/components/common/SubscribeBox';
+import SubscribeBox from '@/components/common/SubscribeBox';
 import {
     NavigationMenu,
     NavigationMenuContent,

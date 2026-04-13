@@ -1,7 +1,7 @@
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher } from '@/lib/utils';
 import { ApiResponse } from '@/types';
 import { DealAlertPayload } from '@/types/dealAlert';
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcher } from '@/utils/utils';
 
 export async function addDealAlert(payload: DealAlertPayload): Promise<ApiResponse<void>> {
     try {
@@ -12,10 +12,6 @@ export async function addDealAlert(payload: DealAlertPayload): Promise<ApiRespon
             },
             body: JSON.stringify(payload),
         });
-
-        if (!data.success) {
-            throw new Error(data.message!);
-        }
 
         return data;
     } catch (error: unknown) {

@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
 import { Pagination } from '@/features/common';
-import { DealFull, DealListResponse } from '@/shared/types';
+import { DealFull, DealListResponse } from '@/types';
 import { DealCard, NoDeals } from './components';
 import { DealTypeSchema } from './seo';
 

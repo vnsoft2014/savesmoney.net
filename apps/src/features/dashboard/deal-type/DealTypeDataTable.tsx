@@ -7,9 +7,9 @@ import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 
-import Loading from '@/shared/components/common/Loading';
-import { DealType } from '@/shared/types';
-import { fetcherWithAuth } from '@/utils/utils';
+import Loading from '@/components/common/Loading';
+import { fetcherWithAuth } from '@/lib/utils';
+import { DealType } from '@/types';
 import { deleteDealType } from '../services';
 
 export default function DealTypeDataTable() {

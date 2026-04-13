@@ -1,5 +1,5 @@
+import { SITE } from '@/config/site';
 import { DashboardLayoutClient } from '@/features/dashboard/layout';
-import { SITE } from '@/utils/site';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

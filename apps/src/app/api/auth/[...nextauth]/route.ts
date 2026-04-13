@@ -9,7 +9,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import FacebookProvider from 'next-auth/providers/facebook';
 import GoogleProvider from 'next-auth/providers/google';
 
-import connectDB from '@/DB/connectDB';
+import connectDB from '@/lib/db/connectDB';
 import User from '@/models/User';
 
 const schema = Joi.object({

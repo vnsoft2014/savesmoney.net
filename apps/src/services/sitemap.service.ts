@@ -1,5 +1,5 @@
-import { SitemapItem } from '@/shared/types';
-import { fetcher } from '@/utils/utils';
+import { fetcher } from '@/lib/utils';
+import { SitemapItem } from '@/types';
 
 export const getSitemapJson = async (): Promise<SitemapItem[]> => {
     try {
@@ -8,7 +8,7 @@ export const getSitemapJson = async (): Promise<SitemapItem[]> => {
         });
 
         return Array.isArray(data) ? data : [];
-    } catch (error) {
+    } catch (_: unknown) {
         return [];
     }
 };
@@ -20,7 +20,7 @@ export const getDealsSitemapJson = async (page: number): Promise<SitemapItem[]> 
         });
 
         return Array.isArray(data) ? data : [];
-    } catch (error) {
+    } catch (_: unknown) {
         return [];
     }
 };
@@ -32,7 +32,7 @@ export const getDealTypesSitemapJson = async (): Promise<SitemapItem[]> => {
         });
 
         return Array.isArray(data) ? data : [];
-    } catch (error) {
+    } catch (_: unknown) {
         return [];
     }
 };
@@ -44,7 +44,7 @@ export const getStoresSitemapJson = async (): Promise<SitemapItem[]> => {
         });
 
         return Array.isArray(data) ? data : [];
-    } catch (error) {
+    } catch (_: unknown) {
         return [];
     }
 };
@@ -56,7 +56,7 @@ export const getSMStoresSitemapJson = async (page: number): Promise<SitemapItem[
         });
 
         return Array.isArray(data) ? data : [];
-    } catch (error) {
+    } catch (_: unknown) {
         return [];
     }
 };

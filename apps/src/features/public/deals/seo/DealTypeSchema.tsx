@@ -1,8 +1,8 @@
-import { DealFull } from '@/shared/types';
+import { SITE } from '@/config/site';
+import { createBaseSchema } from '@/lib/seo';
 import { RootState } from '@/store/store';
+import { DealFull } from '@/types';
 import { SettingsForm } from '@/types/settings';
-import { createBaseSchema } from '@/utils/seo';
-import { SITE } from '@/utils/site';
 import { useSelector } from 'react-redux';
 import SchemaOrg from '../../../../shared/seo/SchemaOrg';
 

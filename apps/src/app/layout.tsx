@@ -1,10 +1,10 @@
 import Providers from '@/store/Providers';
 
+import { SITE } from '@/config/site';
+import { buildSeoMetadata } from '@/lib/seo';
 import { cn } from '@/lib/utils';
 import { getSettings } from '@/services';
 import { SettingsForm } from '@/types/settings';
-import { buildSeoMetadata } from '@/utils/seo';
-import { SITE } from '@/utils/site';
 import Script from 'next/script';
 import NextTopLoader from 'nextjs-toploader';
 import { ToastContainer } from 'react-toastify';
@@ -23,7 +23,7 @@ export async function generateMetadata() {
         description: settings?.websiteDescription || SITE.description,
         url: SITE.url || 'https://savesmoney.net',
         image: settings?.logo || `${SITE.url}/logo.png`,
-        favicon: settings?.favicon ? `${SITE.url}/${settings.favicon}` : `${SITE.url}/favicon.ico`,
+        favicon: settings?.favicon ? `${SITE.url}${settings.favicon}` : `${SITE.url}/favicon.ico`,
     });
 }
 

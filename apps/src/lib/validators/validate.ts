@@ -1,4 +1,4 @@
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
 import { Schema } from 'joi';
 import { NextResponse } from 'next/server';
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { formatPrice } from '@/utils/deal';
-import { fetcherWithAuth, formatDate } from '@/utils/utils';
+import { formatPrice } from '@/lib/deal';
+import { fetcherWithAuth, formatDate } from '@/lib/utils';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -10,9 +10,9 @@ import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 import { deleteDeal } from '../services';
 
-import { dataTableStyles } from '@/constants/layout';
-import { Loading } from '@/shared/components/common';
-import { Deal } from '@/shared/types/deal';
+import { Loading } from '@/components/common';
+import { dataTableStyles } from '@/config/layout';
+import { Deal } from '@/types/deal';
 import React from 'react';
 
 interface IconWithTooltipProps {

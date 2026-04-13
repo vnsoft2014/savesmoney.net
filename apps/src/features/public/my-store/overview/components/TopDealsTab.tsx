@@ -1,6 +1,6 @@
 'use client';
 
-import { Loading } from '@/shared/components/common';
+import { Loading } from '@/components/common';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/shadecn/ui/table';
 import Image from 'next/image';
 import Link from 'next/link';

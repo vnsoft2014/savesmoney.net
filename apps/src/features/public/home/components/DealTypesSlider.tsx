@@ -1,6 +1,6 @@
 'use client';
 
-import { DealType } from '@/shared/types';
+import { DealType } from '@/types';
 import Link from 'next/link';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';

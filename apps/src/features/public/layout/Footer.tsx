@@ -13,7 +13,7 @@ const Footer = () => {
     return (
         <footer className="bg-blue-900 text-gray-300">
             <div className="container flex flex-col md:flex-row justify-center items-center gap-4 md:gap-6 lg:gap-20 xl:gap-30 py-6">
-                <div className="px-3 text-center md:text-left max-w-lg">
+                <div className="px-3 text-center md:text-left w-full md:w-[40%]">
                     <div className="mx-auto container text-left">
                         {socials && (
                             <div className="flex justify-start items-center gap-4 mb-4">
@@ -88,7 +88,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="px-3 text-center md:text-right max-w-md">
+                <div className="px-3 text-center md:text-right w-full md:w-[60%]">
                     <blockquote className="text-xl md:text-lg font-semibold text-white italic leading-snug">
                         {settings?.footerQuote}
                     </blockquote>

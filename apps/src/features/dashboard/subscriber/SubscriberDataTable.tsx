@@ -7,11 +7,11 @@ import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 
-import Loading from '@/shared/components/common/Loading';
+import Loading from '@/components/common/Loading';
+import { fetcherWithAuth, formatDate } from '@/lib/utils';
 import { SubscriberData } from '@/types';
-import { fetcherWithAuth, formatDate } from '@/utils/utils';
 
-import { dataTableStyles } from '@/constants/layout';
+import { dataTableStyles } from '@/config/layout';
 import { exportWithProgress } from '@/features/dashboard/export/utils/exportWithProgress';
 import { ExportProgressModal } from '../export/components';
 import { ExportFormat } from '../export/types';

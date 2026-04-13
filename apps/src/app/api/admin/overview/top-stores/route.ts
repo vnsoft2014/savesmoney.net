@@ -1,9 +1,9 @@
 import Joi from 'joi';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ONLY } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { ADMIN_ONLY } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
 

@@ -1,9 +1,9 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
+import { stripHtml } from '@/lib/sanitize';
 import { uploadImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import DealType from '@/models/DealType';
-import { stripHtml } from '@/utils/sanitize';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 

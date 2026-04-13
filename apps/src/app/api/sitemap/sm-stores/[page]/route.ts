@@ -1,8 +1,8 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import Deal from '@/models/Deal';
 import { UserStore } from '@/models/UserStore';
-import { PropsWithPage } from '@/shared/types';
+import { PropsWithPage } from '@/types';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';

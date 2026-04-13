@@ -1,5 +1,5 @@
-import connectDB from '@/DB/connectDB';
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import DealStats from '@/models/DealStats';
 import { NextResponse } from 'next/server';
 

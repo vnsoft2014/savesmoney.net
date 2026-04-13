@@ -1,6 +1,6 @@
 'use client';
 
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';

@@ -1,7 +1,7 @@
+import { SITE } from '@/config/site';
+import { createContactSchema, mapSocialLinks } from '@/lib/seo';
 import { RootState } from '@/store/store';
 import { SettingsForm } from '@/types/settings';
-import { createContactSchema, mapSocialLinks } from '@/utils/seo';
-import { SITE } from '@/utils/site';
 import { useSelector } from 'react-redux';
 import SchemaOrg from './SchemaOrg';
 

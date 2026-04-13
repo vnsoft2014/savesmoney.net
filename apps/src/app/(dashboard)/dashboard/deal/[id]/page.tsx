@@ -3,9 +3,9 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { Loading } from '@/components/common';
 import EditDealForm from '@/features/dashboard/deal/EditDealForm';
 import { getDealById } from '@/features/dashboard/services';
-import { Loading } from '@/shared/components/common';
 
 export default function Page() {
     const { id } = useParams();
@@ -19,14 +19,14 @@ export default function Page() {
 
         const fetchDeal = async () => {
             try {
-                const data = await getDealById(id as string);
+                const { success, data } = await getDealById(id as string);
 
-                if (!data) {
+                if (!success) {
                     router.replace('/404');
                     return;
                 }
 
-                setDeal(data);
+                setDeal(data!);
             } finally {
                 setLoading(false);
             }

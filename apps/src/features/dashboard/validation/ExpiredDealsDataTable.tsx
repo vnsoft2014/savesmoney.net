@@ -6,11 +6,10 @@ import { useState } from 'react';
 import DataTable from 'react-data-table-component';
 import useSWR, { useSWRConfig } from 'swr';
 
-import { dataTableStyles } from '@/constants/layout';
-import { cn } from '@/lib/utils';
-import Loading from '@/shared/components/common/Loading';
+import Loading from '@/components/common/Loading';
+import { dataTableStyles } from '@/config/layout';
+import { cn, fetcherWithAuth, formatDate } from '@/lib/utils';
 import { ValidationData } from '@/types';
-import { fetcherWithAuth, formatDate } from '@/utils/utils';
 import { toast } from 'react-toastify';
 import { updateValidationStatus } from '../services';
 

@@ -38,18 +38,14 @@ const ForgotPasswordForm = () => {
     } = form;
 
     const onSubmit = async (values: ForgotPasswordValues) => {
-        try {
-            const res = await forgotPassword(values.email);
+        const res = await forgotPassword(values.email);
 
-            if (res.success) {
-                setSentEmail(values.email);
-                setIsEmailSent(true);
-                toast.success(res.message);
-            } else {
-                toast.error(res.message);
-            }
-        } catch {
-            toast.error('Failed to send reset link. Please try again.');
+        if (res.success) {
+            setSentEmail(values.email);
+            setIsEmailSent(true);
+            toast.success(res.message);
+        } else {
+            toast.error(res.message);
         }
     };
 

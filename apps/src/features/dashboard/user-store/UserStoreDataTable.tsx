@@ -6,10 +6,10 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import useSWR, { useSWRConfig } from 'swr';
 
-import { dataTableStyles } from '@/constants/layout';
-import Loading from '@/shared/components/common/Loading';
-import { UserStore } from '@/shared/types';
-import { fetcherWithAuth } from '@/utils/utils';
+import Loading from '@/components/common/Loading';
+import { dataTableStyles } from '@/config/layout';
+import { fetcherWithAuth } from '@/lib/utils';
+import { UserStore } from '@/types';
 
 export default function UserStoreDataTable() {
     const router = useRouter();

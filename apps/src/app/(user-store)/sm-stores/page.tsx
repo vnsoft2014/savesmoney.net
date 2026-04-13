@@ -1,7 +1,7 @@
+import { Breadcrumb } from '@/components/common';
+import { SITE } from '@/config/site';
 import { HeroAffiliateCTA, StoreFilter, StoresListing } from '@/features/public/sm-stores';
 import { getUserStores } from '@/services';
-import { Breadcrumb } from '@/shared/components/common';
-import { SITE } from '@/utils/site';
 import { FileText, Home } from 'lucide-react';
 import { Metadata } from 'next';
 

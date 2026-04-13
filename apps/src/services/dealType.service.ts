@@ -1,7 +1,6 @@
-import { DealType } from '@/shared/types';
-import { ApiResponse } from '@/types';
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcher } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher } from '@/lib/utils';
+import { ApiResponse, DealType } from '@/types';
 
 export const getDealTypeById = async (id: string) => {
     try {

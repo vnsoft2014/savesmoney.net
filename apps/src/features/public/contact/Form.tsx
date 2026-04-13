@@ -1,11 +1,11 @@
 'use client';
 
+import { FormProps } from '@/types';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 import { Button } from '../../../shared/shadecn/ui/button';
-import { FormProps } from '../../../shared/types';
 
 const Form = ({
     title,

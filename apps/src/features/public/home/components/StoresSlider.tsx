@@ -1,6 +1,6 @@
 'use client';
 
-import { Store } from '@/shared/types';
+import { Store } from '@/types';
 import Link from 'next/link';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';

@@ -1,7 +1,11 @@
+import { Breadcrumb } from '@/components/common';
+import { Ads } from '@/components/widgets';
+import { SITE } from '@/config/site';
 import { DealLabel } from '@/features/common/deal/components';
 import CommentSection from '@/features/public/comments/CommentSection';
 import {
     CouponCodeBox,
+    DealAdminActions,
     DealStats,
     FlashDealCountdown,
     RelatedDeals,
@@ -11,15 +15,12 @@ import { ImageWithFallback } from '@/features/public/deal-detail/components';
 import { DealDetailSchema } from '@/features/public/deal-detail/seo';
 import { DealPrice, DealPurchaseLink } from '@/features/public/deals/components';
 import { Sidebar } from '@/features/public/layout';
+import { getDaysRemaining, truncateDescription } from '@/lib/deal';
+import { stripHtml } from '@/lib/sanitize';
+import { formatDate, getIdFromSlug } from '@/lib/utils';
 import { getDealById } from '@/services';
-import { Breadcrumb } from '@/shared/components/common';
-import { Ads } from '@/shared/components/widgets';
 import { Button } from '@/shared/shadecn/ui/button';
-import { DealFull } from '@/shared/types';
-import { getDaysRemaining, truncateDescription } from '@/utils/deal';
-import { stripHtml } from '@/utils/sanitize';
-import { SITE } from '@/utils/site';
-import { formatDate, getIdFromSlug } from '@/utils/utils';
+import { Coupon } from '@/types';
 import { FileText, Home } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -35,9 +36,11 @@ export async function generateMetadata({ params }: Props) {
 
     const dealId = getIdFromSlug(slug);
 
-    const deal: DealFull = await getDealById(dealId, true);
+    const { success, data } = await getDealById(dealId, true);
 
-    if (deal) {
+    const deal = data!;
+
+    if (success) {
         const description = truncateDescription(stripHtml(deal.description), 160);
 
         return {
@@ -83,11 +86,13 @@ const Page = async ({ params }: Props) => {
 
     const dealId = getIdFromSlug(slug);
 
-    const deal: DealFull = await getDealById(dealId, true);
+    const { success, data } = await getDealById(dealId, true);
 
-    if (!deal) {
+    if (!success) {
         notFound();
     }
+
+    const deal = data!;
 
     const breadcrumbItems = [
         {
@@ -191,7 +196,7 @@ const Page = async ({ params }: Props) => {
 
                                         {coupons?.length > 0 && (
                                             <div>
-                                                {coupons.map((coupon, index) => (
+                                                {coupons.map((coupon: Coupon, index: number) => (
                                                     <CouponCodeBox
                                                         key={index}
                                                         code={coupon.code}
@@ -220,6 +225,8 @@ const Page = async ({ params }: Props) => {
 
                                         <ValidityVote dealId={deal._id} />
                                     </div>
+
+                                    <DealAdminActions dealId={deal._id} />
                                 </div>
                             </div>
                         </div>

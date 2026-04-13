@@ -1,4 +1,4 @@
-import { DealFormValues } from '@/shared/types';
+import { DealFormValues } from '@/types';
 import Select from 'react-select';
 import { useDealContext } from '../../contexts';
 

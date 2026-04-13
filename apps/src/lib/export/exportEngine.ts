@@ -1,4 +1,4 @@
-import { ExportConfig, Exporter } from '@/shared/types';
+import { ExportConfig, Exporter } from '@/types';
 import { Model } from 'mongoose';
 import * as XLSX from 'xlsx';
 

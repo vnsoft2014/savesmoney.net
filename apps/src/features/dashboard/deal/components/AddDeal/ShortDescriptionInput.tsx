@@ -1,4 +1,4 @@
-import { DealFormValues } from '@/shared/types';
+import { DealFormValues } from '@/types';
 import { useDealContext } from '../../contexts';
 import { debounceCheckDuplicate } from '../../utils';
 

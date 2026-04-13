@@ -1,5 +1,5 @@
+import { SITE } from '@/config/site';
 import ForgotPasswordForm from '@/features/auth/forgot-password/ForgotPasswordForm';
-import { SITE } from '@/utils/site';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

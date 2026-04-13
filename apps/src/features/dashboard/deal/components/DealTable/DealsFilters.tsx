@@ -1,7 +1,7 @@
 'use client';
 
 import { getDealTypes } from '@/services';
-import { DealType } from '@/shared/types';
+import { DealType } from '@/types';
 import { useEffect, useState } from 'react';
 
 type Props = {

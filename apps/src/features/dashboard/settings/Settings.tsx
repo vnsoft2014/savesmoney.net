@@ -7,13 +7,13 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+import { Loading } from '@/components/common';
+import { settingsDefault } from '@/lib/settings';
 import { getSettings } from '@/services';
-import { Loading } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 import { Textarea } from '@/shared/shadecn/ui/textarea';
-import { settingsDefault } from '@/utils/settings';
 
 import { SettingsForm as SettingsFormType, settingsSchema } from '../schemas';
 import { updateSettings } from '../services';
@@ -236,6 +236,36 @@ export default function Settings() {
                 </section>
 
                 <section className="space-y-4">
+                    <h2 className="text-xl font-semibold mb-4">Menu</h2>
+
+                    <h2 className="text-xl font-semibold">Menu</h2>
+
+                    <Controller
+                        name="holidayDealsLabel"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel>Holiday Deals Label</FieldLabel>
+                                <Input {...field} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
+
+                    <Controller
+                        name="seasonalDealsLabel"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel>Seasonal Deals Label</FieldLabel>
+                                <Input {...field} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
+                </section>
+
+                <section className="space-y-4">
                     <h2 className="text-xl font-semibold">Admin Info</h2>
 
                     <Controller
@@ -245,6 +275,34 @@ export default function Settings() {
                             <Field data-invalid={fieldState.invalid}>
                                 <FieldLabel>Email</FieldLabel>
                                 <Input type="email" {...field} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
+                </section>
+
+                <section className="space-y-4">
+                    <h2 className="text-xl font-semibold mb-4">Footer Quote</h2>
+
+                    <Controller
+                        name="footerQuote"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel>Quote</FieldLabel>
+                                <Textarea rows={3} {...field} />
+                                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                            </Field>
+                        )}
+                    />
+
+                    <Controller
+                        name="footerQuoteAuthor"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel>Author</FieldLabel>
+                                <Input {...field} placeholder="Author name" />
                                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                             </Field>
                         )}

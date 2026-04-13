@@ -1,6 +1,6 @@
 'use client';
 
-import { DealFull } from '@/shared/types';
+import { DealFull } from '@/types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';

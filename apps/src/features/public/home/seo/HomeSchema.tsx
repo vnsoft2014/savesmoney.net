@@ -1,10 +1,10 @@
 'use client';
 
+import { SITE } from '@/config/site';
+import { createBaseSchema, mapSocialLinks } from '@/lib/seo';
 import SchemaOrg from '@/shared/seo/SchemaOrg';
 import { RootState } from '@/store/store';
 import { SettingsForm } from '@/types/settings';
-import { createBaseSchema, mapSocialLinks } from '@/utils/seo';
-import { SITE } from '@/utils/site';
 import { useSelector } from 'react-redux';
 
 export default function HomeSchema() {

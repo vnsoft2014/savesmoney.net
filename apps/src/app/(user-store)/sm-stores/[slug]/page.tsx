@@ -1,9 +1,9 @@
+import { Breadcrumb } from '@/components/common';
+import { SITE } from '@/config/site';
 import { DealsFilters, DealsListing } from '@/features/public/deals';
 import StoreHeader from '@/features/public/sm-stores/StoreHeader';
+import { getIdFromSlug } from '@/lib/utils';
 import { getActiveDeals, getDealTypes, getStores, getUserStoreById } from '@/services';
-import { Breadcrumb } from '@/shared/components/common';
-import { SITE } from '@/utils/site';
-import { getIdFromSlug } from '@/utils/utils';
 import { Gem, Home, Store } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
@@ -90,7 +90,12 @@ const Page = async ({ params, searchParams }: Props) => {
                     <DealsFilters dealTypes={dealTypes} stores={stores} />
                 </div>
 
-                <StoreHeader logo={userStore.logo} name={userStore.name} description={userStore.description} />
+                <StoreHeader
+                    logo={userStore.logo}
+                    name={userStore.name}
+                    description={userStore.description}
+                    author={userStore.author}
+                />
 
                 <DealsListing
                     initDealListResponse={dealListResponse}

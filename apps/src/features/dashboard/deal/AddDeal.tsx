@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { stripHtml } from '@/lib/sanitize';
 import { getDealTypes, getStores } from '@/services';
-import { DealFormValues, DealType, Store } from '@/shared/types';
-import { stripHtml } from '@/utils/sanitize';
+import { DealFormValues, DealType, Store } from '@/types';
 import { ArrowLeft, Plus, Save } from 'lucide-react';
 import { TailSpin } from 'react-loader-spinner';
 import { toast } from 'react-toastify';

@@ -11,8 +11,8 @@ import { Button } from '@/shared/shadecn/ui/button';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
 
-import { MESSAGES } from '@/constants/messages';
-import { Store } from '@/shared/types';
+import { MESSAGES } from '@/config/messages';
+import { Store } from '@/types';
 import { EditStoreForm as EditStoreFormType, editStoreSchema } from '../schemas';
 import { updateStore } from '../services';
 

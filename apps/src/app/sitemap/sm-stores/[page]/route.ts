@@ -1,6 +1,6 @@
+import { generateSitemapXml } from '@/lib/seo';
 import { getSMStoresSitemapJson } from '@/services';
-import { PropsWithPage, SitemapItem } from '@/shared/types';
-import { generateSitemapXml } from '@/utils/seo';
+import { PropsWithPage, SitemapItem } from '@/types';
 import { notFound } from 'next/navigation';
 
 export async function GET(_: Request, { params }: PropsWithPage) {

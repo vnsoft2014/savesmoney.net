@@ -4,8 +4,8 @@ import path from 'path';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
-import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE, MAX_IMAGE_SIZE, MAX_THUMBNAIL_SIZE } from '@/constants/upload';
-import connectDB from '@/DB/connectDB';
+import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE, MAX_IMAGE_SIZE, MAX_THUMBNAIL_SIZE } from '@/config/upload';
+import connectDB from '@/lib/db/connectDB';
 
 interface BaseUploadOptions {
     width?: number;
@@ -137,4 +137,32 @@ export async function uploadImageNormal({
     }
 
     return `/${uploadFolder}/${fileName}`;
+}
+
+interface DealUploadOptions {
+    resize?: {
+        width: number;
+        height: number;
+    };
+    uploadedBy: string;
+}
+
+export async function uploadDealImage(file: File, options: DealUploadOptions) {
+    const { resize, uploadedBy } = options;
+
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+
+    const folder = `uploads/deals/${year}/${month}`;
+
+    const result = await uploadImage(file, {
+        width: resize?.width,
+        height: resize?.height,
+        folder,
+        uploadedBy,
+        slug: 'deal',
+    });
+
+    return result.url;
 }

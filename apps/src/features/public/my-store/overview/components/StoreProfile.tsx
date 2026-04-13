@@ -1,7 +1,7 @@
 import { Badge } from '@/shared/shadecn/ui/badge';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Card, CardContent } from '@/shared/shadecn/ui/card';
-import { UserStore } from '@/shared/types';
+import { UserStore } from '@/types';
 import { AlertCircle, CheckCircle, ExternalLink, Settings, Wallet } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

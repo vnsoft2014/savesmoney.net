@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import Store from '@/models/Store';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';

@@ -1,10 +1,10 @@
-import { MESSAGES } from '@/constants/messages';
-import { ADMIN_ONLY, USER_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { ADMIN_ONLY, USER_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
+import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/lib/sanitize';
+import { uploadDealImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
-import { sanitizeDescription, sanitizeUrl, stripHtml } from '@/utils/sanitize';
-import { uploadDealImage } from '@/utils/upload';
 import Joi from 'joi';
 import mongoose from 'mongoose';
 import { NextResponse } from 'next/server';

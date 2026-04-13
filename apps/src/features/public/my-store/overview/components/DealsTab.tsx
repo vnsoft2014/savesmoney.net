@@ -1,12 +1,12 @@
 'use client';
 
+import { Loading } from '@/components/common';
 import { DealsFilters } from '@/features/public/deals';
 import { DealPrice } from '@/features/public/deals/components';
 import { getDealTypes, getStores } from '@/services';
-import { Loading } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/shadecn/ui/table';
-import { DealFull, DealListResponse } from '@/shared/types';
+import { DealFull, DealListResponse } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';

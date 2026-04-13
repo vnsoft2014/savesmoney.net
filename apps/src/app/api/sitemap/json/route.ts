@@ -1,9 +1,9 @@
-import connectDB from '@/DB/connectDB';
+import connectDB from '@/lib/db/connectDB';
+import { getDateRangeFromToday } from '@/lib/deal';
+import { pushJson } from '@/lib/seo';
 import Deal from '@/models/Deal';
 import { UserStore } from '@/models/UserStore';
-import { SitemapItem } from '@/shared/types';
-import { getDateRangeFromToday } from '@/utils/deal';
-import { pushJson } from '@/utils/seo';
+import { SitemapItem } from '@/types';
 import { NextResponse } from 'next/server';
 import { createDealSitemapTasks, createUserStoreSitemapTasks } from './utils';
 

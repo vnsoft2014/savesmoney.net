@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 import { Badge } from '@/shared/shadecn/ui/badge';
-import { DealType, Store } from '@/shared/types';
+import { DealType, Store } from '@/types';
 
 type DealsFiltersProps = {
     dealTypes: DealType[];

@@ -1,30 +1,26 @@
 'use client';
 
-import { formatPrice } from '@/utils/deal';
-import { fetcher, formatDate } from '@/utils/utils';
-import { Pencil, Trash2 } from 'lucide-react';
+import { formatPrice } from '@/lib/deal';
+import { fetcher, formatDate } from '@/lib/utils';
+import { Pencil, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
-import { deleteDeal } from '../services';
 
-import { dataTableStyles } from '@/constants/layout';
+import { Loading } from '@/components/common';
+import { dataTableStyles } from '@/config/layout';
 import { useDebounce } from '@/hooks/useDebounce';
-import { Loading } from '@/shared/components/common';
-import { Deal } from '@/shared/types/deal';
+import { Deal } from '@/types/deal';
 import React from 'react';
 import DealsFilters from './components/DealTable/DealsFilters';
-
-interface IconWithTooltipProps {
-    tooltip: string;
-    children: React.ReactNode;
-}
+import { touchDeal } from '@/features/common/deal/services';
+import { toast } from 'react-toastify';
 
 export default function DealDataTable() {
-    const { mutate } = useSWRConfig();
     const router = useRouter();
+
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
@@ -83,17 +79,6 @@ export default function DealDataTable() {
         totalPages: 1,
     };
 
-    const handleDeleteDeal = async (id: string) => {
-        const res = await deleteDeal(id);
-
-        if (res?.success) {
-            toast.success(res?.message);
-            mutate(apiUrl);
-        } else {
-            toast.error(res?.message);
-        }
-    };
-
     const handleUpdateDeal = (id: string) => {
         router.push(`/dashboard/deal/${id}`);
     };
@@ -107,8 +92,20 @@ export default function DealDataTable() {
         setExpireAtTo('');
         setPage(1);
     };
+    const handleRefresh = async (id: string) => {
+        setIsRefreshing(true);
+        const data = await touchDeal(id);
 
-    const createDealColumns = (handleUpdate: (id: string) => void, handleDelete: (id: string) => void) => [
+        if (data.success) {
+            toast.success(data.message);
+        } else {
+            toast.error(data.message);
+        }
+
+        setIsRefreshing(false);
+    };
+
+    const createDealColumns = (handleUpdate: (id: string) => void) => [
         {
             name: 'Image',
             cell: (row: Deal) => <img src={row.image} alt="Deal image" className="py-2 object-cover rounded" />,
@@ -209,19 +206,20 @@ export default function DealDataTable() {
             name: 'Action',
             grow: 1,
             cell: (row: Deal) => (
-                <div className="flex items-center gap-2 h-20">
+                <div className="flex items-center gap-6 h-20">
+                    <button
+                        onClick={() => handleRefresh(row._id)}
+                        disabled={isRefreshing}
+                        className="text-gray-500 hover:text-orange-600"
+                    >
+                        <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    </button>
+
                     <button
                         onClick={() => handleUpdate(row._id)}
                         className="px-3 py-2 text-xs text-green-600 hover:text-white hover:bg-green-600 border border-green-600 rounded transition"
                     >
                         <Pencil size={18} />
-                    </button>
-
-                    <button
-                        onClick={() => handleDelete(row._id)}
-                        className="px-3 py-2 text-xs text-red-600 hover:text-white hover:bg-red-600 border border-red-600 rounded transition"
-                    >
-                        <Trash2 size={18} />
                     </button>
                 </div>
             ),
@@ -229,7 +227,7 @@ export default function DealDataTable() {
         },
     ];
 
-    const columns = createDealColumns(handleUpdateDeal, handleDeleteDeal);
+    const columns = createDealColumns(handleUpdateDeal);
 
     const handleSort = (column: any, sortDirection: 'asc' | 'desc') => {
         if (!column.sortField) return;

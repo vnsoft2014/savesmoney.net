@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/constants/upload';
+import { MESSAGES } from '@/config/messages';
+import { ALLOWED_IMAGE_TYPES, MAX_IMAGE_SIZE } from '@/config/upload';
 
 export interface FileValidationResult {
     isValid: boolean;

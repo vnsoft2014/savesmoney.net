@@ -1,13 +1,23 @@
+'use client';
+
+import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/shared/shadecn/ui/card';
+import { Store } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Props = {
     logo: string;
     name: string;
     description: string;
+    author: string;
 };
 
-const StoreHeader = ({ logo, name, description }: Props) => {
+const StoreHeader = ({ logo, name, description, author }: Props) => {
+    const { user, isSignin } = useAuth();
+
+    const isAuthor = isSignin && user?._id === author;
+
     return (
         <Card className="relative mb-4 md:mb-6 bg-white border border-gray-100 shadow-xs">
             <CardContent className="p-4">
@@ -31,6 +41,16 @@ const StoreHeader = ({ logo, name, description }: Props) => {
                             {description || 'No description provided for this store.'}
                         </p>
                     </div>
+
+                    {isAuthor && (
+                        <Link
+                            href="/my-store"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border bg-gray-50 hover:bg-gray-100 transition text-sm font-medium"
+                        >
+                            <Store size={18} />
+                            My Store
+                        </Link>
+                    )}
                 </div>
             </CardContent>
         </Card>

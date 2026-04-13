@@ -23,7 +23,7 @@ const SignInForm = () => {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const redirectTo = searchParams.get('redirect') || '/';
+    const redirectTo = searchParams.get('callbackUrl') || '/';
 
     const form = useForm<SignInFormType>({
         resolver: zodResolver(signInSchema),
@@ -169,7 +169,7 @@ const SignInForm = () => {
                                 <Link
                                     href="/forgot-password"
                                     className="shrink-0 text-sm text-indigo-600 hover:underline font-semibold"
-                                prefetch={false}
+                                    prefetch={false}
                                 >
                                     Forgot Password?
                                 </Link>

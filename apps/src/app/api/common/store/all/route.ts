@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import Store from '@/models/Store';
 import { NextResponse } from 'next/server';
 
@@ -16,7 +16,6 @@ export async function GET() {
             data: stores,
         });
     } catch (error) {
-        console.error(error);
         return NextResponse.json({ success: false, message: MESSAGES.ERROR.INTERNAL_SERVER }, { status: 500 });
     }
 }

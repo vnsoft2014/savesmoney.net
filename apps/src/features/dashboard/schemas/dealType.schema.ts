@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import { ALLOWED_IMAGE_TYPES, MAX_THUMBNAIL_SIZE } from '@/constants/upload';
+import { MESSAGES } from '@/config/messages';
+import { ALLOWED_IMAGE_TYPES, MAX_THUMBNAIL_SIZE } from '@/config/upload';
 import * as z from 'zod';
 
 export const addDealTypeSchema = z.object({

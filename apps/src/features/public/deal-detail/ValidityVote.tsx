@@ -1,8 +1,7 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, fetcher } from '@/lib/utils';
 import { Button } from '@/shared/shadecn/ui/button';
-import { fetcher } from '@/utils/utils';
 import { memo, useCallback, useEffect, useState } from 'react';
 
 type IconProps = {

@@ -1,6 +1,6 @@
-import { MESSAGES } from '@/constants/messages';
-import { USER_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { USER_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import Deal from '@/models/Deal';
 import DealStats from '@/models/DealStats';

@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '@/store/store';
 
+import { SubscribeBox } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
-import { SubscribeBox } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { ScrollArea } from '@/shared/shadecn/ui/scroll-area';
 import { Separator } from '@/shared/shadecn/ui/separator';

@@ -1,7 +1,7 @@
-import { fetcherWithAuth } from '@/utils/utils';
+import { fetcherWithAuth } from '@/lib/utils';
 
-import { DealFormValues } from '@/shared/types';
-import { getErrorMessage } from '@/utils/errorHandler';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { DealFormValues } from '@/types';
 
 export const addNewDeals = async (deals: DealFormValues[]) => {
     const payload = deals.map(({ id, ...rest }) => rest);
@@ -97,8 +97,11 @@ export const getDealById = async (id: string, populate = false) => {
             cache: 'no-cache',
         });
 
-        return data.data;
+        return data;
     } catch (error) {
-        return null;
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
     }
 };

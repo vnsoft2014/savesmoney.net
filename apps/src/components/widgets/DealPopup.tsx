@@ -76,20 +76,19 @@ export default function DealPopup() {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setIsLoading(true);
-        try {
-            const data = await subscribeDeal(values, user?._id, isSignin, 'popup');
+        
+        const data = await subscribeDeal(values, user?._id, isSignin, 'popup');
 
-            if (data.subscribed) {
-                setSubmitted(true);
-                localStorage.setItem(STORAGE_KEY, Date.now().toString());
-            }
-
-            setTimeout(() => setShowPopup(false), 5000);
-        } catch (err: any) {
-            toast.error(err.message || 'Subscribe failed!');
-        } finally {
-            setIsLoading(false);
+        if (data.success) {
+            setSubmitted(true);
+            localStorage.setItem(STORAGE_KEY, Date.now().toString());
+        } else {
+            toast.error(data.message || 'Subscribe failed!');
         }
+
+        setTimeout(() => setShowPopup(false), 5000);
+
+        setIsLoading(false);
     };
 
     const handleClose = () => {

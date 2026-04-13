@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import Deal from '@/models/Deal';
 import Validations from '@/models/Validation';
 import Joi from 'joi';

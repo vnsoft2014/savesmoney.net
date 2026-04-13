@@ -1,7 +1,7 @@
 'use client';
 
+import { setLinks, setSettings } from '@/lib/frontendNavSlice';
 import { SettingsForm } from '@/types/settings';
-import { setLinks, setSettings } from '@/utils/FrontendNavSlice';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';

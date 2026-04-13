@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/shadecn/ui/card';
-import { UserStore } from '@/shared/types';
+import { UserStore } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { memo } from 'react';

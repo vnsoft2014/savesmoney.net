@@ -20,10 +20,10 @@ import {
     TagsInput,
 } from '@/features/common/deal/edit-form';
 import { EditDealForm as EditDealFormType, editDealSchema } from '@/features/common/schemas/Deal.schema';
+import { buildFormData } from '@/lib/buildFormData';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Form } from '@/shared/shadecn/ui/form';
-import { DealRaw } from '@/shared/types';
-import { buildFormData } from '@/utils/buildFormData';
+import { DealRaw } from '@/types';
 import { toast } from 'react-toastify';
 import { updateDeal } from '../services';
 import { DuplicateInput } from './components';

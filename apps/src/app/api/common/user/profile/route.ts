@@ -1,6 +1,6 @@
-import { MESSAGES } from '@/constants/messages';
-import { USER_ROLES } from '@/constants/user';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import { USER_ROLES } from '@/config/user';
+import connectDB from '@/lib/db/connectDB';
 import { uploadImage } from '@/lib/upload';
 import { assertRole, authCheck, authUser } from '@/middleware/authCheck';
 import User from '@/models/User';
@@ -9,7 +9,14 @@ import { NextResponse } from 'next/server';
 
 const updateProfileSchema = Joi.object({
     name: Joi.string().trim().min(2).max(50).required(),
-    avatar: Joi.any().optional(),
+    avatar: Joi.any()
+        .optional()
+        .custom((value, helpers) => {
+            if (!(value instanceof File) || value.size === 0) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }),
 });
 
 export async function PATCH(req: Request) {
@@ -21,7 +28,7 @@ export async function PATCH(req: Request) {
 
         const formData = await req.formData();
         const name = formData.get('name');
-        const avatar = formData.get('avatar') as File;
+        const avatar = formData.get('avatar') || undefined;
 
         const { error, value } = updateProfileSchema.validate({ name }, { abortEarly: false });
 

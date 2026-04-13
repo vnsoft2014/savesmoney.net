@@ -1,6 +1,6 @@
+import { generateSitemapXml } from '@/lib/seo';
 import { getDealTypesSitemapJson } from '@/services';
-import { SitemapItem } from '@/shared/types';
-import { generateSitemapXml } from '@/utils/seo';
+import { SitemapItem } from '@/types';
 
 export async function GET() {
     const items: SitemapItem[] = await getDealTypesSitemapJson();

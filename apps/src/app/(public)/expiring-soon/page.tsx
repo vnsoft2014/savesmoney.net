@@ -1,7 +1,7 @@
+import { Breadcrumb } from '@/components/common';
+import { SITE } from '@/config/site';
 import { DealsFilters, ExpiringListing } from '@/features/public/deals';
 import { getDealTypes, getExpiringSoon, getStores } from '@/services';
-import { Breadcrumb } from '@/shared/components/common';
-import { SITE } from '@/utils/site';
 import { FileText, Home } from 'lucide-react';
 import { Metadata } from 'next';
 

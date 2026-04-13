@@ -1,7 +1,7 @@
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcherWithAuth } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcherWithAuth } from '@/lib/utils';
 
-import { DealListResponse, GetActiveDealsParams } from '@/shared/types';
+import { DealListResponse, GetActiveDealsParams } from '@/types';
 
 export const getDealById = async (id: string, populate = false) => {
     try {
@@ -16,9 +16,12 @@ export const getDealById = async (id: string, populate = false) => {
             cache: 'no-cache',
         });
 
-        return data.data;
+        return data;
     } catch (error) {
-        return null;
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
     }
 };
 

@@ -1,5 +1,5 @@
+import { formatPrice } from '@/lib/deal';
 import { cn } from '@/lib/utils';
-import { formatPrice } from '@/utils/deal';
 
 interface DealPriceProps {
     originalPrice: number;

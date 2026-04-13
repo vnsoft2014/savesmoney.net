@@ -7,7 +7,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/shared/shadecn/ui/dialog';
-import { DealFull } from '@/shared/types';
+import { DealFull } from '@/types';
 
 type DealStatus = 'pending' | 'rejected' | 'published';
 

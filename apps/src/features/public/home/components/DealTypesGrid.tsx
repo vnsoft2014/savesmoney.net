@@ -1,4 +1,4 @@
-import { DealType } from '@/shared/types';
+import { DealType } from '@/types';
 import Link from 'next/link';
 import { ImageWithFallback } from '../../deal-detail/components';
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/shadecn/ui/avatar';
 import { Button } from '@/shared/shadecn/ui/button';
 import {
@@ -11,7 +12,6 @@ import {
     NavigationMenuTrigger,
 } from '@/shared/shadecn/ui/navigation-menu';
 import { User } from '@/types';
-import { getInitials } from '@/utils/utils';
 import { LayoutDashboard, LogOut, Store, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 

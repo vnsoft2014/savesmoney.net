@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import Subscriber from '@/models/Subscriber';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -33,14 +33,14 @@ export async function POST(req: Request) {
         const { error, value } = subscribeSubscriberSchema.validate(body);
 
         if (error) {
-            return NextResponse.json({ subscribed: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
+            return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }
 
         const existed = await Subscriber.findOne({ email: value.email });
         if (existed) {
             return NextResponse.json({
                 message: 'Email already subscribed',
-                subscribed: false,
+                success: false,
             });
         }
 
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             message: 'Subscribed successfully',
-            subscribed: true,
+            success: true,
         });
     } catch (err) {
         return NextResponse.json({ success: false, message: MESSAGES.ERROR.INTERNAL_SERVER }, { status: 500 });

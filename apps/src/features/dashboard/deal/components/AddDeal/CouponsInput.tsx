@@ -1,6 +1,6 @@
 'use client';
 
-import { Coupon, DealFormValues } from '@/shared/types';
+import { Coupon, DealFormValues } from '@/types';
 import { useDealContext } from '../../contexts';
 
 type Props = {

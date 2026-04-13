@@ -1,5 +1,5 @@
 import { Badge } from '@/shared/shadecn/ui/badge';
-import { DealFormValues } from '@/shared/types';
+import { DealFormValues } from '@/types';
 import { X } from 'lucide-react';
 import { KeyboardEvent, useState } from 'react';
 import { useDealContext } from '../../contexts';

@@ -1,6 +1,6 @@
+import { SITE } from '@/config/site';
 import UserProfile from '@/features/public/user/UserProfile';
 import { getUserById } from '@/services';
-import { SITE } from '@/utils/site';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 

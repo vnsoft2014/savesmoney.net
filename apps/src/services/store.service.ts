@@ -1,13 +1,20 @@
-import { Store } from '@/shared/types';
-import { ApiResponse } from '@/types';
-import { fetcher } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher } from '@/lib/utils';
+import { ApiResponse, Store } from '@/types';
 
 export const getStoreById = async (id: string) => {
-    const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/store/${id}`, {
-        method: 'GET',
-    });
+    try {
+        const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/common/store/${id}`, {
+            method: 'GET',
+        });
 
-    return data;
+        return data;
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
+    }
 };
 
 export const getStores = async (): Promise<Store[]> => {

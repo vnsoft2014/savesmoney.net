@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-import Contact2 from '@/shared/components/widgets/Contact2';
-import { SITE } from '@/utils/site';
+import Contact2 from '@/components/widgets/Contact2';
+import { SITE } from '@/config/site';
 
 export const metadata: Metadata = {
     title: `Contact Us | ${SITE.name}`,

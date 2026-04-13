@@ -1,5 +1,5 @@
-import { DealFormValues } from '@/shared/types';
-import { stripHtml } from '@/utils/sanitize';
+import { stripHtml } from '@/lib/sanitize';
+import { DealFormValues } from '@/types';
 import { Edit } from 'lucide-react';
 import { useDealContext } from '../../contexts';
 

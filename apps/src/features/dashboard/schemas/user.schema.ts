@@ -1,6 +1,6 @@
-import { MESSAGES } from '@/constants/messages';
-import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE } from '@/constants/upload';
-import { USER_ROLES } from '@/constants/user';
+import { MESSAGES } from '@/config/messages';
+import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE } from '@/config/upload';
+import { USER_ROLES } from '@/config/user';
 
 import * as z from 'zod';
 

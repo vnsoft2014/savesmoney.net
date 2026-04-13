@@ -1,4 +1,4 @@
-import { DealFormValues } from '@/shared/types';
+import { DealFormValues } from '@/types';
 import { useDealContext } from '../../contexts';
 import ActionCell from './ActionCell';
 import CouponsInput from './CouponsInput';

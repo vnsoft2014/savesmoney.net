@@ -1,4 +1,4 @@
-import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE } from '@/constants/upload';
+import { ALLOWED_IMAGE_TYPES, MAX_AVATAR_SIZE } from '@/config/upload';
 import * as z from 'zod';
 
 export const profileSchema = z.object({

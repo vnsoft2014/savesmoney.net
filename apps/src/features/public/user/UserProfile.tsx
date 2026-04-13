@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { MESSAGES } from '@/constants/messages';
+import { MESSAGES } from '@/config/messages';
 import { Button } from '@/shared/shadecn/ui/button';
 import { Field, FieldError, FieldLabel } from '@/shared/shadecn/ui/field';
 import { Input } from '@/shared/shadecn/ui/input';
@@ -46,34 +46,28 @@ const UserProfile = ({ user }: Props) => {
     });
 
     const onSubmit = async (values: ProfileFormType) => {
-        try {
-            const formData = new FormData();
-            formData.append('name', values.name.trim());
+        const formData = new FormData();
+        formData.append('name', values.name.trim());
 
-            if (values.avatar) {
-                formData.append('avatar', values.avatar);
-            }
-
-            const data = await updateProfile(formData);
-
-            if (!data.success) {
-                toast.error(data.message);
-                return;
-            }
-
-            const updatedUser = {
-                ...session?.user,
-                ...data.finalData,
-            };
-
-            console.log(updatedUser);
-
-            await update(updatedUser);
-
-            toast.success(data.message);
-        } catch (err: any) {
-            toast.error(err?.message || 'Update failed');
+        if (values.avatar) {
+            formData.append('avatar', values.avatar);
         }
+
+        const data = await updateProfile(formData);
+
+        if (!data.success) {
+            toast.error(data.message);
+            return;
+        }
+
+        const updatedUser = {
+            ...session?.user,
+            ...data.finalData,
+        };
+
+        await update(updatedUser);
+
+        toast.success(data.message);
     };
 
     return (

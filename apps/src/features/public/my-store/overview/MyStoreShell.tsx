@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { Loading } from '@/components/common';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
-import { Loading } from '@/shared/components/common';
 import { Button } from '@/shared/shadecn/ui/button';
 import { ScrollArea } from '@/shared/shadecn/ui/scroll-area';
 import { Separator } from '@/shared/shadecn/ui/separator';

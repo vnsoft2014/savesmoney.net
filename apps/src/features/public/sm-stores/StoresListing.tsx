@@ -1,7 +1,7 @@
 'use client';
 
 import { Pagination } from '@/features/common';
-import { UserStore, UserStoreListResponse } from '@/shared/types';
+import { UserStore, UserStoreListResponse } from '@/types';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { NoStores, StoreCard } from './components';

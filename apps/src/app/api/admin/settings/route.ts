@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import { uploadImageNormal } from '@/lib/upload';
 import { assertRole, authCheck } from '@/middleware/authCheck';
 import Settings from '@/models/Settings';

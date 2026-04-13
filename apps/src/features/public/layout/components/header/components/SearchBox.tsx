@@ -2,9 +2,9 @@
 
 import { DealLabel } from '@/features/common/deal/components';
 import DealPrice from '@/features/public/deals/components/DealPrice';
+import { getDaysRemaining } from '@/lib/deal';
 import { searchDeals } from '@/services';
-import { DealRaw } from '@/shared/types';
-import { getDaysRemaining } from '@/utils/deal';
+import { DealRaw } from '@/types';
 import { ArrowRight, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

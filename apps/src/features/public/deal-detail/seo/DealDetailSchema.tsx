@@ -1,11 +1,11 @@
 'use client';
 
+import { SITE } from '@/config/site';
+import { createDealDetailSchema } from '@/lib/seo';
 import SchemaOrg from '@/shared/seo/SchemaOrg';
-import { DealFull } from '@/shared/types';
 import { RootState } from '@/store/store';
+import { DealFull } from '@/types';
 import { SettingsForm } from '@/types/settings';
-import { createDealDetailSchema } from '@/utils/seo';
-import { SITE } from '@/utils/site';
 import { useSelector } from 'react-redux';
 
 export default function DealDetailSchema({ deal }: { deal: DealFull }) {

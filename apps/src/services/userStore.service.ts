@@ -1,11 +1,19 @@
-import { fetcher } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher } from '@/lib/utils';
 
 export const getUserStoreById = async (id: string) => {
-    const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/${id}`, {
-        method: 'GET',
-    });
+    try {
+        const data = await fetcher(`${process.env.NEXT_PUBLIC_API_BASE_URL}/user-store/store/${id}`, {
+            method: 'GET',
+        });
 
-    return data;
+        return data;
+    } catch (error: unknown) {
+        return {
+            success: false,
+            message: getErrorMessage(error),
+        };
+    }
 };
 
 export const getUserStores = async (sort: string, page: number, search: string) => {

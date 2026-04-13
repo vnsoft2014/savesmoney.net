@@ -1,7 +1,9 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
+import { getWelcomeEmailHtml } from '@/lib/email-templates/welcome';
+import { sendMail } from '@/lib/sendMail';
+import { validateRequest } from '@/lib/validators/validate';
 import User from '@/models/User';
-import { validateRequest } from '@/utils/validators/validate';
 import { hash } from 'bcryptjs';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
@@ -33,6 +35,13 @@ export async function POST(req: Request) {
                 const safeUser = await User.findById(user._id)
                     .select('-password -passwordString -resetPasswordToken -resetPasswordExpire')
                     .lean();
+
+                // Send welcome email (fire-and-forget, don't block response)
+                await sendMail({
+                    to: email,
+                    subject: 'Welcome to SavesMoney.Net — Start Saving Today!',
+                    html: getWelcomeEmailHtml({ name, email }),
+                });
 
                 return NextResponse.json({
                     success: true,

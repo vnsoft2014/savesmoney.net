@@ -60,17 +60,13 @@ const ResetPasswordForm = () => {
             return;
         }
 
-        try {
-            const res = await resetPassword(token, values.password);
+        const res = await resetPassword(token, values.password);
 
-            if (res.success) {
-                setIsSuccess(true);
-                toast.success(res.message || 'Password reset successfully');
-            } else {
-                toast.error(res.message);
-            }
-        } catch {
-            toast.error('Failed to reset password');
+        if (res.success) {
+            setIsSuccess(true);
+            toast.success(res.message || 'Password reset successfully');
+        } else {
+            toast.error(res.message);
         }
     };
 

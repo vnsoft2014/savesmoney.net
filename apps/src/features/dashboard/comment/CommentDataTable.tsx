@@ -7,10 +7,10 @@ import DataTable from 'react-data-table-component';
 import { toast } from 'react-toastify';
 import useSWR, { useSWRConfig } from 'swr';
 
-import { dataTableStyles } from '@/constants/layout';
-import Loading from '@/shared/components/common/Loading';
-import { Comment } from '@/shared/types';
-import { fetcherWithAuth } from '@/utils/utils';
+import Loading from '@/components/common/Loading';
+import { dataTableStyles } from '@/config/layout';
+import { fetcherWithAuth } from '@/lib/utils';
+import { Comment } from '@/types';
 import Link from 'next/link';
 import { deleteComment, updateApprove } from '../services';
 

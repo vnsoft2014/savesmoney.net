@@ -1,4 +1,4 @@
-import { fetcherWithAuth } from '@/utils/utils';
+import { fetcherWithAuth } from '@/lib/utils';
 
 export async function getOverviewStats() {
     try {

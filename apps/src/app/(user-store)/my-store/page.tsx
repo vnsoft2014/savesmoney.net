@@ -1,5 +1,5 @@
+import { SITE } from '@/config/site';
 import { MyStore, MyStoreShell } from '@/features/public/my-store/overview';
-import { SITE } from '@/utils/site';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

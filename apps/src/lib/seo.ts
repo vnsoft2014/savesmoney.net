@@ -1,7 +1,7 @@
-import { SitemapItem } from '@/shared/types';
+import { SitemapItem } from '@/types';
 import Redis from 'ioredis';
 import { Metadata } from 'next';
-import { SITE } from './site';
+import { SITE } from '../config/site';
 
 type SeoParams = {
     title: string;

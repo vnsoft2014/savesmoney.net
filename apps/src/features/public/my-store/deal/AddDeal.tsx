@@ -22,10 +22,10 @@ import {
 import { AddDealForm as AddDealFormType, addDealSchema } from '@/features/common/schemas/Deal.schema';
 import { MyStoreGuestBanner } from '@/features/public/my-store';
 import { useAuth } from '@/hooks/useAuth';
+import { buildFormData } from '@/lib/buildFormData';
 import { Button } from '@/shared/shadecn/ui/button';
 import { FieldGroup } from '@/shared/shadecn/ui/field';
 import { Form } from '@/shared/shadecn/ui/form';
-import { buildFormData } from '@/utils/buildFormData';
 import { toast } from 'react-toastify';
 import { addDeal } from '../services';
 import { DuplicateInput } from './components';

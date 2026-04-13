@@ -1,8 +1,8 @@
 'use client';
 /* eslint-disable @next/next/no-img-element */
+import { AutoLogoutWarning } from '@/components/widgets';
 import { useAuth } from '@/hooks/useAuth';
 import { useIdleLogout } from '@/hooks/useIdleLogout';
-import { AutoLogoutWarning } from '@/shared/components/widgets';
 import { Button } from '@/shared/shadecn/ui/button';
 import Link from 'next/link';
 import { memo } from 'react';

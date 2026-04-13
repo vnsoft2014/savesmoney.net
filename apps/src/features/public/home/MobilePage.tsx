@@ -1,6 +1,6 @@
 'use client';
 
-import { DealListResponse, DealType, Store } from '@/shared/types';
+import { DealListResponse, DealType, Store } from '@/types';
 import { memo, useState } from 'react';
 import { DealTypesGrid } from './components';
 import ActiveDealsTab from './components/ActiveDealsTab';

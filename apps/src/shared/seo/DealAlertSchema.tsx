@@ -1,6 +1,6 @@
-import { createDealAlertSchema } from '@/utils/seo';
+import { SITE } from '@/config/site';
+import { createDealAlertSchema } from '@/lib/seo';
 import SchemaOrg from './SchemaOrg';
-import { SITE } from '@/utils/site';
 
 export default function DealAlertSchema() {
     const dealAlertSchema = createDealAlertSchema({

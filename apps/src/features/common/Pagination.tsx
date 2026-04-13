@@ -51,7 +51,7 @@ function Pagination({ currentPage, totalPages, hasNextPage, hasPrevPage, basePat
                 <Link
                     href={buildHref(currentPage - 1)}
                     prefetch={false}
-    aria-label="Go to previous page"
+                    aria-label="Go to previous page"
                     className={`${linkBaseClass} hover:bg-gray-200`}
                 >
                     <ArrowLeft size={16} />
@@ -75,8 +75,7 @@ function Pagination({ currentPage, totalPages, hasNextPage, hasPrevPage, basePat
                         key={page}
                         prefetch={false}
                         href={buildHref(page)}
-
-    aria-current={currentPage === page ? 'page' : undefined}
+                        aria-current={currentPage === page ? 'page' : undefined}
                         className={`${linkBaseClass} ${
                             currentPage === page
                                 ? 'bg-orange-600 text-white border-orange-600'
@@ -92,7 +91,7 @@ function Pagination({ currentPage, totalPages, hasNextPage, hasPrevPage, basePat
                 <Link
                     href={buildHref(currentPage + 1)}
                     prefetch={false}
-    aria-label="Go to next page"
+                    aria-label="Go to next page"
                     className={`${linkBaseClass} hover:bg-gray-200`}
                 >
                     <ArrowRight size={16} />

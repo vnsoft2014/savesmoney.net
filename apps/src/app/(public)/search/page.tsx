@@ -1,8 +1,8 @@
+import Breadcrumb from '@/components/common/Breadcrumb';
+import { SITE } from '@/config/site';
 import SearchsContent from '@/features/public/deal-detail/SearchsContent';
 import DealsFilters from '@/features/public/deals/DealsFilters';
 import { getDealTypes, getStores, searchDeals } from '@/services';
-import Breadcrumb from '@/shared/components/common/Breadcrumb';
-import { SITE } from '@/utils/site';
 import { FileText, Home } from 'lucide-react';
 import { Metadata } from 'next';
 

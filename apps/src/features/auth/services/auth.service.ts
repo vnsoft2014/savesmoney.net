@@ -1,5 +1,5 @@
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcher } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher } from '@/lib/utils';
 
 export const registerMe = async (formData: any) => {
     try {

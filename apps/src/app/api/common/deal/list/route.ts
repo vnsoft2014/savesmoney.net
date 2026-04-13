@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import Deal from '@/models/Deal';
 import DealType from '@/models/DealType';
 import Store from '@/models/Store';
@@ -13,7 +13,9 @@ const querySchema = Joi.object({
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(50).default(10),
     search: Joi.string().allow('').optional(),
-    sortField: Joi.string().valid('createdAt', 'expiredAt', 'originalPrice', 'discountPrice').default('createdAt'),
+    sortField: Joi.string()
+        .valid('updatedAt', 'createdAt', 'expiredAt', 'originalPrice', 'discountPrice')
+        .default('createdAt'),
     sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
     dealType: Joi.string().allow('').optional(),
     dealStore: Joi.string().allow('').optional(),

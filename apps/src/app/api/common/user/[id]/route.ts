@@ -1,5 +1,5 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
 import { withObjectId } from '@/middleware/withObjectId';
 import User from '@/models/User';
 import { NextResponse } from 'next/server';

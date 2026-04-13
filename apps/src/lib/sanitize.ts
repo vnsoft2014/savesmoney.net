@@ -51,3 +51,46 @@ export function generateUniqueSlug(name: string) {
 
     return slug;
 }
+
+/**
+ * Sanitize comment input (production ready)
+ */
+export function sanitizeComment(
+    value: string | string[],
+    options?: {
+        maxLength?: number;
+        allowLinks?: boolean;
+    },
+) {
+    if (!value) return value;
+
+    const { maxLength = 1000, allowLinks = true } = options || {};
+
+    const cleanOne = (input: string) => {
+        if (!input) return '';
+
+        let text = input.normalize('NFC');
+
+        text = text.replace(/<[^>]*>/g, '');
+
+        text = text.trim();
+        text = text.replace(/[ \t]+/g, ' ');
+        text = text.replace(/(.)\1{7,}/g, '$1$1$1');
+
+        if (!allowLinks) {
+            text = text.replace(/(https?:\/\/\S+|www\.\S+|\b\S+\.(com|net|org|io|vn)\b)/gi, '');
+        }
+
+        if (text.length > maxLength) {
+            text = text.slice(0, maxLength);
+        }
+
+        return text;
+    };
+
+    if (Array.isArray(value)) {
+        return value.map(cleanOne);
+    }
+
+    return cleanOne(value);
+}

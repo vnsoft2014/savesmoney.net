@@ -1,11 +1,11 @@
-import { MESSAGES } from '@/constants/messages';
-import connectDB from '@/DB/connectDB';
+import { MESSAGES } from '@/config/messages';
+import connectDB from '@/lib/db/connectDB';
+import { createRateLimiter, enforceRateLimit } from '@/lib/rarelimit';
+import { sanitizeComment, stripHtml } from '@/lib/sanitize';
+import { validateRequest } from '@/lib/validators/validate';
 import Comment from '@/models/Comment';
 import Subscriber from '@/models/Subscriber';
 import User from '@/models/User';
-import { createRateLimiter, enforceRateLimit } from '@/utils/rarelimit';
-import { stripHtml } from '@/utils/sanitize';
-import { validateRequest } from '@/utils/validators/validate';
 import Joi from 'joi';
 import { NextResponse } from 'next/server';
 
@@ -61,7 +61,11 @@ export async function POST(req: Request) {
             }
         }
 
-        const sanitizedContent = stripHtml(validatedBody.content);
+        const sanitizedContent = sanitizeComment(validatedBody.content, {
+            maxLength: 1000,
+            allowLinks: false,
+        });
+
         const sanitizedUsername = stripHtml(validatedBody.username);
 
         if (!sanitizedContent) {

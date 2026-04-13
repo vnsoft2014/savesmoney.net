@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Ads } from '@/shared/components/widgets';
-import { DealFull } from '@/shared/types';
+import { Ads } from '@/components/widgets';
+import { DealFull } from '@/types';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { DealCard } from '../../deals/components';

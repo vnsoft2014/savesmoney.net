@@ -1,5 +1,5 @@
-import { getErrorMessage } from '@/utils/errorHandler';
-import { fetcher, fetcherWithAuth } from '@/utils/utils';
+import { getErrorMessage } from '@/lib/errorHandler';
+import { fetcher, fetcherWithAuth } from '@/lib/utils';
 
 export async function likeAsGuest(dealId: string) {
     try {
