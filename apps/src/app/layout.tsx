@@ -36,13 +36,14 @@ export default function RootLayout({ children }: LayoutProps) {
                 <meta name="google-adsense-account" content="ca-pub-7598560907189118" />
 
                 {/* Google tag (gtag.js) */}
-                <Script src="https://www.googletagmanager.com/gtag/js?id=G-HQ4LQHEHWC" strategy="afterInteractive" />
-                <Script id="google-analytics" strategy="afterInteractive">
+                <Script src="https://www.googletagmanager.com/gtag/js?id=G-X1B1YJT2N5" />
+                <Script>
                     {`
                         window.dataLayer = window.dataLayer || [];
                         function gtag(){dataLayer.push(arguments);}
                         gtag('js', new Date());
-                        gtag('config', 'G-HQ4LQHEHWC');
+
+                        gtag('config', 'G-X1B1YJT2N5');
                     `}
                 </Script>
             </head>

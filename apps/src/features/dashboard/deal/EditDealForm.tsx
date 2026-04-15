@@ -1,7 +1,7 @@
 'use client';
 
 import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -35,6 +35,9 @@ interface Props {
 
 export default function EditDealForm({ deal }: Props) {
     const router = useRouter();
+
+    const searchParams = useSearchParams();
+    const redirect = searchParams.get('redirect') || 'dashboard';
 
     const form = useForm<EditDealFormType>({
         resolver: zodResolver(editDealSchema),
@@ -76,7 +79,11 @@ export default function EditDealForm({ deal }: Props) {
 
         if (res.success) {
             toast.success(res.message);
-            router.push('/dashboard');
+            if (redirect === 'deal-detail') {
+                router.push(`/deals/deal-detail/${deal.slug}-${deal._id}`);
+            } else {
+                router.push('/dashboard');
+            }
         } else {
             toast.error(res.message);
         }

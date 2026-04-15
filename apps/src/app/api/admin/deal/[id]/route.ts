@@ -184,6 +184,9 @@ export async function PATCH(req: Request, { params }: Props) {
             stripUnknown: true,
         });
 
+        console.log('===================');
+        console.log('error', error);
+
         if (error) {
             return NextResponse.json({ success: false, message: MESSAGES.ERROR.VALIDATION }, { status: 400 });
         }

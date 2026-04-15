@@ -44,7 +44,7 @@ const DealAdminActions = ({ dealId }: Props) => {
                 <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             </Button>
             <Link
-                href={`/dashboard/deal/${dealId}`}
+                href={`/dashboard/deal/${dealId}?redirect=deal-detail`}
                 title="Edit deal"
                 className="inline-flex items-center justify-center h-8 w-8 rounded-md text-gray-500 hover:text-orange-600 hover:bg-orange-50 transition-colors"
             >

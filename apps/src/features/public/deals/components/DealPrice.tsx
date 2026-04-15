@@ -51,8 +51,8 @@ const DealPrice = ({ originalPrice, discountPrice, percentageOff, size = 'md' }:
 
     if (!hasDiscount) {
         return (
-            <div className="min-h-7 mb-0">
-                <span className={cn('font-semibold text-gray-800', styles.discount)}>{formatPrice(originalPrice)}</span>
+            <div className="min-h-7 mb-0 font-sans">
+                <span className={cn('font-bold text-red-600', styles.discount)}>{formatPrice(originalPrice)}</span>
             </div>
         );
     }
