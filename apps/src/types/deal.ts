@@ -7,6 +7,7 @@ import { User } from './user';
 export type DealFormValues = {
     id: number;
     picture: string | null;
+    images: string[] | null;
     dealType: string[];
     store: string;
     expireAt: string | null;
@@ -32,6 +33,7 @@ export type DealFormValues = {
 export type Deal<TDealType = DealType, TStore = Store, TUser = User, TCoupon = Coupon> = {
     _id: string;
     image: string;
+    images: string[];
     dealType: TDealType[];
     store: TStore;
     expireAt: string | null;

@@ -13,6 +13,7 @@ export const dynamic = 'force-dynamic';
 
 const ClientDealSchema = Joi.object({
     picture: Joi.string().allow(null),
+    images: Joi.array().items(Joi.string()).optional(),
     dealType: Joi.array().items(Joi.string()).min(1).required(),
     store: Joi.string().required(),
     expireAt: Joi.string()
@@ -216,6 +217,7 @@ export async function POST(req: Request) {
 
             dealsToSave.push({
                 image: deal.picture ?? null,
+                images: deal.images ?? [],
                 dealType: deal.dealType,
                 store: deal.store,
 

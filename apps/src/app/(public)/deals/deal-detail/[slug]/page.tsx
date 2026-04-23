@@ -11,7 +11,7 @@ import {
     RelatedDeals,
     ValidityVote,
 } from '@/features/public/deal-detail';
-import { ImageWithFallback } from '@/features/public/deal-detail/components';
+import { DealImageSlider } from '@/features/public/deal-detail/components';
 import { DealDetailSchema } from '@/features/public/deal-detail/seo';
 import { DealPrice, DealPurchaseLink } from '@/features/public/deals/components';
 import { Sidebar } from '@/features/public/layout';
@@ -132,10 +132,11 @@ const Page = async ({ params }: Props) => {
                     <div className="xl:col-span-6 lg:col-span-5 px-3">
                         <div className="p-3 bg-white border border-gray-100 shadow-xs">
                             <div className="flex flex-col md:flex-row items-start">
-                                <div className="relative w-full xl:w-85 lg:w-80 md:w-60 aspect-square">
-                                    <DealPurchaseLink dealId={deal._id} href={deal.purchaseLink}>
-                                        <ImageWithFallback src={deal.image} alt={deal.shortDescription} />
-                                    </DealPurchaseLink>
+                                <div className="relative w-full xl:w-120 lg:w-80 md:w-60 aspect-square">
+                                    <DealImageSlider
+                                        images={deal.images?.length > 0 ? deal.images : [deal.image]}
+                                        alt={deal.shortDescription}
+                                    />
 
                                     <DealLabel
                                         flashDeal={deal.flashDeal}
@@ -252,7 +253,7 @@ const Page = async ({ params }: Props) => {
                                             has <strong>"{deal.shortDescription}"</strong> for the price of{' '}
                                             <strong>${deal.discountPrice}</strong>.
                                         </p>
-                                        <h3 className="text-lg md:text-xl font-sans-condensed font-bold">
+                                        {/* <h3 className="text-lg md:text-xl font-sans-condensed font-bold">
                                             Summary features:
                                         </h3>
                                         <div
@@ -260,7 +261,7 @@ const Page = async ({ params }: Props) => {
                                             dangerouslySetInnerHTML={{
                                                 __html: deal.description.replace(/&nbsp;/g, ' '),
                                             }}
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                             </div>

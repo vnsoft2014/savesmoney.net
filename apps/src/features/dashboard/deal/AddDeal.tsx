@@ -67,6 +67,7 @@ export default function AddDeal() {
         const newDeal = {
             id: Date.now(),
             picture: null,
+            images: [],
             dealType: [],
             store: '',
             expireAt: '',

@@ -223,7 +223,7 @@ type RelatedDealsResponse = {
     data: DealFull[];
 };
 
-export const getRelatedDeals = async (dealId: string, storeId: string, limit = 10): Promise<DealFull[]> => {
+export const getRelatedDeals = async (dealId: string, storeId: string, limit = 24): Promise<DealFull[]> => {
     try {
         const params = new URLSearchParams({
             dealId,

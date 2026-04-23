@@ -11,9 +11,9 @@ const uploadImageLimiter = createRateLimiter({
 });
 
 export async function POST(req: Request) {
-    const rateLimitResponse = await enforceRateLimit(req, uploadImageLimiter);
+    //const rateLimitResponse = await enforceRateLimit(req, uploadImageLimiter);
 
-    if (rateLimitResponse) return rateLimitResponse;
+    //if (rateLimitResponse) return rateLimitResponse;
 
     try {
         const role = await authCheck(req);
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
                 const author = authenticated!.sub;
 
                 publicUrl = await uploadDealImage(file, {
-                    resize: { width: 450, height: 450 },
+                    resize: { width: 900, height: 900 },
                     uploadedBy: author!,
                 });
             } catch (error: unknown) {

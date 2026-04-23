@@ -5,8 +5,9 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import 'swiper/css';
+import 'swiper/css/grid';
 import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Grid } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { DealCard } from '../../deals/components';
 
@@ -31,7 +32,11 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
                 <h3 className="mb-0! text-base md:text-lg font-bold">More Deals From {storeName}</h3>
 
                 <div className="flex items-center gap-1 md:gap-3">
-                    <Link href={`/store/${storeSlug}-${storeId}`} className="mr-2 text-xs md:text-base" prefetch={false}>
+                    <Link
+                        href={`/store/${storeSlug}-${storeId}`}
+                        className="mr-2 text-xs md:text-base"
+                        prefetch={false}
+                    >
                         See all
                     </Link>
 
@@ -65,9 +70,13 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
 
             <div className="mt-3">
                 <Swiper
-                    modules={[Navigation]}
+                    modules={[Navigation, Grid]}
                     spaceBetween={14}
                     slidesPerView={1}
+                    grid={{
+                        rows: 2,
+                        fill: 'row',
+                    }}
                     navigation={{
                         prevEl,
                         nextEl,
@@ -78,8 +87,14 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
                         setIsEnd(swiper.isEnd);
                     }}
                     breakpoints={{
-                        768: { slidesPerView: 3 },
-                        1280: { slidesPerView: 4 },
+                        768: {
+                            slidesPerView: 3,
+                            grid: { rows: 2, fill: 'row' },
+                        },
+                        1280: {
+                            slidesPerView: 4,
+                            grid: { rows: 2, fill: 'row' },
+                        },
                     }}
                 >
                     {deals.map((deal) => (

@@ -64,6 +64,6 @@ export const config = {
         '/reset-password',
         '/dashboard/:path*',
         '/user/:path*',
-        '/api/admin/:path*',
+        //'/api/admin/:path*',
     ],
 };

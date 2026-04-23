@@ -56,6 +56,10 @@ export interface DealDocument extends Document {
 const DealSchema = new mongoose.Schema(
     {
         image: String,
+        images: {
+            type: [String],
+            default: undefined,
+        },
         dealType: [
             {
                 type: mongoose.Schema.Types.ObjectId,
