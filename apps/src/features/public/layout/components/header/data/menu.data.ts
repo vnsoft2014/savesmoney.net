@@ -8,13 +8,25 @@ export const headerData: HeaderProps = [
         links: [],
     },
     {
-        label: 'Expiring Soon',
-        href: '/expiring-soon',
+        label: 'Electronics',
+        href: '/electronics',
     },
     {
-        label: 'Trending Deals',
-        href: '/trending-deals',
+        label: 'Household Items',
+        href: '/household-items',
     },
+    {
+        label: 'Clothes and Fashion',
+        href: '/clothes-and-fashion',
+    },
+    // {
+    //     label: 'Expiring Soon',
+    //     href: '/expiring-soon',
+    // },
+    // {
+    //     label: 'Trending Deals',
+    //     href: '/trending-deals',
+    // },
     {
         label: 'Holiday Deals',
         href: '/holiday-deals',

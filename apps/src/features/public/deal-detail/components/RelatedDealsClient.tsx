@@ -72,9 +72,9 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
                 <Swiper
                     modules={[Navigation, Grid]}
                     spaceBetween={14}
-                    slidesPerView={1}
+                    slidesPerView={2}
                     grid={{
-                        rows: 2,
+                        rows: 1,
                         fill: 'row',
                     }}
                     navigation={{
@@ -88,12 +88,12 @@ export default function RelatedDealsClient({ storeName, storeSlug, storeId, deal
                     }}
                     breakpoints={{
                         768: {
-                            slidesPerView: 3,
-                            grid: { rows: 2, fill: 'row' },
+                            slidesPerView: 4,
+                            grid: { rows: 3, fill: 'row' },
                         },
                         1280: {
-                            slidesPerView: 4,
-                            grid: { rows: 2, fill: 'row' },
+                            slidesPerView: 5,
+                            grid: { rows: 3, fill: 'row' },
                         },
                     }}
                 >

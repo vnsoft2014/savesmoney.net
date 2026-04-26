@@ -128,11 +128,11 @@ const Page = async ({ params }: Props) => {
                     <Breadcrumb items={breadcrumbItems} />
                 </div>
 
-                <div className="py-3 grid grid-cols-1 xl:grid-cols-8 lg:grid-cols-7">
+                <div className="py-3">
                     <div className="xl:col-span-6 lg:col-span-5 px-3">
                         <div className="p-3 bg-white border border-gray-100 shadow-xs">
-                            <div className="flex flex-col md:flex-row items-start">
-                                <div className="relative w-full xl:w-120 lg:w-80 md:w-60 aspect-square">
+                            <div className="grid grid-cols-1 md:grid-cols-5 items-start">
+                                <div className="relative col-span-1 md:col-span-2">
                                     <DealImageSlider
                                         images={deal.images?.length > 0 ? deal.images : [deal.image]}
                                         alt={deal.shortDescription}
@@ -145,19 +145,17 @@ const Page = async ({ params }: Props) => {
                                         daysRemaining={daysRemaining}
                                     />
 
-                                    <div className="absolute bottom-0 left-0 right-0">
-                                        {deal.flashDeal && deal.expireAt && (
-                                            <div className="py-1 bg-orange-600">
-                                                <div className="flex justify-center items-center gap-2 text-base md:text-lg text-white font-sans-condensed font-bold">
-                                                    <span className="inline-block">Ends in</span>
-                                                    <FlashDealCountdown expireAt={deal.expireAt} />
-                                                </div>
-                                            </div>
-                                        )}
+                                    {/* {deal.flashDeal && deal.expireAt && ( deal.expireAt */}
+                                    <div className="py-1 bg-orange-600">
+                                        <div className="flex justify-center items-center gap-2 text-base md:text-lg text-white font-sans-condensed font-bold">
+                                            <span className="inline-block">Ends in</span>
+                                            <FlashDealCountdown expireAt={'2027-01-01'} />
+                                        </div>
                                     </div>
+                                    {/* )} */}
                                 </div>
 
-                                <div className="md:flex-1 mt-4 md:mt-0 md:pl-4">
+                                <div className="col-span-1 md:col-span-3 mt-4 md:mt-0 md:pl-4">
                                     <div className="flex items-center gap-2 mb-2 text-[11px]">
                                         <div className="flex items-center gap-1">
                                             {Array.isArray(deal.dealType) &&
@@ -253,15 +251,6 @@ const Page = async ({ params }: Props) => {
                                             has <strong>"{deal.shortDescription}"</strong> for the price of{' '}
                                             <strong>${deal.discountPrice}</strong>.
                                         </p>
-                                        {/* <h3 className="text-lg md:text-xl font-sans-condensed font-bold">
-                                            Summary features:
-                                        </h3>
-                                        <div
-                                            className="deal-description max-w-full whitespace-normal wrap-break-word"
-                                            dangerouslySetInnerHTML={{
-                                                __html: deal.description.replace(/&nbsp;/g, ' '),
-                                            }}
-                                        /> */}
                                     </div>
                                 </div>
                             </div>
@@ -282,8 +271,6 @@ const Page = async ({ params }: Props) => {
                             />
                         </div>
                     </div>
-
-                    <Sidebar />
                 </div>
             </div>
         </>

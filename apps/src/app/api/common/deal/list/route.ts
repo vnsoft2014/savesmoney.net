@@ -96,10 +96,17 @@ export async function GET(req: Request) {
         }
 
         // Filter by deal type
-        if (dealType && mongoose.Types.ObjectId.isValid(dealType)) {
-            filter.dealType = {
-                $in: [new mongoose.Types.ObjectId(dealType)],
-            };
+        if (dealType) {
+            const dealTypeIds = dealType
+                .split(',')
+                .map((id: string) => id.trim())
+                .filter((id: string) => mongoose.Types.ObjectId.isValid(id));
+            
+            if (dealTypeIds.length > 0) {
+                filter.dealType = {
+                    $in: dealTypeIds.map((id: string) => new mongoose.Types.ObjectId(id)),
+                };
+            }
         }
 
         // Filter by deal store
